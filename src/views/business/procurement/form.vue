@@ -1,0 +1,206 @@
+<template>
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增采购信息' : '编辑采购信息'" width="600px">
+    <el-form  ref="form" :model="form" :rules="rules" size="small" label-width="80px">
+      <el-form-item label="项目编号" label-width="100px" prop="pno">
+        <el-input v-model="form.pno" style="width: 270px;"/>
+      </el-form-item>
+      <el-form-item label="项目名称" label-width="100px" prop="projectName">
+        <el-input v-model="form.projectName" style="width: 270px;"/>
+      </el-form-item>
+      <el-form-item label="供应商名称" label-width="100px" prop="supplierName">
+        <el-input v-model="form.supplierName"  style="width: 270px;"/>
+      </el-form-item>
+      <el-form-item label="采购说明" label-width="100px">
+        <el-input v-model="form.purchaseDescription" style="width: 270px;"/>
+      </el-form-item>
+      <el-form-item label="合同截止日" label-width="100px" prop="contractEndDate">
+         <el-date-picker
+              v-model="form.contractEndDate"
+              type="date"
+              placeholder="选择日期">
+         </el-date-picker>
+      </el-form-item>
+      <el-form-item label="合同总金额" label-width="100px">
+        <el-input v-model="form.contractAmount" style="width: 270px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
+      </el-form-item>
+      <el-form-item label="付款比例" label-width="100px">
+        <el-input v-model="form.paymentRatio" style="width: 270px;"/>
+      </el-form-item>
+      <el-form-item label="申请金额" label-width="100px">
+        <el-input v-model="form.applicationsAmount" style="width: 270px;"/>
+      </el-form-item>
+      <el-form-item label="申请日期" label-width="100px" prop="applicationsDate">
+        <el-date-picker
+             v-model="form.applicationsDate"
+             type="date"
+             placeholder="选择日期">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="应付日期" label-width="100px" prop="dueDate">
+        <el-date-picker
+             v-model="form.dueDate"
+             type="date"
+             placeholder="选择日期">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="实际付款金额" label-width="100px">
+        <el-input v-model="form.actualPaymentAmount" style="width: 270px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
+      </el-form-item>
+      <el-form-item label="实际付款日期" label-width="100px">
+        <el-date-picker
+             v-model="form.actualPaymentDate"
+             type="date"
+             placeholder="选择日期">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="付款方式" label-width="100px">
+        <el-input v-model="form.paymentType" style="width: 270px;"/>
+      </el-form-item>
+      <el-form-item label="收付款账户" label-width="100px">
+        <el-input v-model="form.receiptPaymentAccountId" style="width: 270px;"/>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button type="text" @click="cancel">取消</el-button>
+      <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+<script>
+import { add, edit } from '@/api/procurementInformation'
+export default {
+  props: {
+    isAdd: {
+      type: Boolean,
+      required: true
+    }
+  },
+  data() {
+    return {
+      loading: false,
+      dialog: false,
+      form: {
+        pno: '',
+        projectName: '',
+        supplierName: '',
+        purchaseDescription: '',
+        contractEndDate: '',
+        contractAmount: '',
+        paymentRatio: '',
+        applicationsAmount: '',
+        applicationsDate: '',
+        dueDate: '',
+        actualPaymentAmount: '',
+        actualPaymentDate: '',
+        paymentType: '',
+        receiptPaymentAccountId: ''
+      },
+      rules: {
+        pno: [
+          { required: true, message: '请输入项目编号', trigger: 'blur' }
+        ],
+        projectName: [
+          { required: true, message: '请输入项目名称', trigger: 'blur' }
+        ],
+        supplierName: [
+          { required: true, message: '请输入供应商名称', trigger: 'blur' }
+        ],
+        purchaseDescription: [
+          { required: true, message: '请输入采购说明', trigger: 'blur' }
+        ],
+        contractEndDate: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        dueDate: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        applicationsDate: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        actualPaymentDate: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+      }
+    }
+  },
+  methods: {
+    cancel() {
+      this.resetForm()
+    },
+    doSubmit() {
+      if (this.isAdd) {
+        this.doAdd()
+      } else this.doEdit()
+    },
+    doAdd() {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+            add(this.form).then(res => {
+                this.loading = true;
+                this.resetForm()
+                this.$notify({
+                  title: '添加成功',
+                  type: 'success',
+                  duration: 2500
+                })
+                this.loading = false
+                this.$parent.init()
+              }).catch(err => {
+                this.loading = false
+                console.log(err.response.data.message)
+              })
+        } else {
+          return false
+        }
+      })
+      },
+    doEdit() {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+           this.loading = true;
+           edit(this.form).then(res => {
+             this.resetForm()
+             this.$notify({
+               title: '修改成功',
+               type: 'success',
+               duration: 2500
+             })
+             this.loading = false
+             this.$parent.init()
+           }).catch(err => {
+             this.loading = false
+             console.log(err.response.data.message)
+           })
+        } else {
+          return false
+        }
+      })
+    },
+    resetForm() {
+      this.dialog = false
+      this.$refs['form'].resetFields()
+      this.form = {
+        pno: '',
+        projectName: '',
+        supplierName: '',
+        purchaseDescription: '',
+        contractEndDate: '',
+        contractAmount: '',
+        paymentRatio: '',
+        applicationsAmount: '',
+        applicationsDate: '',
+        dueDate: '',
+        actualPaymentAmount: '',
+        actualPaymentDate: '',
+        paymentType: '',
+        receiptPaymentAccountId: ''
+      }
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

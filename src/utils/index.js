@@ -1,6 +1,21 @@
 /**
  * Created by jiachenpan on 16/11/18.
  */
+//年月日
+export function parseDate(time) {
+  if (time) {
+    var date = new Date(time)
+    var year = date.getFullYear()
+    /* 在日期格式中，月份是从0开始的，因此要加0
+     * */
+    var month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1
+    var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate()
+    // 拼接
+    return year + '-' + month + '-' + day
+  } else {
+    return ''
+  }
+}
 
 export function parseTime(time) {
   if (time) {
