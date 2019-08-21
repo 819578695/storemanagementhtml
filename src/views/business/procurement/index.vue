@@ -1,17 +1,23 @@
 <template>
   <div class="app-container">
     <!--工具栏-->
-    <div class="head-container">
-      <!-- 新增 -->
-      <div style="display: inline-block;margin: 0px 2px;">
-        <el-button
-          v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_CREATE']"
-          class="filter-item"
-          size="mini"
-          type="primary"
-          icon="el-icon-plus"
-          @click="add">新增</el-button>
-      </div>
+    <div >
+
+        <el-date-picker v-model="query.applicationsDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
+        <el-date-picker v-model="query.applicationsDateEnd" type="date" placeholder="选择日期"></el-date-picker>
+        <el-input v-model="query.pno" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+        <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
+
+        <!-- 新增 -->
+        <div style="display: inline-block;margin: 0px 2px;">
+          <el-button
+            v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_CREATE']"
+            class="filter-item"
+            size="mini"
+            type="primary"
+            icon="el-icon-plus"
+            @click="add">新增</el-button>
+        </div>
       <!-- 导出 -->
       <div style="display: inline-block;">
         <el-button
@@ -72,7 +78,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="paymentType" label="付款方式"/>
-      <el-table-column prop="receiptPaymentAccountId" label="收付款账户"/>
+      <el-table-column prop="receiptPaymentAccountName" label="收付款账户"/>
       <el-table-column v-if="checkPermission(['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_EDIT','PROCUREMENTINFORMATION_DELETE'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
           <el-button v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
@@ -132,8 +138,19 @@ export default {
     checkPermission,
     beforeInit() {
       this.url = 'api/procurementInformation'
-      const sort = 'id,desc'
+      const sort = 'applicationsDate,desc'
+      const query = this.query
+      const value = query.pno
+      const applicationsDateStart = query.applicationsDateStart
+      const applicationsDateEnd = query.applicationsDateEnd
       this.params = { page: this.page, size: this.size, sort: sort }
+      if (value) { this.params['pno'] = value }
+      if (applicationsDateStart){
+        this.params['applicationsDateStart'] = parseDate(applicationsDateStart)
+      }
+      if (applicationsDateEnd){
+        this.params['applicationsDateEnd'] = parseDate(applicationsDateEnd)
+      }
       return true
     },
     subDelete(id) {
@@ -189,7 +206,7 @@ export default {
       this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
         const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '付款比例', '申请金额', '申请日期', '应付日期', '实际付款金额', '实际付款日期', '付款方式','收付款账户']
-        const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountId']
+        const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader,
@@ -208,7 +225,7 @@ export default {
            this.downloaddAllLoading = true
            import('@/utils/export2Excel').then(excel => {
              const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '付款比例', '申请金额', '申请日期', '应付日期', '实际付款金额', '实际付款日期', '付款方式','收付款账户']
-             const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountId']
+             const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
              const data = this.formatJson(filterVal, this.dataALL)
              excel.export_json_to_excel({
                header: tHeader,
@@ -218,7 +235,7 @@ export default {
              this.downloaddAllLoading = false
            })
          })
-     
+
     },
     // 数据转换
     formatJson(filterVal, jsonData) {
