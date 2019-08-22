@@ -72,6 +72,20 @@ export const constantRouterMap = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
+  },
+  {
+    path: '/receiptPaymentAccount',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/system/receiptPaymentAccount/index'),
+        name: '收付款账户信息',
+        meta: { title: '收付款账户信息', icon: 'receiptPaymentAccount' }
+      }
+    ]
   }
   // { path: '*', redirect: '/404', hidden: true }
 ]
