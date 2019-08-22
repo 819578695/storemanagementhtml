@@ -2,12 +2,11 @@
   <div class="app-container">
     <!--工具栏-->
     <div >
-
         <el-date-picker v-model="query.applicationsDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
         <el-date-picker v-model="query.applicationsDateEnd" type="date" placeholder="选择日期"></el-date-picker>
         <el-input v-model="query.pno" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+        <el-input v-model="query.pno" clearable placeholder="输入供应商名称" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
-
         <!-- 新增 -->
         <div style="display: inline-block;margin: 0px 2px;">
           <el-button
@@ -141,10 +140,12 @@ export default {
       const sort = 'applicationsDate,desc'
       const query = this.query
       const value = query.pno
+      const supplierName = query.supplierName
       const applicationsDateStart = query.applicationsDateStart
       const applicationsDateEnd = query.applicationsDateEnd
       this.params = { page: this.page, size: this.size, sort: sort }
       if (value) { this.params['pno'] = value }
+      if (supplierName) { this.params['supplierName'] = supplierName }
       if (applicationsDateStart){
         this.params['applicationsDateStart'] = parseDate(applicationsDateStart)
       }
@@ -174,10 +175,12 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.getReceiptPaymentAccountList()
     },
     edit(data) {
       this.isAdd = false
       const _this = this.$refs.form
+      _this.getReceiptPaymentAccountList();
       _this.form = {
         id: data.id,
         pno: data.pno,
@@ -193,8 +196,11 @@ export default {
         actualPaymentAmount: data.actualPaymentAmount,
         actualPaymentDate: data.actualPaymentDate,
         paymentType: data.paymentType,
-        receiptPaymentAccountId: data.receiptPaymentAccountId
+        receiptPaymentAccount: {
+          id:data.receiptPaymentAccountId
+        }
       }
+      this.$refs.form.receiptPaymentAccountId=data.receiptPaymentAccountId
       _this.dialog = true
     },
     //全选

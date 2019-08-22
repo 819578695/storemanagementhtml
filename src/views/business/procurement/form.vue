@@ -57,7 +57,13 @@
         <el-input v-model="form.paymentType" style="width: 270px;"/>
       </el-form-item>
       <el-form-item label="收付款账户" label-width="100px">
-        <el-input v-model="form.receiptPaymentAccountId" style="width: 270px;"/>
+        <el-select v-model="receiptPaymentAccountId"  placeholder="请选择收付款名称">
+          <el-option
+            v-for="(item, index) in receiptPaymentAccountList"
+            :key="item.name + index"
+            :label="item.name"
+            :value="item.id"/>
+        </el-select>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -69,6 +75,7 @@
 
 <script>
 import { add, edit } from '@/api/procurementInformation'
+import { getAll} from '@/api/receiptPaymentAccount'
 export default {
   props: {
     isAdd: {
@@ -78,6 +85,8 @@ export default {
   },
   data() {
     return {
+      receiptPaymentAccountId:null,
+      receiptPaymentAccountList:[],
       loading: false,
       dialog: false,
       form: {
@@ -94,7 +103,9 @@ export default {
         actualPaymentAmount: '',
         actualPaymentDate: '',
         paymentType: '',
-        receiptPaymentAccountId: ''
+        receiptPaymentAccount: {
+          id:''
+        },
       },
       rules: {
         pno: [
@@ -129,53 +140,55 @@ export default {
       this.resetForm()
     },
     doSubmit() {
-      if (this.isAdd) {
-        this.doAdd()
-      } else this.doEdit()
+      this.form.receiptPaymentAccount.id = this.receiptPaymentAccountId
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          if (this.receiptPaymentAccountId === null || this.receiptPaymentAccountId === undefined) {
+            this.$message({
+              message: '收付款信息不能为空',
+              type: 'warning'
+            })
+          } else {
+            if (this.isAdd) {
+              this.doAdd()
+            } else this.doEdit()
+          }
+        } else {
+          return false
+        }
+      })
     },
     doAdd() {
-      this.$refs['form'].validate((valid) => {
-        if (valid) {
-            add(this.form).then(res => {
-                this.loading = true;
-                this.resetForm()
-                this.$notify({
-                  title: '添加成功',
-                  type: 'success',
-                  duration: 2500
-                })
-                this.loading = false
-                this.$parent.init()
-              }).catch(err => {
-                this.loading = false
-                console.log(err.response.data.message)
-              })
-        } else {
-          return false
-        }
-      })
+        add(this.form).then(res => {
+            this.loading = true;
+            this.resetForm()
+            this.$notify({
+              title: '添加成功',
+              type: 'success',
+              duration: 2500
+            })
+            this.loading = false
+            this.$parent.init()
+          }).catch(err => {
+            this.loading = false
+            console.log(err.response.data.message)
+          })
       },
     doEdit() {
-      this.$refs['form'].validate((valid) => {
-        if (valid) {
+         edit(this.form).then(res => {
            this.loading = true;
-           edit(this.form).then(res => {
-             this.resetForm()
-             this.$notify({
-               title: '修改成功',
-               type: 'success',
-               duration: 2500
-             })
-             this.loading = false
-             this.$parent.init()
-           }).catch(err => {
-             this.loading = false
-             console.log(err.response.data.message)
+           this.resetForm()
+           this.$notify({
+             title: '修改成功',
+             type: 'success',
+             duration: 2500
            })
-        } else {
-          return false
-        }
-      })
+           this.loading = false
+           this.$parent.init()
+         }).catch(err => {
+           this.loading = false
+           console.log(err.response.data.message)
+         })
     },
     resetForm() {
       this.dialog = false
@@ -194,9 +207,18 @@ export default {
         actualPaymentAmount: '',
         actualPaymentDate: '',
         paymentType: '',
-        receiptPaymentAccountId: ''
+        receiptPaymentAccount: {
+          id:''
+        }
       }
-    }
+    },
+    getReceiptPaymentAccountList() {
+      getAll().then(res => {
+        this.receiptPaymentAccountList = res
+      }).catch(err => {
+        console.log(err.response.data.message)
+      })
+    },
   }
 }
 </script>
