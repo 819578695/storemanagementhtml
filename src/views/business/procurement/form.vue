@@ -14,10 +14,7 @@
         <el-input v-model="form.purchaseDescription" style="width: 270px;"/>
       </el-form-item>
       <el-form-item label="合同截止日" label-width="100px" prop="contractEndDate">
-         <el-date-picker
-              v-model="form.contractEndDate"
-              type="date"
-              placeholder="选择日期">
+         <el-date-picker v-model="form.contractEndDate" type="date" placeholder="选择日期">
          </el-date-picker>
       </el-form-item>
       <el-form-item label="合同总金额" label-width="100px">
@@ -85,11 +82,11 @@ export default {
   },
   data() {
     return {
-      receiptPaymentAccountId:null,
-      receiptPaymentAccountList:[],
-      loading: false,
-      dialog: false,
-      form: {
+      receiptPaymentAccountId:null,//下拉框的value值
+      receiptPaymentAccountList:[],//查询下拉框的集合
+      loading: false,//操作加载
+      dialog: false,//模态窗
+      form: {    //表单的value值
         pno: '',
         projectName: '',
         supplierName: '',
@@ -107,7 +104,7 @@ export default {
           id:''
         },
       },
-      rules: {
+      rules: {//表达验证
         pno: [
           { required: true, message: '请输入项目编号', trigger: 'blur' }
         ],
@@ -140,8 +137,9 @@ export default {
       this.resetForm()
     },
     doSubmit() {
+      //提交时会将下拉选中的value值穿给表单里对应的id带入后台操作
       this.form.receiptPaymentAccount.id = this.receiptPaymentAccountId
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate((valid) => {  //校验表单
         if (valid) {
           if (this.receiptPaymentAccountId === null || this.receiptPaymentAccountId === undefined) {
             this.$message({
@@ -212,6 +210,7 @@ export default {
         }
       }
     },
+    //查询所有的集合
     getReceiptPaymentAccountList() {
       getAll().then(res => {
         this.receiptPaymentAccountList = res

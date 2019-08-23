@@ -2,6 +2,7 @@
   <div class="app-container">
     <!--工具栏-->
     <div >
+      <!-- 搜索  -->
         <el-date-picker v-model="query.applicationsDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
         <el-date-picker v-model="query.applicationsDateEnd" type="date" placeholder="选择日期"></el-date-picker>
         <el-input v-model="query.pno" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
@@ -108,22 +109,22 @@
 </template>
 
 <script>
-import checkPermission from '@/utils/permission'
-import initData from '@/mixins/initData'
-import { del } from '@/api/procurementInformation'
-import { parseTime } from '@/utils/index'
-import { getProcurementInformationAll } from '@/api/procurementInformation'
-import { parseDate } from '@/utils/index'
-import eForm from './form'
+import checkPermission from '@/utils/permission' //权限控制
+import initData from '@/mixins/initData'         //查询表格
+import { del } from '@/api/procurementInformation' //删除
+import { parseTime } from '@/utils/index'         //格式化日期
+import { getProcurementInformationAll } from '@/api/procurementInformation' //查询所有的收付款信息
+import { parseDate } from '@/utils/index'          //格式化日期
+import eForm from './form'                        //表单
 export default {
-  components: { eForm },
-  mixins: [initData],
+  components: { eForm }, //注册表单组件
+  mixins: [initData],   // 初始化数据
   data() {
     return {
-      dataALL:[],
-      downloadLoading: false,
-      downloadAllLoading: false,
-      delLoading: false,
+      dataALL:[], //保存全部导出的数据
+      downloadLoading: false,//导出加载
+      downloadAllLoading: false,//全部导出加载
+      delLoading: false,//删除加载
     }
   },
   created() {
@@ -135,10 +136,12 @@ export default {
     parseTime,
     parseDate,
     checkPermission,
+    //页面初始化之前调用方法
     beforeInit() {
       this.url = 'api/procurementInformation'
       const sort = 'applicationsDate,desc'
       const query = this.query
+      //获取query搜索的值
       const value = query.pno
       const supplierName = query.supplierName
       const applicationsDateStart = query.applicationsDateStart
@@ -146,6 +149,7 @@ export default {
       this.params = { page: this.page, size: this.size, sort: sort }
       if (value) { this.params['pno'] = value }
       if (supplierName) { this.params['supplierName'] = supplierName }
+      //转化日期格式
       if (applicationsDateStart){
         this.params['applicationsDateStart'] = parseDate(applicationsDateStart)
       }
@@ -155,12 +159,12 @@ export default {
       return true
     },
     subDelete(id) {
-      this.delLoading = true
+      this.delLoading = true //点击删除启用加载中
       del(id).then(res => {
-        this.delLoading = false
-        this.$refs[id].doClose()
-        this.dleChangePage()
-        this.init()
+        this.delLoading = false//删除返回时关闭加载中
+        this.$refs[id].doClose()//关闭
+        this.dleChangePage()// 预防删除第二页最后一条数据时，或者多选删除第二页的数据时，页码错误导致请求无数据
+        this.init()        //操作成功查询
         this.$notify({
           title: '删除成功',
           type: 'success',
@@ -173,15 +177,16 @@ export default {
       })
     },
     add() {
-      this.isAdd = true
-      this.$refs.form.dialog = true
-      this.$refs.form.getReceiptPaymentAccountList()
+      this.isAdd = true    //显示标题
+      this.$refs.form.dialog = true //显示表单模态窗
+      this.$refs.form.getReceiptPaymentAccountList() //加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
       const _this = this.$refs.form
-      _this.getReceiptPaymentAccountList();
-      _this.form = {
+      this.$refs.form.getReceiptPaymentAccountList();
+      //给表单赋值
+      this.$refs.form.form = {
         id: data.id,
         pno: data.pno,
         projectName: data.projectName,
@@ -200,8 +205,9 @@ export default {
           id:data.receiptPaymentAccountId
         }
       }
+      //下拉框赋值
       this.$refs.form.receiptPaymentAccountId=data.receiptPaymentAccountId
-      _this.dialog = true
+      this.$refs.form.dialog = true
     },
     //全选
     handleSelectionChange(val) {
@@ -215,9 +221,9 @@ export default {
         const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: 'table-list'
+          header: tHeader,  //表头
+          data,             //数据
+          filename: 'table-list' //文件名
         })
         this.downloadLoading = false
       })
