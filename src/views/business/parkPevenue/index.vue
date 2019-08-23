@@ -2,16 +2,10 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
-      <!-- 搜索 -->
-      <el-input v-model="query.value" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-      <el-select v-model="query.type" clearable placeholder="类型" class="filter-item" style="width: 130px">
-        <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
-      </el-select>
-      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
-          v-permission="['ADMIN','RECEIPTPAYMENTACCOUNT_ALL','RECEIPTPAYMENTACCOUNT_CREATE']"
+          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_CREATE']"
           class="filter-item"
           size="mini"
           type="primary"
@@ -23,18 +17,28 @@
     <eForm ref="form" :is-add="isAdd"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <el-table-column prop="name" label="名称"/>
-      <el-table-column prop="paymentAccount" label="付款账户名称"/>
-      <el-table-column prop="paymentAccountNum" label="付款账号"/>
-      <el-table-column prop="paymentBank" label="付款开户行"/>
-      <el-table-column prop="receiptAccount" label="收款账户名称"/>
-      <el-table-column prop="receiptAccountNum" label="收款账号"/>
-      <el-table-column prop="receiptBank" label="收款开户行"/>
-      <el-table-column v-if="checkPermission(['ADMIN','RECEIPTPAYMENTACCOUNT_ALL','RECEIPTPAYMENTACCOUNT_EDIT','RECEIPTPAYMENTACCOUNT_DELETE'])" label="操作" width="150px" align="center">
+      <el-table-column prop="parkId" label="园区id"/>
+      <el-table-column prop="receiptPaymentAccountId" label="收付款信息"/>
+      <el-table-column prop="deptId" label="部门id"/>
+      <el-table-column prop="houseNumber" label="档口编号"/>
+      <el-table-column prop="houseRent" label="房租"/>
+      <el-table-column prop="propertyRent" label="物业费"/>
+      <el-table-column prop="waterElectricityRent" label="水电费"/>
+      <el-table-column prop="sanitationRent" label="卫生费"/>
+      <el-table-column prop="liquidatedRent" label="违约金"/>
+      <el-table-column prop="lateRent" label="滞纳金"/>
+      <el-table-column prop="groundPoundRent" label="地磅费"/>
+      <el-table-column prop="arrersRent" label="欠款金额"/>
+      <el-table-column prop="creaeTime" label="创建时间">
         <template slot-scope="scope">
-          <el-button v-permission="['ADMIN','RECEIPTPAYMENTACCOUNT_ALL','RECEIPTPAYMENTACCOUNT_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
+          <span>{{ parseTime(scope.row.creaeTime) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column v-if="checkPermission(['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT','PARKPEVENUE_DELETE'])" label="操作" width="150px" align="center">
+        <template slot-scope="scope">
+          <el-button v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
           <el-popover
-            v-permission="['ADMIN','RECEIPTPAYMENTACCOUNT_ALL','RECEIPTPAYMENTACCOUNT_DELETE']"
+            v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_DELETE']"
             :ref="scope.row.id"
             placement="top"
             width="180">
@@ -62,7 +66,8 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del } from '@/api/receiptPaymentAccount'
+import { del } from '@/api/parkPevenue'
+import { parseTime } from '@/utils/index'
 import eForm from './form'
 export default {
   components: { eForm },
@@ -70,27 +75,20 @@ export default {
   data() {
     return {
       delLoading: false,
-      queryTypeOptions: [
-        { key: 'name', display_name: '名称' }
-      ]
     }
   },
   created() {
-/* 	  alert(this.$store.state.userData.xxx) */
     this.$nextTick(() => {
       this.init()
     })
   },
   methods: {
+    parseTime,
     checkPermission,
     beforeInit() {
-      this.url = 'api/receiptPaymentAccount'
+      this.url = 'api/parkPevenue'
       const sort = 'id,desc'
       this.params = { page: this.page, size: this.size, sort: sort }
-      const query = this.query
-      const type = query.type
-      const value = query.value
-      if (type && value) { this.params[type] = value }
       return true
     },
     subDelete(id) {
@@ -120,14 +118,18 @@ export default {
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
-        name: data.name,
+        parkId: data.parkId,
+        receiptPaymentAccountId: data.receiptPaymentAccountId,
         deptId: data.deptId,
-        paymentAccount: data.paymentAccount,
-        paymentAccountNum: data.paymentAccountNum,
-        paymentBank: data.paymentBank,
-        receiptAccount: data.receiptAccount,
-        receiptAccountNum: data.receiptAccountNum,
-        receiptBank: data.receiptBank
+        archivesMouthsId: data.archivesMouthsId,
+        houseRent: data.houseRent,
+        propertyRent: data.propertyRent,
+        waterElectricityRent: data.waterElectricityRent,
+        sanitationRent: data.sanitationRent,
+        liquidatedRent: data.liquidatedRent,
+        lateRent: data.lateRent,
+        groundPoundRent: data.groundPoundRent,
+        arrersRent: data.arrersRent,
       }
       _this.dialog = true
     }

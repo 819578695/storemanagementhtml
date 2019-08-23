@@ -2,6 +2,9 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
+      <!-- 搜索 -->
+      <el-input v-model="query.deptName" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
@@ -19,6 +22,7 @@
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="主键"/>
       <el-table-column prop="parkId" label="档口id"/>
+      <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="siteRent" label="场地租金"/>
       <el-table-column prop="waterRent" label="水费"/>
       <el-table-column prop="electricityRent" label="电费"/>
@@ -84,7 +88,10 @@ export default {
     beforeInit() {
       this.url = 'api/parkCost'
       const sort = 'id,desc'
-      this.params = { page: this.page, size: this.size, sort: sort }
+      const query = this.query
+      const deptName = query.deptName
+        this.params = { page: this.page, size: this.size, sort: sort }
+       if (deptName) { this.params['deptName'] = deptName }
       return true
     },
     subDelete(id) {

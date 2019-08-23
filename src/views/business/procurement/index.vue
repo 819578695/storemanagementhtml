@@ -6,7 +6,7 @@
         <el-date-picker v-model="query.applicationsDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
         <el-date-picker v-model="query.applicationsDateEnd" type="date" placeholder="选择日期"></el-date-picker>
         <el-input v-model="query.pno" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-        <el-input v-model="query.pno" clearable placeholder="输入供应商名称" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+        <el-input v-model="query.supplierName" clearable placeholder="输入供应商名称" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
         <!-- 新增 -->
         <div style="display: inline-block;margin: 0px 2px;">

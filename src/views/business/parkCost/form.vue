@@ -32,6 +32,7 @@
 
 <script>
 import { add, edit } from '@/api/parkCost'
+import store from '@/store'
 export default {
   props: {
     isAdd: {
@@ -51,6 +52,9 @@ export default {
         propertyRent: '',
         taxCost: '',
         otherRent: '',
+        dept:{
+          id:''
+        }
       },
       rules: {
         siteRent: [
@@ -92,7 +96,9 @@ export default {
       })
     },
     doAdd() {
-      add(this.form).then(res => {
+      store.dispatch('GetInfo').then(res => {
+      	this.form.dept.id = res.deptId
+      	add(this.form).then(res => {
         this.resetForm()
         this.$notify({
           title: '添加成功',
@@ -101,9 +107,10 @@ export default {
         })
         this.loading = false
         this.$parent.init()
-      }).catch(err => {
-        this.loading = false
-        console.log(err.response.data.message)
+        }).catch(err => {
+          this.loading = false
+          console.log(err.response.data.message)
+        })
       })
     },
     doEdit() {
