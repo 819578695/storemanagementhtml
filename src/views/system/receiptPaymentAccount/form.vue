@@ -74,10 +74,10 @@ export default {
           { required: true, message: '请输入名称', trigger: 'blur' }
         ],
         paymentAccountNum: [
-          { required: true, message: '请输入正确的付款账号', trigger: 'blur' ,validator: checknum}
+          { required: true, trigger: 'blur' ,validator: checknum}
         ],
         receiptAccountNum: [
-          { required: true, message: '请输入正确的收款账号', trigger: 'blur' ,validator: checknum}
+          { required: true, trigger: 'blur' ,validator: checknum}
         ],
       }
     }
