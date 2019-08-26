@@ -1,7 +1,13 @@
 <template>
   <div class="app-container">
     <!--工具栏-->
-    <div class="head-container">
+    <div>
+      <!-- 搜索  -->
+        <el-date-picker v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
+        <el-date-picker v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
+        <el-input v-model="query.houseNumber" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+        <el-input v-model="query.supplierName" clearable placeholder="输入供应商名称" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+        <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
@@ -15,11 +21,12 @@
     </div>
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd"/>
+    <!--表单组件-->
+    <accountForm ref="accountform" />
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="parkId" label="园区id"/>
-      <el-table-column prop="receiptPaymentAccountId" label="收付款信息"/>
-      <el-table-column prop="deptId" label="部门id"/>
+      <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="houseNumber" label="档口编号"/>
       <el-table-column prop="houseRent" label="房租"/>
       <el-table-column prop="propertyRent" label="物业费"/>
@@ -29,6 +36,12 @@
       <el-table-column prop="lateRent" label="滞纳金"/>
       <el-table-column prop="groundPoundRent" label="地磅费"/>
       <el-table-column prop="arrersRent" label="欠款金额"/>
+      <el-table-column prop="paymentTypeName" label="交易类型"/>
+      <el-table-column prop="creaeTime" label="收款信息">
+        <template slot-scope="scope">
+          <span @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="creaeTime" label="创建时间">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.creaeTime) }}</span>
@@ -51,6 +64,11 @@
           </el-popover>
         </template>
       </el-table-column>
+      <el-table-column prop="creaeTime" label="合计">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.creaeTime) }}</span>
+        </template>
+      </el-table-column>
     </el-table>
     <!--分页组件-->
     <el-pagination
@@ -65,12 +83,15 @@
 
 <script>
 import checkPermission from '@/utils/permission'
+import { receiptPaymentAccountById } from '@/api/receiptPaymentAccount'
 import initData from '@/mixins/initData'
 import { del } from '@/api/parkPevenue'
 import { parseTime } from '@/utils/index'
+import { parseDate } from '@/utils/index'          //格式化日期
 import eForm from './form'
+import accountForm from './accountform'
 export default {
-  components: { eForm },
+  components: { eForm,accountForm },
   mixins: [initData],
   data() {
     return {
@@ -88,7 +109,22 @@ export default {
     beforeInit() {
       this.url = 'api/parkPevenue'
       const sort = 'id,desc'
+      const query = this.query
+      //获取query搜索的值
+      const houseNumber = query.houseNumber
+      const supplierName = query.supplierName
+      const createDateStart = query.createDateStart
+      const createDateEnd = query.createDateEnd
       this.params = { page: this.page, size: this.size, sort: sort }
+      //档口编号
+      if (houseNumber) { this.params['houseNumber'] = houseNumber }
+      //转化日期格式
+      if (createDateStart){
+        this.params['createTimeStart'] = parseDate(createDateStart)
+      }
+      if (createDateEnd){
+        this.params['createTimeEnd'] = parseDate(createDateEnd)
+      }
       return true
     },
     subDelete(id) {
@@ -112,15 +148,16 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.getReceiptPaymentAccountList() //加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
       const _this = this.$refs.form
+      this.$refs.form.getReceiptPaymentAccountList() //加载下拉查询数据
       _this.form = {
         id: data.id,
         parkId: data.parkId,
         receiptPaymentAccountId: data.receiptPaymentAccountId,
-        deptId: data.deptId,
         archivesMouthsId: data.archivesMouthsId,
         houseRent: data.houseRent,
         propertyRent: data.propertyRent,
@@ -130,8 +167,31 @@ export default {
         lateRent: data.lateRent,
         groundPoundRent: data.groundPoundRent,
         arrersRent: data.arrersRent,
+        dictDetail:{
+          id:data.paymentType
+        },
+        dept:{
+          id:data.deptId
+        },
+        receiptPaymentAccount: {
+          id:data.receiptPaymentAccountId
+        }
       }
+      //下拉框赋值
+      this.$refs.form.receiptPaymentAccountId=data.receiptPaymentAccountId
       _this.dialog = true
+    },
+    //查看收付款信息详情
+    findReceiptPaymentAccount(id){
+      if(id!=null||id!=''){
+        const _this = this.$refs.accountform
+        receiptPaymentAccountById(id).then(res => {
+           _this.dialog= true
+          _this.form= res
+         }).catch(err => {
+
+         })
+      }
     }
   }
 }

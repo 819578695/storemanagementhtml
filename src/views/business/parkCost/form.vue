@@ -22,6 +22,16 @@
       <el-form-item label="其他费用" prop="otherRent">
         <el-input v-model="form.otherRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
+      <el-form-item label="付款方式" label-width="100px">
+        <el-input v-model="form.paymentType" style="width: 270px;"/>
+        <el-select v-model="paymentTypeId"  placeholder="请选择收付款名称">
+          <el-option
+            v-for="(item, index) in dicts"
+            :key="item.name + index"
+            :label="item.name"
+            :value="item.id"/>
+        </el-select>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
@@ -33,6 +43,7 @@
 <script>
 import { add, edit } from '@/api/parkCost'
 import store from '@/store'
+import { getDictMap } from '@/api/dictDetail'
 export default {
   props: {
     isAdd: {
@@ -42,7 +53,10 @@ export default {
   },
   data() {
     return {
-      loading: false, dialog: false,
+      paymentTypeId:null,//支付类型下拉框的value值
+      paymentTypeList:[],//支付类型集合
+      loading: false,
+       dialog: false,
       form: {
         id: '',
         parkId: '',
@@ -52,6 +66,9 @@ export default {
         propertyRent: '',
         taxCost: '',
         otherRent: '',
+        dictDetail: {
+          id:''
+        },
         dept:{
           id:''
         }
@@ -75,7 +92,6 @@ export default {
         otherRent: [
           { required: true, message: '请输入其他费用', trigger: 'blur' }
         ]
-
       }
     }
   },
@@ -84,12 +100,21 @@ export default {
       this.resetForm()
     },
     doSubmit() {
+      this.form.dictDetail.id = this.paymentTypeId
       this.$refs['form'].validate((valid) => {
         if (valid) {
-            this.loading = true
-            if (this.isAdd) {
-              this.doAdd()
-            } else this.doEdit()
+          if (this.paymentTypeId === null || this.paymentTypeId === undefined) {
+            this.$message({
+              message: '收付款信息不能为空',
+              type: 'warning'
+            })
+          }
+            else {
+              this.loading=true;
+              if (this.isAdd) {
+                this.doAdd()
+              } else this.doEdit()
+            }
         } else {
           return false
         }
@@ -140,9 +165,15 @@ export default {
         propertyRent: '',
         taxCost: '',
         otherRent: '',
-        createTime: ''
+        createTime: '',
+        dictDetail: {
+          id:''
+        },
+        dept:{
+          id:''
+        }
       }
-    }
+    },
   }
 }
 </script>

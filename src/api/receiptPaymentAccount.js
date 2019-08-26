@@ -16,6 +16,21 @@ export function add(data) {
   })
 }
 
+export function receiptPaymentAccountById(id) {
+  return request({
+    url: 'api/receiptPaymentAccountById/'+id,
+    method: 'get'
+  })
+}
+
+
+export function receiptPaymentAccountByDeptId(id) {
+  return request({
+    url: 'api/receiptPaymentAccountByDeptId/'+id,
+    method: 'get'
+  })
+}
+
 export function del(id) {
   return request({
     url: 'api/receiptPaymentAccount/' + id,

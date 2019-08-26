@@ -77,7 +77,7 @@
           <span>{{ parseDate(scope.row.actualPaymentDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="paymentType" label="付款方式"/>
+      <el-table-column prop="paymentTypeName" label="付款方式"/>
       <el-table-column prop="receiptPaymentAccountName" label="收付款账户"/>
       <el-table-column v-if="checkPermission(['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_EDIT','PROCUREMENTINFORMATION_DELETE'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
@@ -200,7 +200,9 @@ export default {
         dueDate: data.dueDate,
         actualPaymentAmount: data.actualPaymentAmount,
         actualPaymentDate: data.actualPaymentDate,
-        paymentType: data.paymentType,
+        dictDetail:{
+          id:data.paymentType
+        },
         receiptPaymentAccount: {
           id:data.receiptPaymentAccountId
         }

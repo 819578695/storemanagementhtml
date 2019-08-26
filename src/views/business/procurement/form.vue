@@ -52,6 +52,13 @@
       </el-form-item>
       <el-form-item label="付款方式" label-width="100px">
         <el-input v-model="form.paymentType" style="width: 270px;"/>
+        <el-select v-model="paymentTypeId"  placeholder="请选择收付款名称">
+          <el-option
+            v-for="(item, index) in paymentTypeList"
+            :key="item.name + index"
+            :label="item.name"
+            :value="item.id"/>
+        </el-select>
       </el-form-item>
       <el-form-item label="收付款账户" label-width="100px">
         <el-select v-model="receiptPaymentAccountId"  placeholder="请选择收付款名称">
@@ -72,7 +79,9 @@
 
 <script>
 import { add, edit } from '@/api/procurementInformation'
-import { getAll} from '@/api/receiptPaymentAccount'
+import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
+import { getDictMap } from '@/api/dictDetail'
+import store from '@/store'
 export default {
   props: {
     isAdd: {
@@ -82,6 +91,8 @@ export default {
   },
   data() {
     return {
+      paymentTypeId:null,//支付类型下拉框的value值
+      paymentTypeList:[],//支付类型集合
       receiptPaymentAccountId:null,//下拉框的value值
       receiptPaymentAccountList:[],//查询下拉框的集合
       loading: false,//操作加载
@@ -99,7 +110,9 @@ export default {
         dueDate: '',
         actualPaymentAmount: '',
         actualPaymentDate: '',
-        paymentType: '',
+        dictDetail: {
+          id:''
+        },
         receiptPaymentAccount: {
           id:''
         },
@@ -139,6 +152,7 @@ export default {
     doSubmit() {
       //提交时会将下拉选中的value值穿给表单里对应的id带入后台操作
       this.form.receiptPaymentAccount.id = this.receiptPaymentAccountId
+      this.form.dictDetail.id = this.paymentTypeId
       this.$refs['form'].validate((valid) => {  //校验表单
         if (valid) {
           if (this.receiptPaymentAccountId === null || this.receiptPaymentAccountId === undefined) {
@@ -146,7 +160,14 @@ export default {
               message: '收付款信息不能为空',
               type: 'warning'
             })
-          } else {
+          }
+          else if  (this.paymentTypeId === null || this.paymentTypeId === undefined) {
+            this.$message({
+              message: '收付款信息不能为空',
+              type: 'warning'
+            })
+          }
+           else {
             if (this.isAdd) {
               this.doAdd()
             } else this.doEdit()
@@ -204,7 +225,9 @@ export default {
         dueDate: '',
         actualPaymentAmount: '',
         actualPaymentDate: '',
-        paymentType: '',
+        dictDetail: {
+          id:''
+        },
         receiptPaymentAccount: {
           id:''
         }
@@ -212,10 +235,12 @@ export default {
     },
     //查询所有的集合
     getReceiptPaymentAccountList() {
-      getAll().then(res => {
-        this.receiptPaymentAccountList = res
-      }).catch(err => {
-        console.log(err.response.data.message)
+      store.dispatch('GetInfo').then(res => {
+      	receiptPaymentAccountByDeptId(res.deptId).then(res => {
+      	  this.receiptPaymentAccountList = res
+      	}).catch(err => {
+      	  console.log(err.response.data.message)
+      	})
       })
     },
   }

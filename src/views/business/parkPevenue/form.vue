@@ -4,12 +4,6 @@
       <el-form-item label="园区id" >
         <el-input v-model="form.parkId" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="收付款信息" >
-        <el-input v-model="form.receiptPaymentAccountId" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="部门id" >
-        <el-input v-model="form.deptId" style="width: 370px;"/>
-      </el-form-item>
       <el-form-item label="档口Id" >
         <el-input v-model="form.archivesMouthsId" style="width: 370px;"/>
       </el-form-item>
@@ -40,6 +34,25 @@
       <el-form-item label="创建时间" >
         <el-input v-model="form.creaeTime" style="width: 370px;"/>
       </el-form-item>
+      <el-form-item label="付款方式" label-width="100px">
+        <el-input v-model="form.paymentType" style="width: 270px;"/>
+        <el-select v-model="paymentTypeId"  placeholder="请选择收付款名称">
+          <el-option
+            v-for="(item, index) in receiptPaymentAccountList"
+            :key="item.name + index"
+            :label="item.name"
+            :value="item.id"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="收付款账户" label-width="100px">
+        <el-select v-model="receiptPaymentAccountId"  placeholder="请选择收付款名称">
+          <el-option
+            v-for="(item, index) in receiptPaymentAccountList"
+            :key="item.name + index"
+            :label="item.name"
+            :value="item.id"/>
+        </el-select>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
@@ -50,6 +63,9 @@
 
 <script>
 import { add, edit } from '@/api/parkPevenue'
+import store from '@/store'
+import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
+import { getDictMap } from '@/api/dictDetail'
 export default {
   props: {
     isAdd: {
@@ -59,12 +75,16 @@ export default {
   },
   data() {
     return {
-      loading: false, dialog: false,
+      loading: false,
+      dialog: false,
+      paymentTypeId:null,//支付类型下拉框的value值
+      paymentTypeList:[],//支付类型集合
+      receiptPaymentAccountId:null,//下拉框的value值
+      receiptPaymentAccountList:[],//查询下拉框的集合
       form: {
         id: '',
         parkId: '',
         receiptPaymentAccountId: '',
-        deptId: '',
         archivesMouthsId: '',
         houseRent: '',
         propertyRent: '',
@@ -74,7 +94,16 @@ export default {
         lateRent: '',
         groundPoundRent: '',
         arrersRent: '',
-        creaeTime: ''
+        creaeTime: '',
+        dept:{
+          id:''
+        },
+        receiptPaymentAccount: {
+          id:''
+        },
+        archivesmouthsmanagement:{
+          id:''
+        }
       },
       rules: {
       }
@@ -85,12 +114,37 @@ export default {
       this.resetForm()
     },
     doSubmit() {
-      this.loading = true
-      if (this.isAdd) {
-        this.doAdd()
-      } else this.doEdit()
+      //提交时会将下拉选中的value值穿给表单里对应的id带入后台操作
+      this.form.receiptPaymentAccount.id = this.receiptPaymentAccountId
+       this.form.dictDetail.id = this.paymentTypeId
+      this.$refs['form'].validate((valid) => {  //校验表单
+        if (valid) {
+          if (this.receiptPaymentAccountId === null || this.receiptPaymentAccountId === undefined) {
+            this.$message({
+              message: '收付款信息不能为空',
+              type: 'warning'
+            })
+          }
+          else if  (this.paymentTypeId === null || this.paymentTypeId === undefined) {
+            this.$message({
+              message: '收付款信息不能为空',
+              type: 'warning'
+            })
+          }
+          else {
+            this.loading=true;
+            if (this.isAdd) {
+              this.doAdd()
+            } else this.doEdit()
+          }
+        } else {
+          return false
+        }
+      })
     },
     doAdd() {
+    store.dispatch('GetInfo').then(res => {
+      this.form.dept.id = res.deptId
       add(this.form).then(res => {
         this.resetForm()
         this.$notify({
@@ -104,6 +158,7 @@ export default {
         this.loading = false
         console.log(err.response.data.message)
       })
+     })
     },
     doEdit() {
       edit(this.form).then(res => {
@@ -137,9 +192,32 @@ export default {
         lateRent: '',
         groundPoundRent: '',
         arrersRent: '',
-        creaeTime: ''
+        creaeTime: '',
+        dept:{
+          id:''
+        },
+        receiptPaymentAccount: {
+          id:''
+        },
+        archivesmouthsmanagement:{
+          id:''
+        },
+        dictDetail:{
+          id:''
+        },
+
       }
-    }
+    },
+    //查询所有的集合
+    getReceiptPaymentAccountList() {
+      store.dispatch('GetInfo').then(res => {
+      	receiptPaymentAccountByDeptId(res.deptId).then(res => {
+      	  this.receiptPaymentAccountList = res
+      	}).catch(err => {
+      	  console.log(err.response.data.message)
+      	})
+      })
+    },
   }
 }
 </script>

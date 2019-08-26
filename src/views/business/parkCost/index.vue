@@ -29,6 +29,7 @@
       <el-table-column prop="propertyRent" label="物业费"/>
       <el-table-column prop="taxCost" label="税赋成本"/>
       <el-table-column prop="otherRent" label="其他费用"/>
+      <el-table-column prop="paymentTypeName" label="交易类型"/>
       <el-table-column prop="createTime" label="创建时间">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
@@ -66,6 +67,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
+import initDict from '@/mixins/initDict'
 import { del } from '@/api/parkCost'
 import { parseTime } from '@/utils/index'
 import eForm from './form'
@@ -80,6 +82,8 @@ export default {
   created() {
     this.$nextTick(() => {
       this.init()
+      // 加载数据字典
+      this.getDict('transaction_mode')
     })
   },
   methods: {
@@ -115,10 +119,12 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.getPaymentAccountList() //加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
       const _this = this.$refs.form
+      this.$refs.form.getPaymentAccountList() //加载下拉查询数据
       _this.form = {
         id: data.id,
         parkId: data.parkId,
