@@ -4,12 +4,12 @@
     <div class="head-container">
       <!-- 搜索-->
       <el-input v-model="query.value" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-      <el-select v_model="query.type" clearable placeholder="类型" class="filter-item" style="width: 130px">
+      <el-select v-model="query.type" clearable placeholder="类型" class="filter-item" style="width: 130px">
         <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
       </el-select>
-      <el-button class="filter-itme" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
+      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增-->
-      <!-- <div style="display: inline-block;margin: 0px 2px;">
+      <div style="display: inline-block;margin: 0px 2px;">
         <el-button
           v-permission="['ADMIN','ARCHIVESMOUTHSMANAGEMENT_ALL','ARCHIVESMOUTHSMANAGEMENT_ALL_SELECT']"
           class="filter-item"
@@ -17,16 +17,16 @@
           type="primary"
           icon="el-icon-plus"
           @click="add">新增</el-button>
-      </div> -->
+      </div>
     </div>
     <!-- 表单组件-->
-    <!-- <eForm ref="form" :is-add="isadd"/> -->
+    <eForm ref="form" :is-add="isAdd"/>
     <!-- 表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="housenumber" label="门牌号"/>
       <el-table-column prop="acreage" label="面积"/>
       <el-table-column prop="earnest" label="定金"/>
-      <el-table-column prop="contractmonev" label="合同保证金"/>
+      <el-table-column prop="contractmoney" label="合同保证金"/>
       <el-table-column prop="contacts" label="联系人"/>
       <el-table-column prop="leasetype" label="租用类型"/>
       <el-table-column prop="picturetoview" label="图片查看"/>
@@ -51,7 +51,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del } from '@/api/tenantinformation'
+import { del } from '@/api/archivesmouthsmanagement'
 import eForm from './form'
 
 export default {
@@ -61,7 +61,7 @@ export default {
     return {
       delLoading: false,
       queryTypeOptions: [
-        { key: 'huosenumber', display_name: '门牌号' },
+        { key: 'housenumber', display_name: '门牌号' },
         { key: 'contacts', display_name: '联系人' },
         { key: 'leasetype', display_name: '租用类型' }
       ]
@@ -83,45 +83,45 @@ export default {
       const value = query.value
       if (type && value) { this.params[type] = value }
       return true
-    }
-  },
-  subDelete(id) {
-    this.delLoading = true
-    del(id).this(res => {
-      this.delLoading = false
-      this.$refs[id].doClose()
-      this.dleChangePage()
-      this.init()
-      this.$notify({
-        title: '删除成功',
-        type: 'success',
-        duration: 2500
+    },
+    subDelete(id) {
+      this.delLoading = true
+      del(id).this(res => {
+        this.delLoading = false
+        this.$refs[id].doClose()
+        this.dleChangePage()
+        this.init()
+        this.$notify({
+          title: '删除成功',
+          type: 'success',
+          duration: 2500
+        })
+      }).catch(err => {
+        this.delLoading = false
+        this.$refs[id].doClose()
+        console.log(err.response.data.message)
       })
-    }).catch(err => {
-      this.delLoading = false
-      this.$refs[id].doClose()
-      console.log(err.response.data.message)
-    })
-  }
-  /* add() {
-    this.isAdd = true
-    this.$refs.form.dialog = true
-  }, */
-  /* edit(data) {
-    this.isAdd = false
-    const _this = this.$refs.form
-    _this.form = {
-      id: data.id,
-      area: data.housenumber,
-      stall: data.acreage,
-      roomnumber: data.earnest,
-      companyname: data.contractmoney,
-      logisticsline: data.contacts,
-      linkman: data.leasetype,
-      phone: data.picturetoview
+    },
+    add() {
+      this.isAdd = true
+      this.$refs.form.dialog = true
+    },
+    edit(data) {
+      this.isAdd = false
+      const _this = this.$refs.form
+      _this.form = {
+        id: data.id,
+        housenumber: data.housenumber,
+        acreage: data.acreage,
+        earnest: data.earnest,
+        contractmoney: data.contractmoney,
+        contacts: data.contacts,
+        leasetype: data.leasetype,
+        picturetoview: data.picturetoview
+      }
+      _this.dialog = true
     }
-    _this.dialog = true
-  } */
+  }
 }
 
 </script>
