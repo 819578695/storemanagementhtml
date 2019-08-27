@@ -18,6 +18,28 @@
           icon="el-icon-plus"
           @click="add">新增</el-button>
       </div>
+      <!-- 导出 -->
+      <div style="display: inline-block;">
+        <el-button
+          v-permission="['ADMIN']"
+          :loading="downloadLoading"
+          size="mini"
+          class="filter-item"
+          type="warning"
+          icon="el-icon-download"
+          @click="download">导出</el-button>
+      </div>
+      <!-- 导出 -->
+      <div style="display: inline-block;">
+        <el-button
+          v-permission="['ADMIN']"
+          :loading="downloadAllLoading"
+          size="mini"
+          class="filter-item"
+          type="warning"
+          icon="el-icon-download"
+          @click="downloadAll">全部导出</el-button>
+      </div>
     </div>
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd"/>
@@ -71,6 +93,8 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/tenantinformation'
+import tenantinformation from '@/api/tenantinformation'
+import { parseTime } from '@/utils/index'
 import eForm from './form'
 import eFormxq from './formxq'
 
@@ -80,6 +104,9 @@ export default {
   data() {
     return {
       delLoading: false,
+      dataALL: [], // 保存全部导出的数据
+      downloadLoading: false, // 导出加载
+      downloadAllLoading: false, // 全部导出加载
       queryTypeOptions: [
         { key: 'roomnumber', display_name: '门牌号' },
         { key: 'linkman', display_name: '联系人' },
@@ -143,6 +170,53 @@ export default {
     },
     adduser(id) {
       this.$refs.formxq.dialogxq = true
+    },
+    // 导出
+    download() {
+      this.downloadLoading = true
+      import('@/utils/export2Excel').then(excel => {
+        const tHeader = ['编号', '门牌号', '面积', '定金', '合同保证金', '联系人', '租用类型']
+        const filterVal = ['id', 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'leasetype']
+        const data = this.formatJson(filterVal, this.data)
+        excel.export_json_to_excel({
+          header: tHeader, // 表头
+          data, // 数据
+          filename: 'table-list' // 文件名
+        })
+        this.downloadLoading = false
+      })
+    },
+    // 全部导出
+    downloadAll() {
+      const sort = 'id,desc'
+      const params = { sort: sort }
+      tenantinformation(params).then(res => {
+        this.dataALL = res
+        this.downloaddAllLoading = true
+           import('@/utils/export2Excel').then(excel => {
+             const tHeader = ['编号', '门牌号', '面积', '定金', '合同保证金', '联系人', '租用类型']
+             const filterVal = ['id', 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'leasetype']
+             const data = this.formatJson(filterVal, this.dataALL)
+             excel.export_json_to_excel({
+               header: tHeader,
+               data,
+               filename: 'table-list'
+             })
+             this.downloaddAllLoading = false
+           })
+      })
+    },
+    // 数据转换
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'createTime' || j === 'lastPasswordResetTime') {
+          return parseTime(v[j])
+        } else if (j === 'enabled') {
+          return parseTime(v[j]) ? '启用' : '禁用'
+        } else {
+          return v[j]
+        }
+      }))
     }
   }
 }
