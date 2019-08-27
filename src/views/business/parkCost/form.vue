@@ -1,29 +1,35 @@
 <template>
   <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="园区id" prop="parkId">
-        <el-input v-model="form.parkId" style="width: 370px;"/>
+      <el-form-item label="园区名称" prop="basicsPark.id">
+       <el-select v-model="form.basicsPark.id"  placeholder="请选择园区">
+         <el-option
+           v-for="(item, index) in basicsParkList"
+           :key="item.index"
+           :label="item.garden"
+           :value="item.id"/>
+       </el-select>
       </el-form-item>
-      <el-form-item label="场地租金" prop="siteRent">
+      <el-form-item label="场地租金">
         <el-input v-model="form.siteRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="水费" prop="waterRent">
+      <el-form-item label="水费" >
         <el-input v-model="form.waterRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="电费" prop="electricityRent">
+      <el-form-item label="电费" >
         <el-input v-model="form.electricityRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="物业费" prop="propertyRent">
+      <el-form-item label="物业费" >
         <el-input v-model="form.propertyRent"  onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="税赋成本" prop="taxCost">
+      <el-form-item label="税赋成本" >
         <el-input v-model="form.taxCost" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="其他费用" prop="otherRent">
+      <el-form-item label="其他费用" >
         <el-input v-model="form.otherRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="付款方式">
-        <el-select v-model="paymentTypeId"  placeholder="请选择收付款名称">
+      <el-form-item label="付款方式" prop="dictDetail.id">
+        <el-select v-model="form.dictDetail.id"  placeholder="请选择付款方式" >
           <el-option
             v-for="(item, index) in dicts"
             :key="item.index"
@@ -42,6 +48,7 @@
 <script>
 import { add, edit } from '@/api/parkCost'
 import store from '@/store'
+import { basicsParkByDeptId} from '@/api/basicsPark'
 export default {
   props: {
     isAdd: {
@@ -55,12 +62,11 @@ export default {
   },
   data() {
     return {
-      paymentTypeId:null,//支付类型下拉框的value值
+      basicsParkList:[],//园区集合
       loading: false,
        dialog: false,
       form: {
         id: '',
-        parkId: '',
         siteRent: '',
         waterRent: '',
         electricityRent: '',
@@ -72,27 +78,24 @@ export default {
         },
         dept:{
           id:''
-        }
+        },
+        basicsPark:{
+          id:''
+        },
       },
       rules: {
-        siteRent: [
-          { required: true, message: '请输入租金', trigger: 'blur' }
-        ],
-        waterRent: [
-          { required: true, message: '请输入水费', trigger: 'blur' }
-        ],
-        electricityRent: [
-          { required: true, message: '请输入电费', trigger: 'blur' }
-        ],
-        propertyRent: [
-          { required: true, message: '请输入物业费', trigger: 'blur' }
-        ],
-        taxCost: [
-          { required: true, message: '请输入税赋成本', trigger: 'blur' }
-        ],
-        otherRent: [
-          { required: true, message: '请输入其他费用', trigger: 'blur' }
-        ]
+        dictDetail:
+        {
+         id: [
+            { required: true, message: '请选择支付方式', trigger: 'change' }
+          ],
+        },
+        basicsPark:
+        {
+         id: [
+            { required: true, message: '请选择园区', trigger: 'change' }
+          ],
+        }
       }
     }
   },
@@ -101,21 +104,12 @@ export default {
       this.resetForm()
     },
     doSubmit() {
-      this.form.dictDetail.id = this.paymentTypeId
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          if (this.paymentTypeId === null || this.paymentTypeId === undefined) {
-            this.$message({
-              message: '收付款信息不能为空',
-              type: 'warning'
-            })
-          }
-            else {
-              this.loading=true;
-              if (this.isAdd) {
-                this.doAdd()
-              } else this.doEdit()
-            }
+        this.loading=true;
+        if (this.isAdd) {
+          this.doAdd()
+        } else this.doEdit()
         } else {
           return false
         }
@@ -159,7 +153,9 @@ export default {
       this.$refs['form'].resetFields()
       this.form = {
         id: '',
-        parkId: '',
+        basicsPark:{
+           id:''
+         },
         siteRent: '',
         waterRent: '',
         electricityRent: '',
@@ -174,6 +170,16 @@ export default {
           id:''
         }
       }
+    },
+    //查询所有的集合
+    getReceiptPaymentAccountList() {
+      store.dispatch('GetInfo').then(res => {
+        basicsParkByDeptId(res.deptId).then(res => {
+          this.basicsParkList = res
+        }).catch(err => {
+          console.log(err.response.data.message)
+        })
+      })
     },
   }
 }

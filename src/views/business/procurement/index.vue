@@ -210,8 +210,6 @@ export default {
         }
       }
       //下拉框赋值
-      this.$refs.form.receiptPaymentAccountId=data.receiptPaymentAccountId
-      this.$refs.form.paymentTypeId=data.paymentType
       this.$refs.form.dialog = true
     },
     //全选

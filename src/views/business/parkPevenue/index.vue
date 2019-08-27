@@ -5,8 +5,16 @@
       <!-- 搜索  -->
         <el-date-picker v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
         <el-date-picker v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
-        <el-input v-model="query.houseNumber" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-        <el-input v-model="query.supplierName" clearable placeholder="输入供应商名称" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+        <el-input v-model="query.houseNumber" clearable placeholder="输入编号" style="width: 200px;" />
+        <!-- <el-select v-model="query.receiptPaymentAccountId"  placeholder="请选择档口编号">
+          <el-option
+            v-for="(item, index) in receiptPaymentAccountList"
+            :key="item.name"
+            :label="item.name"
+            :value="item.id"
+            class="filter-item" @keyup.enter.native="toQuery"
+            />
+        </el-select> -->
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -20,12 +28,12 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts"  />
     <!--表单组件-->
     <accountForm ref="accountform" />
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <el-table-column prop="parkId" label="园区id"/>
+      <el-table-column prop="basicsParkName" label="园区id"/>
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="houseNumber" label="档口编号"/>
       <el-table-column prop="houseRent" label="房租"/>
@@ -37,14 +45,14 @@
       <el-table-column prop="groundPoundRent" label="地磅费"/>
       <el-table-column prop="arrersRent" label="欠款金额"/>
       <el-table-column prop="paymentTypeName" label="交易类型"/>
-      <el-table-column prop="creaeTime" label="收款信息">
+      <el-table-column label="收款信息">
         <template slot-scope="scope">
           <span @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
         </template>
       </el-table-column>
-      <el-table-column prop="creaeTime" label="创建时间">
+      <el-table-column prop="createTime" label="创建时间">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.creaeTime) }}</span>
+          <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT','PARKPEVENUE_DELETE'])" label="操作" width="150px" align="center">
@@ -109,6 +117,7 @@ export default {
     parseTime,
     checkPermission,
     beforeInit() {
+      this.receiptPaymentAccountList=this.$refs.form.receiptPaymentAccountList
       this.url = 'api/parkPevenue'
       const sort = 'id,desc'
       const query = this.query
@@ -150,17 +159,14 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
-      this.$refs.form.getReceiptPaymentAccountList() //加载下拉查询数据
+	  this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
+	  this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
       const _this = this.$refs.form
-      this.$refs.form.getReceiptPaymentAccountList() //加载下拉查询数据
       _this.form = {
         id: data.id,
-        parkId: data.parkId,
-        receiptPaymentAccountId: data.receiptPaymentAccountId,
-        archivesMouthsId: data.archivesMouthsId,
         houseRent: data.houseRent,
         propertyRent: data.propertyRent,
         waterElectricityRent: data.waterElectricityRent,
@@ -169,6 +175,12 @@ export default {
         lateRent: data.lateRent,
         groundPoundRent: data.groundPoundRent,
         arrersRent: data.arrersRent,
+        archivesmouthsmanagement:{
+          id:data.archivesMouthsId
+        },
+        basicsPark:{
+          id:data.parkId
+        },
         dictDetail:{
           id:data.paymentType
         },
@@ -179,9 +191,6 @@ export default {
           id:data.receiptPaymentAccountId
         }
       }
-      //下拉框赋值
-      this.$refs.form.receiptPaymentAccountId=data.receiptPaymentAccountId
-      this.$refs.form.paymentTypeId=data.paymentType
       _this.dialog = true
     },
     //查看收付款信息详情

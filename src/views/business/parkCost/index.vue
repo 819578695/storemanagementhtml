@@ -119,13 +119,17 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
+       this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
-        parkId: data.parkId,
+        basicsPark:{
+          id:data.parkId
+        },
         siteRent: data.siteRent,
         waterRent: data.waterRent,
         electricityRent: data.electricityRent,
@@ -137,7 +141,6 @@ export default {
           id:data.paymentType
         },
       }
-      this.$refs.form.paymentTypeId=data.paymentType
       _this.dialog = true
     }
   }
