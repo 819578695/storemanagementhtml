@@ -51,12 +51,11 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="付款方式" label-width="100px">
-        <el-input v-model="form.paymentType" style="width: 270px;"/>
         <el-select v-model="paymentTypeId"  placeholder="请选择收付款名称">
           <el-option
-            v-for="(item, index) in paymentTypeList"
-            :key="item.name + index"
-            :label="item.name"
+            v-for="(item, index) in dicts"
+            :key="item.index"
+            :label="item.label"
             :value="item.id"/>
         </el-select>
       </el-form-item>
@@ -64,7 +63,7 @@
         <el-select v-model="receiptPaymentAccountId"  placeholder="请选择收付款名称">
           <el-option
             v-for="(item, index) in receiptPaymentAccountList"
-            :key="item.name + index"
+            :key="item.index"
             :label="item.name"
             :value="item.id"/>
         </el-select>
@@ -80,19 +79,21 @@
 <script>
 import { add, edit } from '@/api/procurementInformation'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
-import { getDictMap } from '@/api/dictDetail'
 import store from '@/store'
 export default {
   props: {
     isAdd: {
       type: Boolean,
       required: true
+    },
+    dicts: {
+      type: Array,
+      required: true
     }
   },
   data() {
     return {
       paymentTypeId:null,//支付类型下拉框的value值
-      paymentTypeList:[],//支付类型集合
       receiptPaymentAccountId:null,//下拉框的value值
       receiptPaymentAccountList:[],//查询下拉框的集合
       loading: false,//操作加载

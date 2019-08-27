@@ -17,7 +17,7 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd"/>
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="主键"/>
@@ -73,7 +73,7 @@ import { parseTime } from '@/utils/index'
 import eForm from './form'
 export default {
   components: { eForm },
-  mixins: [initData],
+  mixins: [initData,initDict],
   data() {
     return {
       delLoading: false,
@@ -119,12 +119,10 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
-      this.$refs.form.getPaymentAccountList() //加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
       const _this = this.$refs.form
-      this.$refs.form.getPaymentAccountList() //加载下拉查询数据
       _this.form = {
         id: data.id,
         parkId: data.parkId,
@@ -134,8 +132,12 @@ export default {
         propertyRent: data.propertyRent,
         taxCost: data.taxCost,
         otherRent: data.otherRent,
-        createTime: data.createTime
+        createTime: data.createTime,
+        dictDetail: {
+          id:data.paymentType
+        },
       }
+      this.$refs.form.paymentTypeId=data.paymentType
       _this.dialog = true
     }
   }

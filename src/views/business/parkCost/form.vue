@@ -22,13 +22,12 @@
       <el-form-item label="其他费用" prop="otherRent">
         <el-input v-model="form.otherRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="付款方式" label-width="100px">
-        <el-input v-model="form.paymentType" style="width: 270px;"/>
+      <el-form-item label="付款方式">
         <el-select v-model="paymentTypeId"  placeholder="请选择收付款名称">
           <el-option
             v-for="(item, index) in dicts"
-            :key="item.name + index"
-            :label="item.name"
+            :key="item.index"
+            :label="item.label"
             :value="item.id"/>
         </el-select>
       </el-form-item>
@@ -43,18 +42,20 @@
 <script>
 import { add, edit } from '@/api/parkCost'
 import store from '@/store'
-import { getDictMap } from '@/api/dictDetail'
 export default {
   props: {
     isAdd: {
       type: Boolean,
+      required: true
+    },
+    dicts: {
+      type: Array,
       required: true
     }
   },
   data() {
     return {
       paymentTypeId:null,//支付类型下拉框的value值
-      paymentTypeList:[],//支付类型集合
       loading: false,
        dialog: false,
       form: {

@@ -20,7 +20,7 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd"/>
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
     <!--表单组件-->
     <accountForm ref="accountform" />
     <!--表格渲染-->
@@ -85,6 +85,7 @@
 import checkPermission from '@/utils/permission'
 import { receiptPaymentAccountById } from '@/api/receiptPaymentAccount'
 import initData from '@/mixins/initData'
+import initDict from '@/mixins/initDict'
 import { del } from '@/api/parkPevenue'
 import { parseTime } from '@/utils/index'
 import { parseDate } from '@/utils/index'          //格式化日期
@@ -92,7 +93,7 @@ import eForm from './form'
 import accountForm from './accountform'
 export default {
   components: { eForm,accountForm },
-  mixins: [initData],
+  mixins: [initData,initDict],
   data() {
     return {
       delLoading: false,
@@ -101,6 +102,7 @@ export default {
   created() {
     this.$nextTick(() => {
       this.init()
+      this.getDict('transaction_mode')
     })
   },
   methods: {
@@ -179,6 +181,7 @@ export default {
       }
       //下拉框赋值
       this.$refs.form.receiptPaymentAccountId=data.receiptPaymentAccountId
+      this.$refs.form.paymentTypeId=data.paymentType
       _this.dialog = true
     },
     //查看收付款信息详情

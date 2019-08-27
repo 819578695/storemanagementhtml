@@ -42,7 +42,7 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd"/>
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
     <!--表格渲染-->
     <el-table   @selection-change="handleSelectionChange"   v-loading="loading" :data="data" size="small" style="width: 100%;">
        <el-table-column
@@ -111,6 +111,7 @@
 <script>
 import checkPermission from '@/utils/permission' //权限控制
 import initData from '@/mixins/initData'         //查询表格
+import initDict from '@/mixins/initDict'
 import { del } from '@/api/procurementInformation' //删除
 import { parseTime } from '@/utils/index'         //格式化日期
 import { getProcurementInformationAll } from '@/api/procurementInformation' //查询所有的收付款信息
@@ -118,7 +119,7 @@ import { parseDate } from '@/utils/index'          //格式化日期
 import eForm from './form'                        //表单
 export default {
   components: { eForm }, //注册表单组件
-  mixins: [initData],   // 初始化数据
+  mixins: [initData,initDict],   // 初始化数据
   data() {
     return {
       dataALL:[], //保存全部导出的数据
@@ -130,6 +131,7 @@ export default {
   created() {
     this.$nextTick(() => {
       this.init()
+      this.getDict('transaction_mode')
     })
   },
   methods: {
@@ -209,6 +211,7 @@ export default {
       }
       //下拉框赋值
       this.$refs.form.receiptPaymentAccountId=data.receiptPaymentAccountId
+      this.$refs.form.paymentTypeId=data.paymentType
       this.$refs.form.dialog = true
     },
     //全选
