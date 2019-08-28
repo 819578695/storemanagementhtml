@@ -28,9 +28,25 @@
       <el-form-item label="合同信息" >
         <el-input v-model="form.theContractInformation" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="图片上传" >
-        <el-input v-model="form.imageUpload" style="width: 370px;"/>
-      </el-form-item>
+      <!--上传图片-->
+      <el-upload
+        :on-preview="handlePictureCardPreview"
+        :before-remove="handleBeforeRemove"
+        :on-success="handleSuccess"
+        :on-error="handleError"
+        :headers="headers"
+        :file-list="fileList"
+        :action="basicsParksc"
+        :auto-upload="false"
+        :http-request="uploadFile"
+        class="upload-demo"
+        list-type="picture-card">
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
+      <!-- <el-dialog :append-to-body="true" :visible.sync="dialogVisible">    :auto-upload="false"
+          <img :src="dialogImageUrl" width="100%" alt="">
+      </el-dialog> -->
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
@@ -40,7 +56,9 @@
 </template>
 
 <script>
-import { add, edit } from '@/api/basicsPark'
+import { add, edit, del } from '@/api/thearchives'
+import { getToken } from '@/utils/auth'
+import { mapGetters } from 'vuex'
 export default {
   props: {
     isAdd: {
@@ -51,6 +69,14 @@ export default {
   data() {
     return {
       loading: false, dialog: false,
+      headers: {
+        'Authorization': 'Bearer ' + getToken()
+      },
+      dialogsc: false,
+      dialogImageUrl: '',
+      dialogVisible: false,
+      fileList: [],
+      pictures: [],
       form: {
         id: '',
         garden: '',
@@ -68,11 +94,18 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'basicsParksc'
+    ])
+  },
   methods: {
     cancel() {
       this.resetForm()
     },
     doSubmit() {
+      console.log(this.fileList)
+      alert(this.dialogImageUrl)
       this.loading = true
       if (this.isAdd) {
         this.doAdd()
@@ -124,6 +157,57 @@ export default {
         theContractInformation: '',
         imageUpload: ''
       }
+    },
+    handleSuccess(response, file, fileList) {
+      console.log(file)
+      alert('555')
+      const uid = file.uid
+      const id = response.id
+      this.pictures.push({ uid, id })
+    },
+    handleBeforeRemove(file, fileList) {
+      alert('444')
+      for (let i = 0; i < this.pictures.length; i++) {
+        if (this.pictures[i].uid === file.uid) {
+          del(this.pictures[i].id).then(res => {})
+          return true
+        }
+      }
+    },
+    handlePictureCardPreview(file) {
+      alert('333')
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    // 刷新列表数据
+    doSubmitsc() {
+      alert('222')
+      this.fileList = []
+      this.dialogVisible = false
+      this.dialogImageUrl = ''
+      this.dialogsc = false
+      this.init()
+    },
+    // 监听上传失败
+    handleError(e, file, fileList) {
+      alert('111')
+      const msg = JSON.parse(e.message)
+      this.$notify({
+        title: msg.message,
+        type: 'error',
+        duration: 2500
+      })
+    },
+    // 文件上传
+    uploadFile(params) {
+      alert('8888')
+      console.log('uploadFile', params)
+
+      const _file = params.file
+
+      // 通过 FormData 对象上传文件
+      var formData = new FormData()
+      formData.append('file', _file)
     }
   }
 }

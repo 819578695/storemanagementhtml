@@ -40,7 +40,11 @@
       <el-table-column prop="coveredArea" label="建筑面积"/>
       <el-table-column prop="usableArea" label="可使用面积"/>
       <el-table-column prop="theContractInformation" label="合同信息"/>
-      <el-table-column prop="imageUpload" label="图片上传"/>
+      <el-table-column prop="imageUpload" label="图片上传">
+        <template slot-scope="scope">
+          <a :href="scope.row.imageUpload" style="color: #42b983" target="_blank"><img :src="scope.row.imageUpload" alt="点击打开" class="el-avatar"></a>
+        </template>
+      </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','BASICSPARK_ALL','BASICSPARK_EDIT','BASICSPARK_DELETE'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
           <el-button v-permission="['ADMIN','BASICSPARK_ALL','BASICSPARK_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
@@ -62,8 +66,8 @@
     <!--分页组件-->
     <el-pagination
       :total="total"
-      style="margin-top: 8px;"
       :current-page="page + 1"
+      style="margin-top: 8px;"
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
       @current-change="pageChange"/>
@@ -73,7 +77,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del } from '@/api/basicsPark'
+import { del } from '@/api/thearchives'
 import { parseTime } from '@/utils/index'
 import eForm from './form'
 export default {
