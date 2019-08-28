@@ -93,7 +93,6 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/tenantinformation'
-import tenantinformation from '@/api/tenantinformation'
 import { parseTime } from '@/utils/index'
 import eForm from './form'
 import eFormxq from './formxq'

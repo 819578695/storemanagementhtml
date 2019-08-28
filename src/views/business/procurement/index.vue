@@ -117,6 +117,7 @@ import { parseTime } from '@/utils/index'         //格式化日期
 import { getProcurementInformationAll } from '@/api/procurementInformation' //查询所有的收付款信息
 import { parseDate } from '@/utils/index'          //格式化日期
 import eForm from './form'                        //表单
+import store from '@/store'
 export default {
   components: { eForm }, //注册表单组件
   mixins: [initData,initDict],   // 初始化数据
@@ -126,11 +127,16 @@ export default {
       downloadLoading: false,//导出加载
       downloadAllLoading: false,//全部导出加载
       delLoading: false,//删除加载
+      deptId:''
     }
   },
   created() {
     this.$nextTick(() => {
-      this.init()
+     //将用户的上级部门id带入后台查询
+     store.dispatch('GetInfo').then(res => {
+       this.deptId=res.deptPid
+       this.init()
+     })
       this.getDict('transaction_mode')
     })
   },
@@ -148,7 +154,7 @@ export default {
       const supplierName = query.supplierName
       const applicationsDateStart = query.applicationsDateStart
       const applicationsDateEnd = query.applicationsDateEnd
-      this.params = { page: this.page, size: this.size, sort: sort }
+      this.params = { page: this.page, size: this.size, sort: sort,deptId:this.deptId}
       if (value) { this.params['pno'] = value }
       if (supplierName) { this.params['supplierName'] = supplierName }
       //转化日期格式
@@ -202,6 +208,9 @@ export default {
         dueDate: data.dueDate,
         actualPaymentAmount: data.actualPaymentAmount,
         actualPaymentDate: data.actualPaymentDate,
+        dept:{
+          id:data.deptId
+        },
         dictDetail:{
           id:data.paymentType
         },

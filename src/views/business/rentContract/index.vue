@@ -3,12 +3,11 @@
     <!--工具栏-->
     <div class="head-container">
       <!-- 搜索 -->
-      <el-input v-model="query.deptName" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
+      <el-input v-model="query.contractNo" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
-          v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_CREATE']"
+          v-permission="['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_CREATE']"
           class="filter-item"
           size="mini"
           type="primary"
@@ -17,29 +16,34 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
+    <eForm ref="form" :is-add="isAdd"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="主键"/>
-      <el-table-column prop="basicsParkName" label="档口id"/>
-      <el-table-column prop="deptName" label="部门名称"/>
-      <el-table-column prop="siteRent" label="场地租金"/>
-      <el-table-column prop="waterRent" label="水费"/>
-      <el-table-column prop="electricityRent" label="电费"/>
-      <el-table-column prop="propertyRent" label="物业费"/>
-      <el-table-column prop="taxCost" label="税赋成本"/>
-      <el-table-column prop="otherRent" label="其他费用"/>
-      <el-table-column prop="paymentTypeName" label="交易类型"/>
-      <el-table-column prop="createTime" label="创建时间">
+      <el-table-column prop="deptId" label="部门id"/>
+      <el-table-column prop="contractName" label="合同名称"/>
+      <el-table-column prop="startDate" label="起止日期">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(scope.row.startDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="checkPermission(['ADMIN','PARKCOST_ALL','PARKCOST_EDIT','PARKCOST_DELETE'])" label="操作" width="150px" align="center">
+      <el-table-column prop="endDate" label="截止日期">
         <template slot-scope="scope">
-          <el-button v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
+          <span>{{ parseTime(scope.row.endDate) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="rentFreePeriod" label="免租期"/>
+      <el-table-column prop="deposit" label="保证金"/>
+      <el-table-column prop="unpaidExpenses" label="未缴费用"/>
+      <el-table-column prop="paymentedExpenses" label="已缴费用"/>
+      <el-table-column prop="contractAmount" label="合同总金额"/>
+      <el-table-column prop="fileName" label="文件名"/>
+      <el-table-column prop="contractNo" label="合同编号"/>
+      <el-table-column v-if="checkPermission(['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_EDIT','RENTCONTRACT_DELETE'])" label="操作" width="150px" align="center">
+        <template slot-scope="scope">
+          <el-button v-permission="['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
           <el-popover
-            v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_DELETE']"
+            v-permission="['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_DELETE']"
             :ref="scope.row.id"
             placement="top"
             width="180">
@@ -67,42 +71,36 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import initDict from '@/mixins/initDict'
-import { del } from '@/api/parkCost'
+import { del } from '@/api/rentContract'
 import { parseTime } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
 export default {
   components: { eForm },
-  mixins: [initData,initDict],
+  mixins: [initData],
   data() {
     return {
+      deptId:'',
       delLoading: false,
-      deptId:''
     }
   },
   created() {
     this.$nextTick(() => {
-      //将用户的上级部门id带入后台查询
-      store.dispatch('GetInfo').then(res => {
-        this.deptId=res.deptPid
-        this.init()
-      })
-      // 加载数据字典
-      this.getDict('transaction_mode')
+     //将用户的上级部门id带入后台查询
+     store.dispatch('GetInfo').then(res => {
+       this.deptId=res.deptPid
+       this.init()
+     })
     })
   },
   methods: {
     parseTime,
     checkPermission,
     beforeInit() {
-      this.url = 'api/parkCost'
+      this.url = 'api/rentContract'
       const sort = 'id,desc'
-      const query = this.query
-      const deptName = query.deptName
       this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
-       if (deptName) { this.params['deptName'] = deptName }
-       return true
+      return true
     },
     subDelete(id) {
       this.delLoading = true
@@ -125,27 +123,23 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
-      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
-       this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
-        basicsPark:{
-          id:data.parkId
-        },
-        siteRent: data.siteRent,
-        waterRent: data.waterRent,
-        electricityRent: data.electricityRent,
-        propertyRent: data.propertyRent,
-        taxCost: data.taxCost,
-        otherRent: data.otherRent,
-        createTime: data.createTime,
-        dictDetail: {
-          id:data.paymentType
-        },
+        deptId: data.deptId,
+        contractName: data.contractName,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        rentFreePeriod: data.rentFreePeriod,
+        deposit: data.deposit,
+        unpaidExpenses: data.unpaidExpenses,
+        paymentedExpenses: data.paymentedExpenses,
+        contractAmount: data.contractAmount,
+        fileName: data.fileName,
+        contractNo: data.contractNo
       }
       _this.dialog = true
     }

@@ -74,7 +74,6 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/archivesmouthsmanagement'
-import archivesmouthsmanagement from '@/api/archivesmouthsmanagement'
 import { parseTime } from '@/utils/index'
 import eForm from './form'
 
