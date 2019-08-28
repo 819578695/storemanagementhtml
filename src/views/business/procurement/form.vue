@@ -50,21 +50,20 @@
              placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="付款方式" label-width="100px">
-        <el-input v-model="form.paymentType" style="width: 270px;"/>
-        <el-select v-model="paymentTypeId"  placeholder="请选择收付款名称">
+      <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
+        <el-select v-model="form.dictDetail.id"  placeholder="请选择收付款名称">
           <el-option
-            v-for="(item, index) in paymentTypeList"
-            :key="item.name + index"
-            :label="item.name"
+            v-for="(item, index) in dicts"
+            :key="item.index"
+            :label="item.label"
             :value="item.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="收付款账户" label-width="100px">
-        <el-select v-model="receiptPaymentAccountId"  placeholder="请选择收付款名称">
+      <el-form-item label="收付款账户" label-width="100px" prop="receiptPaymentAccount.id">
+        <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收付款名称">
           <el-option
             v-for="(item, index) in receiptPaymentAccountList"
-            :key="item.name + index"
+            :key="item.index"
             :label="item.name"
             :value="item.id"/>
         </el-select>
@@ -80,20 +79,20 @@
 <script>
 import { add, edit } from '@/api/procurementInformation'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
-import { getDictMap } from '@/api/dictDetail'
 import store from '@/store'
 export default {
   props: {
     isAdd: {
       type: Boolean,
       required: true
+    },
+    dicts: {
+      type: Array,
+      required: true
     }
   },
   data() {
     return {
-      paymentTypeId:null,//支付类型下拉框的value值
-      paymentTypeList:[],//支付类型集合
-      receiptPaymentAccountId:null,//下拉框的value值
       receiptPaymentAccountList:[],//查询下拉框的集合
       loading: false,//操作加载
       dialog: false,//模态窗
@@ -130,6 +129,18 @@ export default {
         purchaseDescription: [
           { required: true, message: '请输入采购说明', trigger: 'blur' }
         ],
+        dictDetail:
+        {
+         id: [
+            { required: true, message: '请选择支付方式', trigger: 'change' }
+          ],
+        },
+        receiptPaymentAccount:
+        {
+         id: [
+            { required: true, message: '请选择收付款账户', trigger: 'change' }
+          ],
+        },
         contractEndDate: [
           { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
         ],
@@ -150,28 +161,11 @@ export default {
       this.resetForm()
     },
     doSubmit() {
-      //提交时会将下拉选中的value值穿给表单里对应的id带入后台操作
-      this.form.receiptPaymentAccount.id = this.receiptPaymentAccountId
-      this.form.dictDetail.id = this.paymentTypeId
       this.$refs['form'].validate((valid) => {  //校验表单
         if (valid) {
-          if (this.receiptPaymentAccountId === null || this.receiptPaymentAccountId === undefined) {
-            this.$message({
-              message: '收付款信息不能为空',
-              type: 'warning'
-            })
-          }
-          else if  (this.paymentTypeId === null || this.paymentTypeId === undefined) {
-            this.$message({
-              message: '收付款信息不能为空',
-              type: 'warning'
-            })
-          }
-           else {
-            if (this.isAdd) {
-              this.doAdd()
-            } else this.doEdit()
-          }
+        if (this.isAdd) {
+          this.doAdd()
+        } else this.doEdit()
         } else {
           return false
         }
