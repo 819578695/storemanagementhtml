@@ -73,7 +73,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del } from '@/api/archivesmouthsmanagement'
+import { del, getarchivesmouthsmanagementAll } from '@/api/archivesmouthsmanagement'
 import { parseTime } from '@/utils/index'
 import eForm from './form'
 
@@ -166,7 +166,7 @@ export default {
     downloadAll() {
       const sort = 'id,desc'
       const params = { sort: sort }
-      archivesmouthsmanagement(params).then(res => {
+      getarchivesmouthsmanagementAll(params).then(res => {
         this.dataALL = res
         this.downloaddAllLoading = true
            import('@/utils/export2Excel').then(excel => {
