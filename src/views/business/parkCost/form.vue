@@ -48,7 +48,7 @@
 <script>
 import { add, edit } from '@/api/parkCost'
 import store from '@/store'
-import { basicsParkByDeptId} from '@/api/basicsPark'
+import { basicsParkByDeptId} from '@/api/thearchives'
 export default {
   props: {
     isAdd: {

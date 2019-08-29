@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function getarchivesmouthsmanagementAll(params) {
+  return request({
+    url: 'api/archivesmouthsmanagement',
+    method: 'get',
+    params
+  })
+}
+
 // 获取所有的房屋信息(根据部门)
 export function archivesmouthsmanagementByDeptId(id) {
   return request({

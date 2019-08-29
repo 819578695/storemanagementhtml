@@ -74,7 +74,7 @@ import { add, edit } from '@/api/parkPevenue'
 import store from '@/store'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
 import { archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
-import { basicsParkByDeptId} from '@/api/basicsPark'
+import { basicsParkByDeptId} from '@/api/thearchives'
 export default {
   props: {
     isAdd: {

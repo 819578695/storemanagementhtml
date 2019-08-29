@@ -35,12 +35,9 @@
         :on-success="handleSuccess"
         :on-error="handleError"
         :headers="headers"
-        :file-list="fileList"
         :action="basicsParksc"
-        :auto-upload="false"
-        :http-request="uploadFile"
         class="upload-demo"
-        list-type="picture-card">
+        list-type="picture">
         <el-button size="small" type="primary">点击上传</el-button>
         <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
       </el-upload>
@@ -68,6 +65,7 @@ export default {
   },
   data() {
     return {
+      url: '',
       loading: false, dialog: false,
       headers: {
         'Authorization': 'Bearer ' + getToken()
@@ -102,14 +100,21 @@ export default {
   methods: {
     cancel() {
       this.resetForm()
+      this.dialogVisible = false
+      this.dialogImageUrl = ''
+      this.dialogsc = false
     },
     doSubmit() {
-      console.log(this.fileList)
-      alert(this.dialogImageUrl)
+      this.form.imageUpload = this.url
+      alert(this.url)
+      this.$refs
       this.loading = true
       if (this.isAdd) {
         this.doAdd()
       } else this.doEdit()
+      this.dialogVisible = false
+      this.dialogImageUrl = ''
+      this.dialogsc = false
     },
     doAdd() {
       add(this.form).then(res => {
@@ -158,38 +163,18 @@ export default {
         imageUpload: ''
       }
     },
-    handleSuccess(response, file, fileList) {
-      console.log(file)
-      alert('555')
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    handleSuccess(response, file) {
+      this.url = file.response.data[0]
       const uid = file.uid
       const id = response.id
       this.pictures.push({ uid, id })
     },
-    handleBeforeRemove(file, fileList) {
-      alert('444')
-      for (let i = 0; i < this.pictures.length; i++) {
-        if (this.pictures[i].uid === file.uid) {
-          del(this.pictures[i].id).then(res => {})
-          return true
-        }
-      }
-    },
-    handlePictureCardPreview(file) {
-      alert('333')
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
-    },
-    // 刷新列表数据
-    doSubmitsc() {
-      alert('222')
-      this.fileList = []
-      this.dialogVisible = false
-      this.dialogImageUrl = ''
-      this.dialogsc = false
-      this.init()
-    },
     // 监听上传失败
-    handleError(e, file, fileList) {
+    handleError(e, file) {
       alert('111')
       const msg = JSON.parse(e.message)
       this.$notify({
@@ -198,16 +183,13 @@ export default {
         duration: 2500
       })
     },
-    // 文件上传
-    uploadFile(params) {
-      alert('8888')
-      console.log('uploadFile', params)
-
-      const _file = params.file
-
-      // 通过 FormData 对象上传文件
-      var formData = new FormData()
-      formData.append('file', _file)
+    handleBeforeRemove(file) {
+      for (let i = 0; i < this.pictures.length; i++) {
+        if (this.pictures[i].uid === file.uid) {
+          del(this.pictures[i].id).then(res => {})
+          return true
+        }
+      }
     }
   }
 }

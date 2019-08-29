@@ -92,8 +92,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del } from '@/api/tenantinformation'
-import tenantinformation from '@/api/tenantinformation'
+import { del, gettenantinformationAll } from '@/api/tenantinformation'
 import { parseTime } from '@/utils/index'
 import eForm from './form'
 import eFormxq from './formxq'
@@ -190,7 +189,7 @@ export default {
     downloadAll() {
       const sort = 'id,desc'
       const params = { sort: sort }
-      tenantinformation(params).then(res => {
+      gettenantinformationAll(params).then(res => {
         this.dataALL = res
         this.downloaddAllLoading = true
            import('@/utils/export2Excel').then(excel => {

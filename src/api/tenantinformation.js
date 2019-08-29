@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function gettenantinformationAll(params) {
+  return request({
+    url: 'api/tenantinformation',
+    method: 'get',
+    params
+  })
+}
+
 export function add(data) {
   return request({
     url: 'api/tenantinformation',
