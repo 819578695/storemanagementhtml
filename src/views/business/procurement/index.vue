@@ -154,7 +154,13 @@ export default {
       const supplierName = query.supplierName
       const applicationsDateStart = query.applicationsDateStart
       const applicationsDateEnd = query.applicationsDateEnd
-      this.params = { page: this.page, size: this.size, sort: sort,deptId:this.deptId}
+      //最高级别查询所有数据
+      if(this.deptId==0){
+        this.params = { page: this.page, size: this.size, sort: sort}
+      }
+      else{
+         this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+      }
       if (value) { this.params['pno'] = value }
       if (supplierName) { this.params['supplierName'] = supplierName }
       //转化日期格式

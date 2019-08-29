@@ -123,7 +123,7 @@ export default {
     parseTime,
     checkPermission,
     beforeInit() {
-      this.receiptPaymentAccountList=this.$refs.form.receiptPaymentAccountList
+     /* this.receiptPaymentAccountList=this.$refs.form.receiptPaymentAccountList */
       this.url = 'api/parkPevenue'
       const sort = 'id,desc'
       const query = this.query
@@ -132,7 +132,13 @@ export default {
       const supplierName = query.supplierName
       const createDateStart = query.createDateStart
       const createDateEnd = query.createDateEnd
-      this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+      //最高级别查询所有数据
+      if(this.deptId==0){
+        this.params = { page: this.page, size: this.size, sort: sort}
+      }
+      else{
+         this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+      }
       //档口编号
       if (houseNumber) { this.params['houseNumber'] = houseNumber }
       //转化日期格式
@@ -165,7 +171,7 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
-	  this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
+      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false

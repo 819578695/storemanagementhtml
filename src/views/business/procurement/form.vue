@@ -158,6 +158,7 @@ export default {
     doSubmit() {
       this.$refs['form'].validate((valid) => {  //校验表单
         if (valid) {
+			 this.loading=true;
         if (this.isAdd) {
           this.doAdd()
         } else this.doEdit()

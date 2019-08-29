@@ -3,7 +3,8 @@
     <!--工具栏-->
     <div class="head-container">
       <!-- 搜索 -->
-      <el-input v-model="query.contractNo" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+      <el-input v-model="query.deptName" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+      <el-input v-model="query.contractNo" clearable placeholder="输入合同编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
@@ -20,7 +21,7 @@
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="主键"/>
-      <el-table-column prop="deptId" label="部门id"/>
+      <el-table-column prop="deptName" label="部门id"/>
       <el-table-column prop="contractName" label="合同名称"/>
       <el-table-column prop="startDate" label="起止日期">
         <template slot-scope="scope">
@@ -99,7 +100,16 @@ export default {
     beforeInit() {
       this.url = 'api/rentContract'
       const sort = 'id,desc'
-      this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+      const query = this.query
+      const deptName = query.deptName
+      //最高级别查询所有数据
+      if(this.deptId==0){
+        this.params = { page: this.page, size: this.size, sort: sort}
+      }
+      else{
+         this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+      }
+      if (deptName) { this.params['deptName'] = deptName }
       return true
     },
     subDelete(id) {

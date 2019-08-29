@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-form-item label="合同编号" prop="contractNo">
         <el-input v-model="form.contractNo" style="width: 370px;"/>
@@ -96,6 +96,7 @@ export default {
     doSubmit() {
       this.$refs['form'].validate((valid) => {  //校验表单
         if (valid) {
+           this.loading=true;
         if (this.isAdd) {
           this.doAdd()
         } else this.doEdit()

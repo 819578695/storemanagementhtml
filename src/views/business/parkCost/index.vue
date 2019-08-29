@@ -100,7 +100,13 @@ export default {
       const sort = 'id,desc'
       const query = this.query
       const deptName = query.deptName
-      this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+       //最高级别查询所有数据
+       if(this.deptId==0){
+         this.params = { page: this.page, size: this.size, sort: sort}
+       }
+       else{
+          this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+       }
        if (deptName) { this.params['deptName'] = deptName }
        return true
     },
