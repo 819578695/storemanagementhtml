@@ -1,5 +1,12 @@
 import request from '@/utils/request'
 
+export function tenantinformationByDeptId(id) {
+  return request({
+    url: 'api/tenantinformationByDeptId/'+id,
+    method: 'get',
+  })
+}
+
 export function add(data) {
   return request({
     url: 'api/tenantinformation',

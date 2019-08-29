@@ -107,7 +107,12 @@ export default {
     },
     doAdd() {
      store.dispatch('GetInfo').then(res => {
-       this.form.dept.id = res.deptPid
+       if(res.deptPid==0){
+         this.form.dept.id = 1
+       }
+       else{
+         this.form.dept.id = res.deptPid
+       }
        add(this.form).then(res => {
          this.resetForm()
          this.$notify({

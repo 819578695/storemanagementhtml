@@ -1,7 +1,11 @@
 <template>
   <div class="app-container">
     <!--工具栏-->
-    <div class="head-container">
+    <div>
+      <!-- 搜索  -->
+        <el-date-picker v-model="query.startDate" type="date" placeholder="选择开始日期"></el-date-picker>&nbsp;-
+        <el-date-picker v-model="query.endDate" type="date" placeholder="选择截止日期"></el-date-picker>
+      <el-input v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
@@ -19,9 +23,9 @@
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="主键"/>
       <el-table-column prop="contractNo" label="合同编号"/>
-      <el-table-column prop="tenementId" label="租户id"/>
-      <el-table-column prop="deptId" label="部门id"/>
-      <el-table-column prop="stallId" label="档口id"/>
+      <el-table-column prop="houseNumber" label="档口编号"/>
+      <el-table-column prop="tenementName" label="租户名称"/>
+      <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="contractName" label="合同名称"/>
       <el-table-column prop="startDate" label="起止日期">
         <template slot-scope="scope">
@@ -74,6 +78,7 @@ import initData from '@/mixins/initData'
 import { del } from '@/api/leaseContract'
 import { parseTime } from '@/utils/index'
 import eForm from './form'
+import store from '@/store'
 export default {
   components: { eForm },
   mixins: [initData],
@@ -84,7 +89,11 @@ export default {
   },
   created() {
     this.$nextTick(() => {
-      this.init()
+     //将用户的上级部门id带入后台查询
+     store.dispatch('GetInfo').then(res => {
+       this.deptId=res.deptPid
+       this.init()
+     })
     })
   },
   methods: {
@@ -93,7 +102,28 @@ export default {
     beforeInit() {
       this.url = 'api/leaseContract'
       const sort = 'id,desc'
-      this.params = { page: this.page, size: this.size, sort: sort }
+      const query = this.query
+      //获取query搜索的值
+      const houseNumber = query.houseNumber
+      const startDate = query.startDate
+      const endDate = query.endDate
+      //最高级别查询所有数据
+      if(this.deptId==0){
+        this.params = { page: this.page, size: this.size, sort: sort}
+      }
+      else{
+         this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+      }
+      //档口编号
+      if (houseNumber) { this.params['houseNumber'] = houseNumber }
+      //转化日期格式
+      if (startDate){
+        this.params['startDate'] = parseDate(startDate)
+      }
+      if (endDate){
+        this.params['endDate'] = parseDate(endDate)
+      }
+
       return true
     },
     subDelete(id) {
@@ -117,16 +147,24 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
+      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
         contractNo: data.contractNo,
-        tenementId: data.tenementId,
-        deptId: data.deptId,
-        stallId: data.stallId,
+        tenantinformation: {
+          id:data.tenementId
+        },
+        dept:{
+          id:data.deptId
+        },
+        archivesmouthsmanagement:{
+          id:data.stallId
+        },
         contractName: data.contractName,
         startDate: data.startDate,
         endDate: data.endDate,

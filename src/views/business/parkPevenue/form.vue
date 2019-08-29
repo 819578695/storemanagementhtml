@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
       <el-form-item label="园区名称" prop="basicsPark.id">
        <el-select v-model="form.basicsPark.id"  placeholder="请选择园区">
@@ -165,7 +165,12 @@ export default {
     },
     doAdd() {
     store.dispatch('GetInfo').then(res => {
-      this.form.dept.id = res.deptPid
+      if(res.deptPid==0){
+        this.form.dept.id = 1
+      }
+      else{
+        this.form.dept.id = res.deptPid
+      }
       add(this.form).then(res => {
         this.resetForm()
         this.$notify({

@@ -5,7 +5,7 @@
       <!-- 搜索  -->
         <el-date-picker v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
         <el-date-picker v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
-        <el-input v-model="query.houseNumber" clearable placeholder="输入编号" style="width: 200px;" />
+        <el-input v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
         <!-- <el-select v-model="query.receiptPaymentAccountId"  placeholder="请选择档口编号">
           <el-option
             v-for="(item, index) in receiptPaymentAccountList"

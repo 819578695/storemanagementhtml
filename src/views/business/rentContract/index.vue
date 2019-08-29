@@ -21,7 +21,7 @@
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="主键"/>
-      <el-table-column prop="deptName" label="部门id"/>
+      <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="contractName" label="合同名称"/>
       <el-table-column prop="startDate" label="起止日期">
         <template slot-scope="scope">
