@@ -26,13 +26,6 @@
       <el-form-item label="申请金额" label-width="100px">
         <el-input v-model="form.applicationsAmount" style="width: 270px;"/>
       </el-form-item>
-      <el-form-item label="申请日期" label-width="100px" prop="applicationsDate">
-        <el-date-picker
-             v-model="form.applicationsDate"
-             type="date"
-             placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
       <el-form-item label="应付日期" label-width="100px" prop="dueDate">
         <el-date-picker
              v-model="form.dueDate"
@@ -105,10 +98,12 @@ export default {
         contractAmount: '',
         paymentRatio: '',
         applicationsAmount: '',
-        applicationsDate: '',
         dueDate: '',
         actualPaymentAmount: '',
         actualPaymentDate: '',
+        dept:{
+          id:''
+        },
         dictDetail: {
           id:''
         },
@@ -163,6 +158,7 @@ export default {
     doSubmit() {
       this.$refs['form'].validate((valid) => {  //校验表单
         if (valid) {
+			 this.loading=true;
         if (this.isAdd) {
           this.doAdd()
         } else this.doEdit()
@@ -172,20 +168,22 @@ export default {
       })
     },
     doAdd() {
-        add(this.form).then(res => {
-            this.loading = true;
-            this.resetForm()
-            this.$notify({
-              title: '添加成功',
-              type: 'success',
-              duration: 2500
-            })
-            this.loading = false
-            this.$parent.init()
-          }).catch(err => {
-            this.loading = false
-            console.log(err.response.data.message)
-          })
+       store.dispatch('GetInfo').then(res => {
+         this.form.dept.id = res.deptPid
+         add(this.form).then(res => {
+           this.resetForm()
+           this.$notify({
+             title: '添加成功',
+             type: 'success',
+             duration: 2500
+           })
+           this.loading = false
+           this.$parent.init()
+         }).catch(err => {
+           this.loading = false
+           console.log(err.response.data.message)
+         })
+        })
       },
     doEdit() {
          edit(this.form).then(res => {
@@ -215,10 +213,12 @@ export default {
         contractAmount: '',
         paymentRatio: '',
         applicationsAmount: '',
-        applicationsDate: '',
         dueDate: '',
         actualPaymentAmount: '',
         actualPaymentDate: '',
+        dept:{
+          id:''
+        },
         dictDetail: {
           id:''
         },
@@ -230,7 +230,7 @@ export default {
     //查询所有的集合
     getReceiptPaymentAccountList() {
       store.dispatch('GetInfo').then(res => {
-      	receiptPaymentAccountByDeptId(res.deptId).then(res => {
+      	receiptPaymentAccountByDeptId(res.deptPid).then(res => {
       	  this.receiptPaymentAccountList = res
       	}).catch(err => {
       	  console.log(err.response.data.message)

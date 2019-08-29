@@ -1,7 +1,7 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
-    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
-      <el-form-item label="交易日期" >
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="550px">
+    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="120px">
+      <el-form-item label="交易日期" prop ="tradDate" >
         <el-date-picker v-model="form.tradDate" type="date" placeholder="选择日期" style="width: 370px;">
          </el-date-picker>
       </el-form-item>
@@ -14,37 +14,32 @@
       	描述：当前账户余额应为计算得出的结果
       -->
       <el-form-item label="当前账户余额" >
-        <el-input v-model="form.urrentBalance" style="width: 370px;"/>
+        
       </el-form-item>
-      <el-form-item label="收付款人名称" >
+      <el-form-item label="收付款人名称" prop= "receiptPaymentName">
         <el-input v-model="form.receiptPaymentName" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="记账类型" >
-        <el-select v-model="form.tallyTypeId"  placeholder="请选择记账类型" style="width: 370px;">
-	        <el-option 
-	      		v-for="(item, index) in tallyTypeList" 
-	      		:key="item.id" 
-	      		:lable="item.id" 
-	      		:value="item.label">
-	      	</el-option>
+      <el-form-item label="收入支出项" prop = "tallyType">
+        <el-select v-model="form.tallyType.id"  placeholder="请选择记账类型" style="width: 370px;">
+	        <el-option v-for="item in tallyType" :key="item.key" :label="item.value" :value="item.key"/>
       	</el-select>
       </el-form-item>
-      <el-form-item label="交易类型" >
-      	<el-select v-model="form.tradTypeId"  placeholder="请选择交易类型" style="width: 370px;">
+      <el-form-item label="交易方式" prop = "tradTypeId">
+      	<el-select v-model="form.tradType.id"  placeholder="请选择交易类型" style="width: 370px;">
           <el-option
-            v-for="(item, index) in tradTypeList" 
+            v-for="(item, index) in tradType" 
 	      		:key="item.id" 
-	      		:lable="item.id" 
-	      		:value="item.label"/>
+	      		:label="item.label" 
+	      		:value="item.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="类型" >
-      	<el-select v-model="form.type" placeholder="请选择" style="width: 370px;">
+      <el-form-item label="交易类型" prop="typeDict">
+      	<el-select v-model="form.typeDict.id" placeholder="请选择" style="width: 370px;">
 			    <el-option
-			      v-for="item in types"
-			      :key="item.key"
-			      :label="item.value"
-			      :value="item.value">
+			      v-for="(item, index) in typeList"
+			      :key="item.id"
+			      :label="item.label"
+			      :value="item.id">
 			    </el-option>
 			  </el-select>
       </el-form-item>
@@ -65,6 +60,7 @@
 <script>
 import { add, edit } from '@/api/journalAccountOfCapital'
 import { getDictMap } from '@/api/dictDetail'
+import store from '@/store'
 export default {
 	created() {
 		this.getTallyType()
@@ -87,44 +83,38 @@ export default {
       }
     };
     return {
-    	tallyTypeList:[],//记账类型
-    	tradTypeList: [],//交易类型
-    	types: [
-				{ key: '0', value: '收入'},
-		    { key: '1', value: '支出'}
-      ],
-      loading: false, dialog: false,from: {money:''},
+    	//收入支出指定只能为往来款-投资款
+    	tallyType:[
+        { key: '23', value: '往来款'},
+        { key: '24', value: '投资款'}
+    	],
+    	tradType: [],//交易方式
+      loading: false, dialog: false,from: {money:'' , tradDate:'', receiptPaymentName:'',},
       form: {
-        id: '',
         tradDate: '',
-        tradTypeId: '',
+        tradType: {id:''},
         money: '',
-        tallyTypeId: '',
-        urrentBalance: '',
+        tallyType: {id:''},
         receiptPaymentName: '',
-        type: '',
+        typeDict: {id:''},
         backNum: '',
-        backAccount: ''
+        backAccount: '',
+        deptId: ''
       },
       rules: {
-      	money: [
-      		 { required: true, trigger: 'blur', validator: moneyNum}
-      	]
+      	money: [{ required: true, trigger: 'blur', validator: moneyNum}],
+      	tradDate: [{required: true, trigger: 'blur', message: "请输入日期"}],
+      	receiptPaymentName:[{required: true, trigger: 'blur', message:'请输入收付款人名称'}],
+      	tallyType:[{required: true, trigger: 'blur', message:'请选择收支项'}],
+      	tradTypeId:[{required: true, trigger: 'blur', message:'请选择交易方式'}],
+      	typeDict:[{required: true, trigger: 'blur', message:'请选择交易类型'}]
       }
     }
   },
   methods: {
   	getTallyType() {
-      getDictMap('transaction_mode').then(res => {
-        this.tradTypeList = res.transaction_mode
-      }).catch(err => {
-        console.log(err.response.data.message)
-      });
-      getDictMap('account_type').then(res => {
-        this.tallyTypeList = res.account_type
-      }).catch(err => {
-        console.log(err.response.data.message)
-      })
+      this.tallyTypeList = this.$parent.tallyTypeList
+      this.typeList = this.$parent.typeList
     },
   	moneyNum(val) {
       if ( !/^\d*$/.test(val)) {
@@ -143,18 +133,21 @@ export default {
       } else this.doEdit()
     },
     doAdd() {
-      add(this.form).then(res => {
-        this.resetForm()
-        this.$notify({
-          title: '添加成功',
-          type: 'success',
-          duration: 2500
-        })
-        this.loading = false
-        this.$parent.init()
-      }).catch(err => {
-        this.loading = false
-        console.log(err.response.data.message)
+    	store.dispatch('GetInfo').then(res => {
+    		this.form.deptId = res.deptPid
+	      add(this.form).then(res => {
+	        this.resetForm()
+	        this.$notify({
+	          title: '添加成功',
+	          type: 'success',
+	          duration: 2500
+	        })
+	        this.loading = false
+	        this.$parent.init()
+	      }).catch(err => {
+	        this.loading = false
+	        console.log(err.response.data.message)
+	      })
       })
     },
     doEdit() {
@@ -178,12 +171,12 @@ export default {
       this.form = {
         id: '',
         tradDate: '',
-        tradTypeId: '',
+        tradType: {id:''},
         money: '',
-        tallyTypeId: '',
+        tallyType: {id:''} ,
         urrentBalance: '',
         receiptPaymentName: '',
-        type: '',
+        typeDict: {id:''},
         backNum: '',
         backAccount: ''
       }

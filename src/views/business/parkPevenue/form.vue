@@ -165,7 +165,7 @@ export default {
     },
     doAdd() {
     store.dispatch('GetInfo').then(res => {
-      this.form.dept.id = res.deptId
+      this.form.dept.id = res.deptPid
       add(this.form).then(res => {
         this.resetForm()
         this.$notify({
@@ -230,17 +230,17 @@ export default {
     //查询所有的集合
     getReceiptPaymentAccountList() {
       store.dispatch('GetInfo').then(res => {
-      	receiptPaymentAccountByDeptId(res.deptId).then(res => {
+      	receiptPaymentAccountByDeptId(res.deptPid).then(res => {
       	  this.receiptPaymentAccountList = res
       	}).catch(err => {
       	  console.log(err.response.data.message)
       	})
-        archivesmouthsmanagementByDeptId(res.deptId).then(res => {
+        archivesmouthsmanagementByDeptId(res.deptPid).then(res => {
           this.archivesmouthsmanagementList = res
         }).catch(err => {
           console.log(err.response.data.message)
         })
-        basicsParkByDeptId(res.deptId).then(res => {
+        basicsParkByDeptId(res.deptPid).then(res => {
           this.basicsParkList = res
         }).catch(err => {
           console.log(err.response.data.message)

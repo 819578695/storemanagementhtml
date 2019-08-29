@@ -74,7 +74,7 @@
       </el-table-column>
       <el-table-column prop="creaeTime" label="合计">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.creaeTime) }}</span>
+          <span>{{ parseInt(scope.row.houseRent+scope.row.propertyRent+scope.row.waterElectricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent+scope.row.arrersRent) }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -99,17 +99,23 @@ import { parseTime } from '@/utils/index'
 import { parseDate } from '@/utils/index'          //格式化日期
 import eForm from './form'
 import accountForm from './accountform'
+import store from '@/store'
 export default {
   components: { eForm,accountForm },
   mixins: [initData,initDict],
   data() {
     return {
+      deptId:'',
       delLoading: false,
     }
   },
   created() {
     this.$nextTick(() => {
-      this.init()
+     //将用户的上级部门id带入后台查询
+     store.dispatch('GetInfo').then(res => {
+       this.deptId=res.deptPid
+       this.init()
+     })
       this.getDict('transaction_mode')
     })
   },
@@ -117,7 +123,7 @@ export default {
     parseTime,
     checkPermission,
     beforeInit() {
-      this.receiptPaymentAccountList=this.$refs.form.receiptPaymentAccountList
+     /* this.receiptPaymentAccountList=this.$refs.form.receiptPaymentAccountList */
       this.url = 'api/parkPevenue'
       const sort = 'id,desc'
       const query = this.query
@@ -126,7 +132,13 @@ export default {
       const supplierName = query.supplierName
       const createDateStart = query.createDateStart
       const createDateEnd = query.createDateEnd
-      this.params = { page: this.page, size: this.size, sort: sort }
+      //最高级别查询所有数据
+      if(this.deptId==0){
+        this.params = { page: this.page, size: this.size, sort: sort}
+      }
+      else{
+         this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+      }
       //档口编号
       if (houseNumber) { this.params['houseNumber'] = houseNumber }
       //转化日期格式
@@ -159,7 +171,7 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
-	  this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
+      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
