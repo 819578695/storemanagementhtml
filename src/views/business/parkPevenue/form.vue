@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="500px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog"  :title="isAdd ? '新增' : '编辑'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
       <el-form-item label="园区名称" prop="basicsPark.id">
        <el-select v-model="form.basicsPark.id"  placeholder="请选择园区">
@@ -18,6 +18,15 @@
             :label="item.housenumber"
             :value="item.id"/>
         </el-select>
+      </el-form-item>
+      <el-form-item label="合同名称" prop="leaseContract.id">
+       <el-select v-model="form.leaseContract.id"  placeholder="请选择园区">
+         <el-option
+           v-for="(item, index) in leaseContractList"
+           :key="item.index"
+           :label="item.contractName"
+           :value="item.id"/>
+       </el-select>
       </el-form-item>
       <el-form-item label="房租" label-width="100px" >
         <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.houseRent" style="width: 170px;"/>
@@ -42,6 +51,12 @@
       </el-form-item>
       <el-form-item label="欠款金额" label-width="100px" >
         <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.arrersRent" style="width: 170px;"/>
+      </el-form-item>
+      <el-form-item label="管理费" label-width="100px" >
+        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.managementRent" style="width: 170px;"/>
+      </el-form-item>
+      <el-form-item label="停车费" label-width="100px" >
+        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.parkingRent" style="width: 170px;"/>
       </el-form-item>
       <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
         <el-select v-model="form.dictDetail.id"  placeholder="请选择支付方式">
@@ -74,6 +89,7 @@ import { add, edit } from '@/api/parkPevenue'
 import store from '@/store'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
 import { archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
+import { leaseContractByDeptId} from '@/api/leaseContract'
 import { basicsParkByDeptId} from '@/api/thearchives'
 export default {
   props: {
@@ -90,6 +106,7 @@ export default {
     return {
       loading: false,
       dialog: false,
+      leaseContractList:[],
       receiptPaymentAccountList:[],
       archivesmouthsmanagementList:[],//档口的集合
       basicsParkList:[],//园区集合
@@ -103,6 +120,11 @@ export default {
         lateRent: '',
         groundPoundRent: '',
         arrersRent: '',
+        managementRent:'',
+        parkingRent:'',
+        leaseContract:{
+          id:''
+        },
         dept:{
           id:''
         },
@@ -165,12 +187,7 @@ export default {
     },
     doAdd() {
     store.dispatch('GetInfo').then(res => {
-      if(res.deptPid==0){
-        this.form.dept.id = 1
-      }
-      else{
-        this.form.dept.id = res.deptPid
-      }
+        this.form.dept.id = res.deptId
       add(this.form).then(res => {
         this.resetForm()
         this.$notify({
@@ -215,7 +232,12 @@ export default {
         lateRent: '',
         groundPoundRent: '',
         arrersRent: '',
+        managementRent:'',
+        parkingRent:'',
         dept:{
+          id:''
+        },
+        leaseContract:{
           id:''
         },
         receiptPaymentAccount: {
@@ -235,18 +257,23 @@ export default {
     //查询所有的集合
     getReceiptPaymentAccountList() {
       store.dispatch('GetInfo').then(res => {
-      	receiptPaymentAccountByDeptId(res.deptPid).then(res => {
+      	receiptPaymentAccountByDeptId(res.deptId).then(res => {
       	  this.receiptPaymentAccountList = res
       	}).catch(err => {
       	  console.log(err.response.data.message)
       	})
-        archivesmouthsmanagementByDeptId(res.deptPid).then(res => {
+        archivesmouthsmanagementByDeptId(res.deptId).then(res => {
           this.archivesmouthsmanagementList = res
         }).catch(err => {
           console.log(err.response.data.message)
         })
-        basicsParkByDeptId(res.deptPid).then(res => {
+        basicsParkByDeptId(res.deptId).then(res => {
           this.basicsParkList = res
+        }).catch(err => {
+          console.log(err.response.data.message)
+        })
+        leaseContractByDeptId(res.deptId).then(res => {
+          this.leaseContractList = res
         }).catch(err => {
           console.log(err.response.data.message)
         })

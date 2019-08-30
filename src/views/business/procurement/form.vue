@@ -169,12 +169,7 @@ export default {
     },
     doAdd() {
        store.dispatch('GetInfo').then(res => {
-         if(res.deptPid==0){
-           this.form.dept.id = 1
-         }
-         else{
-           this.form.dept.id = res.deptPid
-         }
+           this.form.dept.id = res.deptId
          add(this.form).then(res => {
            this.resetForm()
            this.$notify({
@@ -235,7 +230,7 @@ export default {
     //查询所有的集合
     getReceiptPaymentAccountList() {
       store.dispatch('GetInfo').then(res => {
-      	receiptPaymentAccountByDeptId(res.deptPid).then(res => {
+      	receiptPaymentAccountByDeptId(res.deptId).then(res => {
       	  this.receiptPaymentAccountList = res
       	}).catch(err => {
       	  console.log(err.response.data.message)

@@ -41,6 +41,8 @@
       <el-table-column prop="waterElectricityRent" label="水电费"/>
       <el-table-column prop="sanitationRent" label="卫生费"/>
       <el-table-column prop="liquidatedRent" label="违约金"/>
+      <el-table-column prop="managementRent" label="管理费"/>
+      <el-table-column prop="parkingRent" label="停车费"/>
       <el-table-column prop="lateRent" label="滞纳金"/>
       <el-table-column prop="groundPoundRent" label="地磅费"/>
       <el-table-column prop="arrersRent" label="欠款金额"/>
@@ -113,7 +115,7 @@ export default {
     this.$nextTick(() => {
      //将用户的上级部门id带入后台查询
      store.dispatch('GetInfo').then(res => {
-       this.deptId=res.deptPid
+       this.deptId=res.deptId
        this.init()
      })
       this.getDict('transaction_mode')
@@ -133,7 +135,7 @@ export default {
       const createDateStart = query.createDateStart
       const createDateEnd = query.createDateEnd
       //最高级别查询所有数据
-      if(this.deptId==0){
+      if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
       }
       else{
@@ -187,6 +189,11 @@ export default {
         lateRent: data.lateRent,
         groundPoundRent: data.groundPoundRent,
         arrersRent: data.arrersRent,
+        managementRent:data.managementRent,
+        parkingRent:data.parkingRent,
+        leaseContract:{
+          id:data.leaseContractId
+        },
         archivesmouthsmanagement:{
           id:data.archivesMouthsId
         },

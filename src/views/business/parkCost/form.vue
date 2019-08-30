@@ -10,6 +10,15 @@
            :value="item.id"/>
        </el-select>
       </el-form-item>
+      <el-form-item label="合同名称" prop="rentContract.id">
+       <el-select v-model="form.rentContract.id"  placeholder="请选择合同名称">
+         <el-option
+           v-for="(item, index) in rentContractList"
+           :key="item.index"
+           :label="item.contractName"
+           :value="item.id"/>
+       </el-select>
+      </el-form-item>
       <el-form-item label="场地租金">
         <el-input v-model="form.siteRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
@@ -49,6 +58,7 @@
 import { add, edit } from '@/api/parkCost'
 import store from '@/store'
 import { basicsParkByDeptId} from '@/api/thearchives'
+import { rentContractByDeptId} from '@/api/rentContract'
 export default {
   props: {
     isAdd: {
@@ -63,6 +73,7 @@ export default {
   data() {
     return {
       basicsParkList:[],//园区集合
+      rentContractList:[],//合同
       loading: false,
        dialog: false,
       form: {
@@ -73,6 +84,9 @@ export default {
         propertyRent: '',
         taxCost: '',
         otherRent: '',
+        rentContract:{
+          id:''
+        },
         dictDetail: {
           id:''
         },
@@ -95,7 +109,13 @@ export default {
          id: [
             { required: true, message: '请选择园区', trigger: 'change' }
           ],
-        }
+        },
+        rentContract:
+        {
+         id: [
+            { required: true, message: '请选择合同名称', trigger: 'change' }
+          ],
+        },
       }
     }
   },
@@ -117,12 +137,7 @@ export default {
     },
     doAdd() {
       store.dispatch('GetInfo').then(res => {
-      	if(res.deptPid==0){
-      	  this.form.dept.id = 1
-      	}
-      	else{
-      	  this.form.dept.id = res.deptPid
-      	}
+      	  this.form.dept.id = res.deptId
       	add(this.form).then(res => {
         this.resetForm()
         this.$notify({
@@ -161,6 +176,9 @@ export default {
         basicsPark:{
            id:''
          },
+         rentContract:{
+           id:''
+         },
         siteRent: '',
         waterRent: '',
         electricityRent: '',
@@ -179,8 +197,13 @@ export default {
     //查询所有的集合
     getReceiptPaymentAccountList() {
       store.dispatch('GetInfo').then(res => {
-        basicsParkByDeptId(res.deptPid).then(res => {
+        basicsParkByDeptId(res.deptId).then(res => {
           this.basicsParkList = res
+        }).catch(err => {
+          console.log(err.response.data.message)
+        })
+        rentContractByDeptId(res.deptId).then(res => {
+          this.rentContractList = res
         }).catch(err => {
           console.log(err.response.data.message)
         })

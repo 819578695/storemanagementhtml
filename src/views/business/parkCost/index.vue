@@ -21,7 +21,8 @@
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="主键"/>
-      <el-table-column prop="basicsParkName" label="档口id"/>
+      <el-table-column prop="rentContractName" label="合同名称"/>
+      <el-table-column prop="basicsParkName" label="档口名称"/>
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="siteRent" label="场地租金"/>
       <el-table-column prop="waterRent" label="水费"/>
@@ -30,9 +31,9 @@
       <el-table-column prop="taxCost" label="税赋成本"/>
       <el-table-column prop="otherRent" label="其他费用"/>
       <el-table-column prop="paymentTypeName" label="交易类型"/>
-      <el-table-column prop="createTime" label="创建时间">
+      <el-table-column prop="createTime" label="创建时间" width="100">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseDate(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','PARKCOST_ALL','PARKCOST_EDIT','PARKCOST_DELETE'])" label="操作" width="150px" align="center">
@@ -70,6 +71,7 @@ import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
 import { del } from '@/api/parkCost'
 import { parseTime } from '@/utils/index'
+import { parseDate } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
 export default {
@@ -85,7 +87,7 @@ export default {
     this.$nextTick(() => {
       //将用户的上级部门id带入后台查询
       store.dispatch('GetInfo').then(res => {
-        this.deptId=res.deptPid
+        this.deptId=res.deptId
         this.init()
       })
       // 加载数据字典
@@ -94,6 +96,7 @@ export default {
   },
   methods: {
     parseTime,
+    parseDate,
     checkPermission,
     beforeInit() {
       this.url = 'api/parkCost'
@@ -101,7 +104,7 @@ export default {
       const query = this.query
       const deptName = query.deptName
        //最高级别查询所有数据
-       if(this.deptId==0){
+       if(this.deptId==1){
          this.params = { page: this.page, size: this.size, sort: sort}
        }
        else{
@@ -141,6 +144,9 @@ export default {
         id: data.id,
         basicsPark:{
           id:data.parkId
+        },
+        rentContract:{
+          id:data.rentContractId
         },
         siteRent: data.siteRent,
         waterRent: data.waterRent,

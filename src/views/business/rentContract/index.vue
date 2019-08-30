@@ -35,7 +35,11 @@
       </el-table-column>
       <el-table-column prop="rentFreePeriod" label="免租期"/>
       <el-table-column prop="deposit" label="保证金"/>
-      <el-table-column prop="unpaidExpenses" label="未缴费用"/>
+      <el-table-column prop="unpaidExpenses" label="未缴费用">
+      <template slot-scope="scope">
+        <span>{{scope.row.contractAmount-scope.row.paymentedExpenses}}</span>
+      </template>
+      </el-table-column>
       <el-table-column prop="paymentedExpenses" label="已缴费用"/>
       <el-table-column prop="contractAmount" label="合同总金额"/>
       <el-table-column prop="fileName" label="文件名"/>
@@ -87,9 +91,8 @@ export default {
   },
   created() {
     this.$nextTick(() => {
-     //将用户的上级部门id带入后台查询
      store.dispatch('GetInfo').then(res => {
-       this.deptId=res.deptPid
+       this.deptId=res.deptId
        this.init()
      })
     })
@@ -103,7 +106,7 @@ export default {
       const query = this.query
       const deptName = query.deptName
       //最高级别查询所有数据
-      if(this.deptId==0){
+      if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
       }
       else{

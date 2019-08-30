@@ -91,7 +91,7 @@ export default {
     this.$nextTick(() => {
      //将用户的上级部门id带入后台查询
      store.dispatch('GetInfo').then(res => {
-       this.deptId=res.deptPid
+       this.deptId=res.deptId
        this.init()
      })
     })
@@ -108,7 +108,7 @@ export default {
       const startDate = query.startDate
       const endDate = query.endDate
       //最高级别查询所有数据
-      if(this.deptId==0){
+      if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
       }
       else{

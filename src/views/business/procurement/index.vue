@@ -29,7 +29,7 @@
           icon="el-icon-download"
           @click="download">导出</el-button>
       </div>
-      <!-- 导出 -->
+      <!-- 全部导出 -->
       <div style="display: inline-block;">
         <el-button
           v-permission="['ADMIN']"
@@ -44,29 +44,25 @@
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
     <!--表格渲染-->
-    <el-table   @selection-change="handleSelectionChange"   v-loading="loading" :data="data" size="small" style="width: 100%;">
-       <el-table-column
-            type="selection"
-            width="55">
-       </el-table-column>
+    <el-table    v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="pno" label="项目编号"/>
       <el-table-column prop="projectName" label="项目名称"/>
       <el-table-column prop="supplierName" label="供应商名称"/>
       <el-table-column prop="purchaseDescription" label="采购说明"/>
-      <el-table-column prop="contractEndDate" label="合同截止日">
+      <el-table-column prop="contractEndDate" label="合同截止日" width="100">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.contractEndDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="contractAmount" label="合同总金额"/>
+      <el-table-column prop="contractAmount" label="合同总金额" width="100"/>
       <el-table-column prop="paymentRatio" label="付款比例"/>
-      <el-table-column prop="applicationsAmount" label="申请金额"/>
-      <el-table-column prop="applicationsDate" label="申请时间">
+      <el-table-column prop="applicationsAmount" label="申请金额" width="100"/>
+      <el-table-column prop="applicationsDate" label="申请时间" width="100">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.applicationsDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="dueDate" label="应付日期">
+      <el-table-column prop="dueDate" label="应付日期" width="100">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.dueDate) }}</span>
         </template>
@@ -134,7 +130,7 @@ export default {
     this.$nextTick(() => {
      //将用户的上级部门id带入后台查询
      store.dispatch('GetInfo').then(res => {
-       this.deptId=res.deptPid
+       this.deptId=res.deptId
        this.init()
      })
       this.getDict('transaction_mode')
@@ -155,7 +151,7 @@ export default {
       const applicationsDateStart = query.applicationsDateStart
       const applicationsDateEnd = query.applicationsDateEnd
       //最高级别查询所有数据
-      if(this.deptId==0){
+      if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
       }
       else{
@@ -227,13 +223,13 @@ export default {
       //下拉框赋值
       this.$refs.form.dialog = true
     },
-    //全选
+   /* //全选
     handleSelectionChange(val) {
       this.multipleSelection = val;
-    },
+    }, */
     // 导出
     download() {
-      this.downloadLoading = true
+       this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
         const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '付款比例', '申请金额', '申请日期', '应付日期', '实际付款金额', '实际付款日期', '付款方式','收付款账户']
         const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
@@ -251,8 +247,8 @@ export default {
          const sort = 'id,desc'
          const params = { sort: sort }
          getProcurementInformationAll(params).then(res => {
+           this.downloadAllLoading = true
            this.dataALL = res
-           this.downloaddAllLoading = true
            import('@/utils/export2Excel').then(excel => {
              const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '付款比例', '申请金额', '申请日期', '应付日期', '实际付款金额', '实际付款日期', '付款方式','收付款账户']
              const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
@@ -262,7 +258,7 @@ export default {
                data,
                filename: 'table-list'
              })
-             this.downloaddAllLoading = false
+             this.downloadAllLoading = false
            })
          })
 
