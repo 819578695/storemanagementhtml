@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function gettenantinformationAll(params) {
+  return request({
+    url: 'api/gettenantinformationAll',
+    method: 'get',
+    params
+  })
+}
+
 export function tenantinformationByDeptId(id) {
   return request({
     url: 'api/tenantinformationByDeptId/'+id,

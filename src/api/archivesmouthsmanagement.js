@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getarchivesmouthsmanagementAll(params) {
   return request({
-    url: 'api/archivesmouthsmanagement',
+    url: 'api/getarchivesmouthsmanagementAll',
     method: 'get',
     params
   })
