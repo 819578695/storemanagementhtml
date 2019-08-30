@@ -26,13 +26,13 @@
       <el-table-column prop="garden" label="园区"/>
       <el-table-column prop="dateOfEstablishment" label="成立时间">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.dateOfEstablishment) }}</span>
+          <span>{{ parseDate(scope.row.dateOfEstablishment) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="companyName" label="物业公司名称"/>
       <el-table-column prop="openingTime" label="开园时间">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.openingTime) }}</span>
+          <span>{{ parseDate(scope.row.openingTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="occupiedArea" label="占用面积"/>
@@ -43,6 +43,11 @@
       <el-table-column prop="imageUpload" label="图片上传">
         <template slot-scope="scope">
           <a :href="scope.row.imageUpload" style="color: #42b983" target="_blank"><img :src="scope.row.imageUpload" alt="点击打开" class="el-avatar"></a>
+        </template>
+      </el-table-column>
+      <el-table-column :show-overflow-tooltip="true" prop="parkdate" label="创建日期">
+        <template slot-scope="scope">
+          <span>{{ parseDate(scope.row.parkdate) }}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','BASICSPARK_ALL','BASICSPARK_EDIT','BASICSPARK_DELETE'])" label="操作" width="150px" align="center">
@@ -78,7 +83,7 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/thearchives'
-import { parseTime } from '@/utils/index'
+import { parseDate } from '@/utils/index'
 import eForm from './form'
 export default {
   components: { eForm },
@@ -98,7 +103,7 @@ export default {
     })
   },
   methods: {
-    parseTime,
+    parseDate,
     checkPermission,
     beforeInit() {
       this.url = 'api/basicsPark'

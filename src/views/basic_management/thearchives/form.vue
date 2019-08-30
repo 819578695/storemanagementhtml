@@ -5,13 +5,13 @@
         <el-input v-model="form.garden" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="成立时间" >
-        <el-input v-model="form.dateOfEstablishment" style="width: 370px;"/>
+        <el-date-picker v-model="form.dateOfEstablishment" type="date" placeholder="选择日期" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="物业公司名称" >
         <el-input v-model="form.companyName" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="开园时间" >
-        <el-input v-model="form.openingTime" style="width: 370px;"/>
+        <el-date-picker v-model="form.openingTime" type="date" placeholder="选择日期" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="占用面积" >
         <el-input v-model="form.occupiedArea" style="width: 370px;"/>

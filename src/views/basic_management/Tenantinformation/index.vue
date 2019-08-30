@@ -60,6 +60,11 @@
       <el-table-column prop="phone" label="联系电话"/>
       <el-table-column prop="amountinarear" label="欠款金额"/>
       <el-table-column prop="thecontractdetails" label="合同详情"/>
+      <el-table-column :show-overflow-tooltip="true" prop="tenementdate" label="创建日期">
+        <template slot-scope="scope">
+          <span>{{ parseDate(scope.row.tenementdate) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','TENANTINFORMATION_ALL','TENANTINFORMATION_EDIT','TENANTINFORMATION_DELETE'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
           <el-button v-permission="['ADMIN','TENANTINFORMATION_ALL','TENANTINFORMATION_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
@@ -93,7 +98,7 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del, gettenantinformationAll } from '@/api/tenantinformation'
-import { parseTime } from '@/utils/index'
+import { parseDate } from '@/utils/index'
 import eForm from './form'
 import eFormxq from './formxq'
 
@@ -119,6 +124,7 @@ export default {
     })
   },
   methods: {
+    parseDate,
     checkPermission,
     beforeInit() {
       this.url = 'api/tenantinformation'
@@ -191,7 +197,7 @@ export default {
       const params = { sort: sort }
       gettenantinformationAll(params).then(res => {
         this.dataALL = res
-        this.downloaddAllLoading = true
+        this.downloadAllLoading = true
            import('@/utils/export2Excel').then(excel => {
              const tHeader = ['编号', '门牌号', '面积', '定金', '合同保证金', '联系人', '租用类型']
              const filterVal = ['id', 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'leasetype']
@@ -201,7 +207,7 @@ export default {
                data,
                filename: 'table-list'
              })
-             this.downloaddAllLoading = false
+             this.downloadAllLoading = false
            })
       })
     },

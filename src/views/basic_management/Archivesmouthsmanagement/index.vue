@@ -52,6 +52,11 @@
       <el-table-column prop="contacts" label="联系人"/>
       <el-table-column prop="leasetype" label="租用类型"/>
       <el-table-column prop="picturetoview" label="图片查看"/>
+      <el-table-column :show-overflow-tooltip="true" prop="stalldate" label="创建日期">
+        <template slot-scope="scope">
+          <span>{{ parseDate(scope.row.stalldate) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','ARCHIVESMOUTHSMANAGEMENT_ALL','ARCHIVESMOUTHSMANAGEMENT_EDIT','ARCHIVESMOUTHSMANAGEMENT_DELETE'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
           <el-button v-permission="['ADMIN','ARCHIVESMOUTHSMANAGEMENT_ALL','ARCHIVESMOUTHSMANAGEMENT_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
@@ -74,7 +79,7 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del, getarchivesmouthsmanagementAll } from '@/api/archivesmouthsmanagement'
-import { parseTime } from '@/utils/index'
+import { parseDate } from '@/utils/index'
 import eForm from './form'
 
 export default {
@@ -99,6 +104,7 @@ export default {
     })
   },
   methods: {
+    parseDate,
     checkPermission,
     beforeInit() {
       this.url = 'api/archivesmouthsmanagement'

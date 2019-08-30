@@ -4,14 +4,14 @@
       <el-form-item label="门牌号" >
         <el-input v-model="form.housenumber" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="面积" >
+      <el-form-item label="面积(m²)" >
         <el-input v-model="form.acreage" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="定金" >
-        <el-input v-model="form.earnest" style="width: 370px;"/>
+        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.earnest" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="合同保证金" >
-        <el-input v-model="form.contractmoney" style="width: 370px;"/>
+        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.contractmoney" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="联系人" >
         <el-input v-model="form.contacts" style="width: 370px;"/>

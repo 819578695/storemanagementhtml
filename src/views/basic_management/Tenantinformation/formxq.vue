@@ -1,19 +1,6 @@
 <template >
   <el-dialog :append-to-body="true" :visible.sync="dialogxq" :before-close="closeDialog" width="500px" title="详情">
     <el-form ref="formxq" :model="form" :rules="rules" :inline="true" size="small" label-width="80px">
-      <el-form-item label="联系人:" >
-        <label>111</label>
-      </el-form-item>
-      <el-form-item label="联系电话:" label-width="200px" >
-        <label>222</label>
-      </el-form-item>
-      <el-form-item label="公司名称:" >
-        <label>333</label>
-      </el-form-item>
-      <el-form-item label="物流专线:" label-width="200px" >
-        <label>444</label>
-      </el-form-item>
-      <p>——————————————————————————————————</p>
       <p>开票信息(选项)</p>
       <el-form-item label="税号:" >
         <label>444</label>
