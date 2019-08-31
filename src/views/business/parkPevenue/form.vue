@@ -34,8 +34,11 @@
       <el-form-item label="物业费" label-width="100px" >
         <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.propertyRent" style="width: 170px;"/>
       </el-form-item>
-      <el-form-item label="水电费" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.waterElectricityRent" style="width: 170px;"/>
+      <el-form-item label="水费" label-width="100px" >
+        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.waterRent" style="width: 170px;"/>
+      </el-form-item>
+      <el-form-item label="电费" label-width="100px" >
+        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.electricityRent" style="width: 170px;"/>
       </el-form-item>
       <el-form-item label="卫生费" label-width="100px" >
         <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.sanitationRent" style="width: 170px;"/>
@@ -114,7 +117,8 @@ export default {
         id: '',
         houseRent: '',
         propertyRent: '',
-        waterElectricityRent: '',
+        waterRent: '',
+        electricityRent:'',
         sanitationRent: '',
         liquidatedRent: '',
         lateRent: '',
@@ -226,7 +230,8 @@ export default {
         parkId: '',
         houseRent: '',
         propertyRent: '',
-        waterElectricityRent: '',
+        waterRent: '',
+        electricityRent:'',
         sanitationRent: '',
         liquidatedRent: '',
         lateRent: '',

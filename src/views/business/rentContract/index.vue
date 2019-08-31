@@ -148,8 +148,6 @@ export default {
         endDate: data.endDate,
         rentFreePeriod: data.rentFreePeriod,
         deposit: data.deposit,
-        unpaidExpenses: data.unpaidExpenses,
-        paymentedExpenses: data.paymentedExpenses,
         contractAmount: data.contractAmount,
         fileName: data.fileName,
         contractNo: data.contractNo

@@ -87,8 +87,6 @@ export default {
         endDate: '',
         rentFreePeriod: '',
         deposit: '',
-        unpaidExpenses: '',
-        paymentedExpenses: '',
         contractAmount: '',
         fileName: ''
       },
@@ -177,8 +175,6 @@ export default {
         endDate: '',
         rentFreePeriod: '',
         deposit: '',
-        unpaidExpenses: '',
-        paymentedExpenses: '',
         contractAmount: '',
         fileName: ''
       }
