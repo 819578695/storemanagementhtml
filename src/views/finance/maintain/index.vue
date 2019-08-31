@@ -15,7 +15,6 @@
 			        <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
 			      </el-select>
 			      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
-			      
 			      <div style="display: inline-block;margin: 0px 2px;">
 		        <el-button
 		          v-permission="['ADMIN','FINANCEMAINTAIN_ALL','FINANCEMAINTAIN_CREATE']"
@@ -28,7 +27,7 @@
 			    </div>
 			    <!--表格渲染-->
 			    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;" @current-change="handleCurrentChange">
-			      <el-table-column prop="parkId" label="园区名称"/>
+			      <el-table-column prop="deptName" label="园区名称"/>
 			      <el-table-column prop="remaining" label="余额"/>
 			      <el-table-column v-if="checkPermission(['ADMIN','FINANCEMAINTAIN_ALL','FINANCEMAINTAIN_EDIT','FINANCEMAINTAIN_DELETE'])" label="操作" width="150px" align="center">
 			        <template slot-scope="scope">
@@ -63,7 +62,7 @@
           <div slot="header" class="clearfix">
             <span>账户详情</span>
             <el-button
-              v-if="checkPermission(['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT','FINANCEMAINTARINDETAIL_DELETE']) && this.$refs.financeMaintarinDetail && this.$refs.financeMaintarinDetail.parkId"
+              v-if="checkPermission(['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT','FINANCEMAINTARINDETAIL_DELETE']) && this.$refs.financeMaintarinDetail && this.$refs.financeMaintarinDetail.deptName"
               class="filter-item"
               size="mini"
               style="float: right;padding: 4px 10px"
@@ -91,7 +90,7 @@ export default {
     return {
       delLoading: false,
       queryTypeOptions: [
-        { key: 'parkId', display_name: '园区名称' }
+        { key: 'deptId', display_name: '园区名称' }
       ]
     }
   },
@@ -112,7 +111,7 @@ export default {
       if (type && value) { this.params[type] = value }
       if(this.$refs.maintainDetail){
       	this.$refs.maintainDetail.data=[]
-      	this.$refs.maintainDetail.parkId=''
+      	this.$refs.maintainDetail.deptId=''
       }
       return true
     },
@@ -140,7 +139,8 @@ export default {
     },
     handleCurrentChange(val) {
     	if(val){
-    		this.$refs.maintainDetail.parkId = val.maintainDetail
+    		this.$refs.maintainDetail.deptName = val.deptName
+    		this.$refs.maintainDetail.deptId = val.deptId
     		this.$refs.maintainDetail.init()
     	}
     },
@@ -149,7 +149,7 @@ export default {
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
-        parkId: data.parkId,
+        deptId: data.deptId,
         remaining: data.remaining,
         maintainDetail: data.maintainDetail
       }

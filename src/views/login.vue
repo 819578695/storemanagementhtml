@@ -42,6 +42,8 @@ import { encrypt } from '@/utils/rsaEncrypt'
 import Config from '@/config'
 import { getCodeImg } from '@/api/login'
 import Cookies from 'js-cookie'
+import { getDeptAll } from '@/api/dept'
+import { getInfo } from '@/api/login'
 export default {
   name: 'Login',
   data() {
@@ -121,8 +123,20 @@ export default {
             Cookies.remove('rememberMe')
           }
           this.$store.dispatch('Login', user).then(() => {
+          	getDeptAll({ enabled: true }).then(res => {
+			        //数组转json   取出时json.parse(xxx)
+			      	sessionStorage.setItem("depts",JSON.stringify(res))
+          	})
             this.loading = false
             this.$router.push({ path: this.redirect || '/' })
+          	return new Promise((resolve, reject) => {
+						getInfo().then(res => {
+			        sessionStorage.setItem("user",JSON.stringify(res))
+			        resolve(res)
+			        }).catch(error => {
+			          reject(error)
+			        })
+			      })
           }).catch(() => {
             this.loading = false
             this.getCode()

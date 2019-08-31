@@ -1,23 +1,8 @@
 import request from '@/utils/request'
 
-export function getDeptAll() {
-  return request({
-    url: 'api/depts',
-    method: 'get'
-  })
-}
-
-export function getDepts(params) {
-  return request({
-    url: 'api/dept',
-    method: 'get',
-    params
-  })
-}
-
 export function add(data) {
   return request({
-    url: 'api/dept',
+    url: 'api/finaceMargin',
     method: 'post',
     data
   })
@@ -25,14 +10,14 @@ export function add(data) {
 
 export function del(id) {
   return request({
-    url: 'api/dept/' + id,
+    url: 'api/finaceMargin/' + id,
     method: 'delete'
   })
 }
 
 export function edit(data) {
   return request({
-    url: 'api/dept',
+    url: 'api/finaceMargin',
     method: 'put',
     data
   })

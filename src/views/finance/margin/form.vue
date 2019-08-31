@@ -1,17 +1,14 @@
 <template>
   <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="交易账户类型" >
-        <el-select v-model="form.tradTypeId"  placeholder="请选择交易类型" style="width: 370px;">
-          <el-option
-            v-for="(item, index) in tradType" 
-	      		:key="item.id" 
-	      		:label="item.label" 
-	      		:value="item.id"/>
-        </el-select>
+      <el-form-item label="园区支出关联" >
+        <el-input v-model="form.costId" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="余额" >
-        <el-input v-model="form.remaining" style="width: 370px;"/>
+      <el-form-item label="园区收入关联" >
+        <el-input v-model="form.pevenueId" style="width: 370px;"/>
+      </el-form-item>
+      <el-form-item label="部门id" >
+        <el-input v-model="form.deptId" style="width: 370px;"/>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -22,31 +19,22 @@
 </template>
 
 <script>
-import { add, edit } from '@/api/financeMaintarinDetail'
+import { add, edit } from '@/api/finaceMargin'
 export default {
-	created() {
-		this.getType()
-	},
   props: {
     isAdd: {
       type: Boolean,
       required: true
-    },
-//  maintainId: {
-//    type: Number,
-//    required: true
-//  }
+    }
   },
   data() {
     return {
-    	maintainId:'',
-    	tradType: [],
       loading: false, dialog: false,
       form: {
-      	tradTypeId: '',
-        maintainId: '',
-        remaining: '',
-        transactionDate: ''
+        id: '',
+        costId: '',
+        pevenueId: '',
+        deptId: ''
       },
       rules: {
       }
@@ -63,7 +51,6 @@ export default {
       } else this.doEdit()
     },
     doAdd() {
-    	this.form.maintainId = this.deptId
       add(this.form).then(res => {
         this.resetForm()
         this.$notify({
@@ -98,14 +85,10 @@ export default {
       this.$refs['form'].resetFields()
       this.form = {
         id: '',
-        tradTypeId: '',
-        maintainId: '',
-        remaining: '',
-        transactionDate: ''
+        costId: '',
+        pevenueId: '',
+        deptId: ''
       }
-    },
-    getType(){
-    	this.tradType = this.$parent.tradType
     }
   }
 }

@@ -112,14 +112,14 @@ export default {
   created() {
     this.$nextTick(() => {
       this.init()
-      this.getTallyType()
+      this.getType()
     })
   },
 
   methods: {
     parseDate,
     checkPermission,
-    getTallyType() {
+    getType() {
       getDictMap('transaction_type').then(res => {
         this.tallyTypeList = res.transaction_type
       }).catch(err => {

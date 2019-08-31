@@ -40,7 +40,9 @@ import { count } from '@/api/visits'
 /**
  * 记录访问，只有页面刷新或者第一次加载才会记录
  */
-count().then(res => {})
+count().then(res => {
+})
+
 
 export default {
   name: 'Dashboard',
@@ -56,6 +58,7 @@ export default {
     ])
   }
 }
+
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

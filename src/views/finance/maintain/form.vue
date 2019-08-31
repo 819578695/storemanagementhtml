@@ -2,10 +2,12 @@
   <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-form-item label="园区名称" >
-        <el-input v-model="form.parkId" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="余额" >
-        <el-input v-model="form.remaining" style="width: 370px;"/>
+        <el-select v-model="form.deptId"  placeholder="请选择园区名称" style="width: 370px;">
+	        <el-option v-for="item in depts" 
+	        	:key="item.id" 
+	        	:label="item.name" 
+	        	:value="item.id"/>
+      	</el-select>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -18,6 +20,9 @@
 <script>
 import { add, edit } from '@/api/financeMaintain'
 export default {
+	created() {
+		this.getDepts()
+	},
   props: {
     isAdd: {
       type: Boolean,
@@ -27,9 +32,10 @@ export default {
   data() {
     return {
       loading: false, dialog: false,
+      depts: [],
       form: {
         id: '',
-        parkId: '',
+        deptId: '',
         remaining: '',
         maintainDetail: ''
       },
@@ -38,6 +44,9 @@ export default {
     }
   },
   methods: {
+  	getDepts(){
+      this.depts = JSON.parse(sessionStorage.getItem("depts"))
+  	},
     cancel() {
       this.resetForm()
     },
@@ -82,7 +91,7 @@ export default {
       this.$refs['form'].resetFields()
       this.form = {
         id: '',
-        parkId: '',
+        deptId: '',
         remaining: '',
         maintainDetail: ''
       }

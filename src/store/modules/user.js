@@ -1,6 +1,7 @@
 import { login, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { decrypt } from '@/utils/rsaEncrypt'
+import { getDeptAll } from '@/api/dept'
 
 const user = {
   state: {
@@ -47,8 +48,8 @@ const user = {
         })
       })
     },
-
-    // 获取用户信息
+    
+    // 获取用户信息-存入缓存
     GetInfo({ commit }) {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
@@ -74,7 +75,8 @@ const user = {
       return new Promise((resolve, reject) => {
         commit('SET_LOAD_MENUS', false)
       })
-    }
+    },
+    
   }
 }
 

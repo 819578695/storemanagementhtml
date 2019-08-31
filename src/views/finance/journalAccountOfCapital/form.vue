@@ -21,7 +21,10 @@
       </el-form-item>
       <el-form-item label="收入支出项" prop = "tallyType">
         <el-select v-model="form.tallyType.id"  placeholder="请选择记账类型" style="width: 370px;">
-	        <el-option v-for="item in tallyType" :key="item.key" :label="item.value" :value="item.key"/>
+	        <el-option v-for="item in tallyType" 
+	        	:key="item.key" 
+	        	:label="item.value" 
+	        	:value="item.key"/>
       	</el-select>
       </el-form-item>
       <el-form-item label="交易方式" prop = "tradTypeId">
@@ -89,6 +92,7 @@ export default {
         { key: '24', value: '投资款'}
     	],
     	tradType: [],//交易方式
+    	typeList: [],
       loading: false, dialog: false,from: {money:'' , tradDate:'', receiptPaymentName:'',},
       form: {
         tradDate: '',
@@ -113,8 +117,8 @@ export default {
   },
   methods: {
   	getTallyType() {
-      this.tallyTypeList = this.$parent.tallyTypeList
       this.typeList = this.$parent.typeList
+      this.tradType = this.$parent.tradType
     },
   	moneyNum(val) {
       if ( !/^\d*$/.test(val)) {

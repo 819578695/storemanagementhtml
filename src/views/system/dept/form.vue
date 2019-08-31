@@ -62,6 +62,7 @@ export default {
             if (this.isAdd) {
               this.doAdd()
             } else this.doEdit()
+            
           } else {
             this.$message({
               message: '上级部门不能为空',

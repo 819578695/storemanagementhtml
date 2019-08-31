@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="parkId === ''">
+		<div v-if="deptName === ''">
 			<div class="my-code">点击资金账户查看详情</div>
 		</div>
 		<div v-else>
@@ -17,20 +17,25 @@
 	          @click="add">新增</el-button>
 	      </div>
 	    </div>
-			<eForm ref="form" :is-add="isAdd" :park-id="parkId"/>
+			<eForm ref="form" :is-add="isAdd"/>
 			<!--表格渲染-->
 	    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-	      <el-table-column prop="tradTypeId" label="交易账户类型"/>
+	    	<el-table-column label="所属园区">
+	          <template slot-scope="scope">
+	            {{ deptName }}
+	          </template>
+	        </el-table-column>
+	      <el-table-column prop="tradTypeLabel" label="交易账户类型"/>
 	      <el-table-column prop="remaining" label="余额"/>
 	      <el-table-column prop="transactionDate" label="最近交易日期">
 	        <template slot-scope="scope">
 	          <span>{{ parseTime(scope.row.transactionDate) }}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column v-if="checkPermission(['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT','FINANCEMAINTARINDETAIL_DELETE'])" label="操作" width="150px" align="center">
+	      <el-table-column v-if="checkPermission(['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT','FINANCEMAINTARINDETAIL_DELETE'])" label="修改" width="150px" align="center">
 	        <template slot-scope="scope">
 	          <el-button v-permission="['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
-	          <el-popover
+	          <!--<el-popover
 	            v-permission="['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_DELETE']"
 	            :ref="scope.row.id"
 	            placement="top"
@@ -41,7 +46,7 @@
 	              <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定</el-button>
 	            </div>
 	            <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini"/>
-	          </el-popover>
+	          </el-popover>-->
 	        </template>
 	      </el-table-column>
 	    </el-table>
@@ -62,27 +67,29 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/financeMaintarinDetail'
 import { parseTime } from '@/utils/index'
+import { getDictMap } from '@/api/dictDetail'
 import eForm from './form'
 export default {
   components: { eForm },
   mixins: [initData],
   data() {
     return {
-      delLoading: false,parkId: 0,parkId: ''
+      tradType: [],
+      delLoading: false,deptName:''
     }
   },
   created() {
-//  this.$nextTick(() => {
-//    this.init()
-//  })
-		this.loading = false
+    this.$nextTick(() => {
+      this.getType()
+    })
+	this.loading = false
   },
   methods: {
     parseTime,
     checkPermission,
     beforeInit() {
       this.url = 'api/financeMaintarinDetail'
-      this.params = { page: this.page, size: this.size, parkId: this.parkId }
+      this.params = { page: this.page, size: this.size, deptName: this.deptName }
       return true
     },
     subDelete(id) {
@@ -104,6 +111,7 @@ export default {
       })
     },
     add() {
+      this.$refs.form.maintainId = this.deptId
       this.isAdd = true
       this.$refs.form.dialog = true
     },
@@ -113,11 +121,17 @@ export default {
       _this.form = {
         id: data.id,
         tradTypeId: data.tradTypeId,
-        maintainId: data.maintainId,
         remaining: data.remaining,
         transactionDate: data.transactionDate
       }
       _this.dialog = true
+    },
+    getType(){
+	  getDictMap('transaction_mode').then(res => {
+	  	this.tradType = res.transaction_mode
+	  }).catch(err => {
+	    console.log(err.response.data.message)
+	  })
     }
   }
 }
