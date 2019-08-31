@@ -38,7 +38,8 @@
       <el-table-column prop="houseNumber" label="档口编号"/>
       <el-table-column prop="houseRent" label="房租"/>
       <el-table-column prop="propertyRent" label="物业费"/>
-      <el-table-column prop="waterElectricityRent" label="水电费"/>
+      <el-table-column prop="waterRent" label="水费"/>
+      <el-table-column prop="electricityRent" label="电费"/>
       <el-table-column prop="sanitationRent" label="卫生费"/>
       <el-table-column prop="liquidatedRent" label="违约金"/>
       <el-table-column prop="managementRent" label="管理费"/>
@@ -76,7 +77,7 @@
       </el-table-column>
       <el-table-column prop="creaeTime" label="合计">
         <template slot-scope="scope">
-          <span>{{ parseInt(scope.row.houseRent+scope.row.propertyRent+scope.row.waterElectricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent+scope.row.arrersRent) }}</span>
+          <span>{{ parseInt(scope.row.houseRent+scope.row.propertyRent+scope.row.waterRent+scope.row.electricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent+scope.row.arrersRent) }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -183,7 +184,8 @@ export default {
         id: data.id,
         houseRent: data.houseRent,
         propertyRent: data.propertyRent,
-        waterElectricityRent: data.waterElectricityRent,
+        waterRent: data.waterRent,
+        electricityRent:data.electricityRent,
         sanitationRent: data.sanitationRent,
         liquidatedRent: data.liquidatedRent,
         lateRent: data.lateRent,

@@ -21,11 +21,6 @@
       <el-form-item label="保证金" >
         <el-input v-model="form.deposit" style="width: 370px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
       </el-form-item>
-<!--      <el-form-item label="未缴费用" >
-        <el-input v-model="form.unpaidExpenses" style="width: 370px;" />
-      </el-form-item>
-      <el-form-item label="已缴费用" >
-        <el-input v-model="form.paymentedExpenses" style="width: 370px;"/> -->
       </el-form-item>
       <el-form-item label="合同总金额" prop="contractAmount">
         <el-input v-model="form.contractAmount" style="width: 370px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
@@ -61,8 +56,6 @@ export default {
         endDate: '',
         rentFreePeriod: '',
         deposit: '',
-        unpaidExpenses: '',
-        paymentedExpenses: '',
         contractAmount: '',
         fileName: '',
         contractNo: '',
@@ -151,8 +144,6 @@ export default {
         endDate: '',
         rentFreePeriod: '',
         deposit: '',
-        unpaidExpenses: '',
-        paymentedExpenses: '',
         contractAmount: '',
         fileName: '',
         contractNo: ''
