@@ -75,7 +75,9 @@ export default {
   data() {
     return {
       tradType: [],
-      delLoading: false,deptName:''
+      delLoading: false,
+      deptName:'',
+      maintainId:'',
     }
   },
   created() {
@@ -111,9 +113,9 @@ export default {
       })
     },
     add() {
-      this.$refs.form.maintainId = this.deptId
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.maintainId = this.maintainId
     },
     edit(data) {
       this.isAdd = false

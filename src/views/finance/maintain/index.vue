@@ -140,7 +140,7 @@ export default {
     handleCurrentChange(val) {
     	if(val){
     		this.$refs.maintainDetail.deptName = val.deptName
-    		this.$refs.maintainDetail.deptId = val.deptId
+    		this.$refs.maintainDetail.maintainId = val.deptId
     		this.$refs.maintainDetail.init()
     	}
     },
