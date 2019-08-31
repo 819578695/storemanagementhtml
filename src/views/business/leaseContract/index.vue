@@ -39,7 +39,11 @@
       </el-table-column>
       <el-table-column prop="rentFreePeriod" label="免租期"/>
       <el-table-column prop="deposit" label="保证金"/>
-      <el-table-column prop="unpaidExpenses" label="未缴费用"/>
+      <el-table-column prop="unpaidExpenses" label="未缴费用">
+      <template slot-scope="scope">
+        <span>{{scope.row.contractAmount-scope.row.paymentedExpenses}}</span>
+      </template>
+      </el-table-column>
       <el-table-column prop="paymentedExpenses" label="已缴费用"/>
       <el-table-column prop="contractAmount" label="合同总金额"/>
       <el-table-column prop="fileName" label="文件名"/>
