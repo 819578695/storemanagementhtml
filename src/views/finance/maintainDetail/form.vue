@@ -1,8 +1,8 @@
 <template>
   <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
-    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="交易账户类型" >
-        <el-select v-model="form.tradTypeId"  placeholder="请选择交易类型" style="width: 370px;">
+    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
+      <el-form-item label="交易方式" >
+        <el-select v-model="form.tradType.id"  placeholder="请选择交易方式" style="width: 370px;" >
           <el-option
             v-for="(item, index) in tradType" 
 	      		:key="item.id" 
@@ -32,21 +32,16 @@ export default {
       type: Boolean,
       required: true
     },
-//  maintainId: {
-//    type: Number,
-//    required: true
-//  }
   },
   data() {
     return {
-    	maintainId:'',
     	tradType: [],
       loading: false, dialog: false,
       form: {
-      	tradTypeId: '',
+      	tradType: {id:''},
         maintainId: '',
         remaining: '',
-        transactionDate: ''
+        transactionDate: new Date()
       },
       rules: {
       }
@@ -63,7 +58,7 @@ export default {
       } else this.doEdit()
     },
     doAdd() {
-    	this.form.maintainId = this.deptId
+    	this.form.maintainId = this.maintainId
       add(this.form).then(res => {
         this.resetForm()
         this.$notify({
@@ -97,8 +92,7 @@ export default {
       this.dialog = false
       this.$refs['form'].resetFields()
       this.form = {
-        id: '',
-        tradTypeId: '',
+        tradType: {id:''},
         maintainId: '',
         remaining: '',
         transactionDate: ''
