@@ -33,7 +33,7 @@
     <accountForm ref="accountform" />
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <el-table-column prop="basicsParkName" label="园区id"/>
+      <!-- <el-table-column prop="basicsParkName" label="园区id"/> -->
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="houseNumber" label="档口编号"/>
       <el-table-column prop="houseRent" label="房租"/>
@@ -50,7 +50,7 @@
       <el-table-column prop="paymentTypeName" label="交易类型"/>
       <el-table-column label="收款信息">
         <template slot-scope="scope">
-          <span @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
+          <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间">

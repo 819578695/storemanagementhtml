@@ -108,7 +108,7 @@ export default {
          this.params = { page: this.page, size: this.size, sort: sort}
        }
        else{
-          this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+          this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId }
        }
        if (deptName) { this.params['deptName'] = deptName }
        return true

@@ -6,6 +6,7 @@
         <el-date-picker v-model="query.startDate" type="date" placeholder="选择开始日期"></el-date-picker>&nbsp;-
         <el-date-picker v-model="query.endDate" type="date" placeholder="选择截止日期"></el-date-picker>
       <el-input v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
+      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
@@ -29,12 +30,12 @@
       <el-table-column prop="contractName" label="合同名称"/>
       <el-table-column prop="startDate" label="起止日期">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.startDate) }}</span>
+          <span>{{ parseDate(scope.row.startDate) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="endDate" label="截止日期">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.endDate) }}</span>
+          <span>{{ parseDate(scope.row.endDate) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="rentFreePeriod" label="免租期"/>
@@ -82,6 +83,7 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/leaseContract'
 import { parseTime } from '@/utils/index'
+import { parseDate } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
 export default {
@@ -103,6 +105,7 @@ export default {
   },
   methods: {
     parseTime,
+    parseDate,
     checkPermission,
     beforeInit() {
       this.url = 'api/leaseContract'
