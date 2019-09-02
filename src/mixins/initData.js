@@ -3,7 +3,8 @@ import { initData } from '@/api/data'
 export default {
   data() {
     return {
-      loading: true, data: [], page: 0, size: 10, total: 0, url: '', params: {}, query: {}, time: 170, isAdd: false
+      loading: true, data: [], page: 0, size: 10, total: 0, url: '', params: {}, query: {}, time: 170, isAdd: false,
+      costs: [],pevenues: [],
     }
   },
   methods: {
@@ -50,6 +51,27 @@ export default {
     toQuery() {
       this.page = 0
       this.init()
-    }
+    },
+    async financeInit() {
+      if (!await this.beforeInit()) {
+        return
+      }
+      return new Promise((resolve, reject) => {
+        this.loading = true
+        initData(this.url, this.params).then(res => {
+        	this.total = res.pevenuesTotal
+          this.pevenues = res.pevenues
+          this.$refs.pevenueIndex.costs=res.costs
+          this.$refs.pevenueIndex.total=res.costsTotal
+          setTimeout(() => {
+            this.loading = false
+          }, this.time)
+          resolve(res)
+        }).catch(err => {
+          this.loading = false
+          reject(err)
+        })
+      })
+    },
   }
 }
