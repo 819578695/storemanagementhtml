@@ -99,6 +99,7 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del, gettenantinformationAll } from '@/api/tenantinformation'
 import { parseDate } from '@/utils/index'
+import store from '@/store'
 import eForm from './form'
 import eFormxq from './formxq'
 
@@ -120,7 +121,11 @@ export default {
   },
   created() {
     this.$nextTick(() => {
-      this.init()
+     //将用户的上级部门id带入后台查询
+     store.dispatch('GetInfo').then(res => {
+       this.deptId=res.deptId
+       this.init()
+     })
     })
   },
   methods: {
@@ -129,7 +134,13 @@ export default {
     beforeInit() {
       this.url = 'api/tenantinformation'
       const sort = 'id,desc'
-      this.params = { page: this.page, size: this.size, sort: sort }
+      //最高级别查询所有数据
+      if(this.deptId==0){
+        this.params = { page: this.page, size: this.size, sort: sort}
+      }
+      else{
+         this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+      }
       const query = this.query
       const type = query.type
       const value = query.value
@@ -169,7 +180,10 @@ export default {
         companyname: data.companyname,
         logisticsline: data.logisticsline,
         linkman: data.linkman,
-        phone: data.phone
+        phone: data.phone,
+        dept:{
+          id:data.deptId
+        }
       }
       _this.dialog = true
     },

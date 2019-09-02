@@ -30,7 +30,6 @@
       </el-form-item>
       <!--上传图片-->
       <el-upload
-        :on-preview="handlePictureCardPreview"
         :before-remove="handleBeforeRemove"
         :on-success="handleSuccess"
         :on-error="handleError"
@@ -70,9 +69,6 @@ export default {
       headers: {
         'Authorization': 'Bearer ' + getToken()
       },
-      dialogsc: false,
-      dialogImageUrl: '',
-      dialogVisible: false,
       fileList: [],
       pictures: [],
       form: {
@@ -100,9 +96,6 @@ export default {
   methods: {
     cancel() {
       this.resetForm()
-      this.dialogVisible = false
-      this.dialogImageUrl = ''
-      this.dialogsc = false
     },
     doSubmit() {
       this.form.imageUpload = this.url
@@ -112,9 +105,6 @@ export default {
       if (this.isAdd) {
         this.doAdd()
       } else this.doEdit()
-      this.dialogVisible = false
-      this.dialogImageUrl = ''
-      this.dialogsc = false
     },
     doAdd() {
       add(this.form).then(res => {
@@ -162,10 +152,6 @@ export default {
         theContractInformation: '',
         imageUpload: ''
       }
-    },
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
     },
     handleSuccess(response, file) {
       this.url = file.response.data[0]

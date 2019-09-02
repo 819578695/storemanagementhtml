@@ -19,6 +19,18 @@
       <el-form-item label="租用类型" >
         <el-input v-model="form.leasetype" style="width: 370px;"/>
       </el-form-item>
+      <!--上传图片-->
+      <el-upload
+        :before-remove="handleBeforeRemove"
+        :on-success="handleSuccess"
+        :on-error="handleError"
+        :headers="headers"
+        :action="basicsParksc"
+        class="upload-demo"
+        list-type="picture">
+        <el-button size="small" type="primary">点击上传</el-button>
+        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
@@ -28,7 +40,9 @@
 </template>
 
 <script>
-import { add, edit } from '@/api/archivesmouthsmanagement'
+import { add, edit, del } from '@/api/archivesmouthsmanagement'
+import { getToken } from '@/utils/auth'
+import { mapGetters } from 'vuex'
 export default {
   props: {
     isAdd: {
@@ -38,7 +52,11 @@ export default {
   },
   data() {
     return {
+      url: '',
       loading: false, dialog: false,
+      headers: {
+        'Authorization': 'Bearer ' + getToken()
+      },
       form: {
         id: '',
         housenumber: '',
@@ -53,15 +71,22 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'basicsParksc'
+    ])
+  },
   methods: {
     cancel() {
       this.resetForm()
     },
     doSubmit() {
+      this.form.picturetoview = this.url
       this.loading = true
       if (this.isAdd) {
         this.doAdd()
       } else this.doEdit()
+      this.dialogVisible = false
     },
     doAdd() {
       add(this.form).then(res => {
@@ -105,6 +130,30 @@ export default {
         contacts: '',
         leasetype: '',
         picturetoview: ''
+      }
+    },
+    handleSuccess(response, file) {
+      this.url = file.response.data[0]
+      const uid = file.uid
+      const id = response.id
+      this.pictures.push({ uid, id })
+    },
+    // 监听上传失败
+    handleError(e, file) {
+      alert('111')
+      const msg = JSON.parse(e.message)
+      this.$notify({
+        title: msg.message,
+        type: 'error',
+        duration: 2500
+      })
+    },
+    handleBeforeRemove(file) {
+      for (let i = 0; i < this.pictures.length; i++) {
+        if (this.pictures[i].uid === file.uid) {
+          del(this.pictures[i].id).then(res => {})
+          return true
+        }
       }
     }
   }

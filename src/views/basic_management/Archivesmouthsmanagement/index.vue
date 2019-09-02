@@ -51,7 +51,11 @@
       <el-table-column prop="contractmoney" label="合同保证金"/>
       <el-table-column prop="contacts" label="联系人"/>
       <el-table-column prop="leasetype" label="租用类型"/>
-      <el-table-column prop="picturetoview" label="图片查看"/>
+      <el-table-column prop="picturetoview" label="图片查看">
+        <template slot-scope="scope">
+          <a :href="scope.row.picturetoview" style="color: #42b983" target="_blank"><img :src="scope.row.picturetoview" alt="点击打开" class="el-avatar"></a>
+        </template>
+      </el-table-column>
       <el-table-column :show-overflow-tooltip="true" prop="stalldate" label="创建日期">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.stalldate) }}</span>
