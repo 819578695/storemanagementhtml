@@ -46,6 +46,15 @@
             :value="item.id"/>
         </el-select>
       </el-form-item>
+      <el-form-item label="收付款账户" label-width="100px" prop="receiptPaymentAccount.id">
+        <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择付款名称">
+          <el-option
+            v-for="(item, index) in receiptPaymentAccountList"
+            :key="item.name"
+            :label="item.name"
+            :value="item.id"/>
+        </el-select>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
@@ -58,6 +67,7 @@
 import { add, edit } from '@/api/parkCost'
 import store from '@/store'
 import { basicsParkByDeptId} from '@/api/thearchives'
+import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
 import { rentContractByDeptId} from '@/api/rentContract'
 export default {
   props: {
@@ -72,6 +82,7 @@ export default {
   },
   data() {
     return {
+      receiptPaymentAccountList:[],
       basicsParkList:[],//园区集合
       rentContractList:[],//合同
       loading: false,
@@ -96,6 +107,9 @@ export default {
         basicsPark:{
           id:''
         },
+        receiptPaymentAccount: {
+          id:''
+        },
       },
       rules: {
         dictDetail:
@@ -114,6 +128,12 @@ export default {
         {
          id: [
             { required: true, message: '请选择合同名称', trigger: 'change' }
+          ],
+        },
+        receiptPaymentAccount:
+        {
+         id: [
+            { required: true, message: '请选择付款账户', trigger: 'change' }
           ],
         },
       }
@@ -191,12 +211,20 @@ export default {
         },
         dept:{
           id:''
-        }
+        },
+        receiptPaymentAccount: {
+          id:''
+        },
       }
     },
     //查询所有的集合
     getReceiptPaymentAccountList() {
       store.dispatch('GetInfo').then(res => {
+        receiptPaymentAccountByDeptId(res.deptId).then(res => {
+          this.receiptPaymentAccountList = res
+        }).catch(err => {
+          console.log(err.response.data.message)
+        })
         basicsParkByDeptId(res.deptId).then(res => {
           this.basicsParkList = res
         }).catch(err => {

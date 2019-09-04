@@ -77,7 +77,7 @@
       </el-table-column>
       <el-table-column prop="creaeTime" label="合计">
         <template slot-scope="scope">
-          <span>{{ parseInt(scope.row.houseRent+scope.row.propertyRent+scope.row.waterRent+scope.row.electricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent+scope.row.arrersRent) }}</span>
+          <span>{{ parseFloat(scope.row.houseRent+scope.row.propertyRent+scope.row.waterRent+scope.row.electricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent+scope.row.arrersRent) }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -198,9 +198,6 @@ export default {
         },
         archivesmouthsmanagement:{
           id:data.archivesMouthsId
-        },
-        basicsPark:{
-          id:data.parkId
         },
         dictDetail:{
           id:data.paymentType

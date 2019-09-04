@@ -18,6 +18,8 @@
     </div>
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
+    <!--表单组件-->
+    <accountForm ref="accountform" />
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="主键"/>
@@ -34,6 +36,11 @@
       <el-table-column prop="createTime" label="创建时间" width="100">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.createTime) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="收款信息">
+        <template slot-scope="scope">
+          <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
         </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','PARKCOST_ALL','PARKCOST_EDIT','PARKCOST_DELETE'])" label="操作" width="150px" align="center">
@@ -67,15 +74,17 @@
 
 <script>
 import checkPermission from '@/utils/permission'
+import { receiptPaymentAccountById } from '@/api/receiptPaymentAccount'
 import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
 import { del } from '@/api/parkCost'
 import { parseTime } from '@/utils/index'
 import { parseDate } from '@/utils/index'
 import eForm from './form'
+import accountForm from './accountform'
 import store from '@/store'
 export default {
-  components: { eForm },
+  components: { eForm,accountForm},
   mixins: [initData,initDict],
   data() {
     return {
@@ -158,8 +167,23 @@ export default {
         dictDetail: {
           id:data.paymentType
         },
+        receiptPaymentAccount: {
+          id:data.receiptPaymentAccountId
+        }
       }
       _this.dialog = true
+    },
+    //查看收付款信息详情
+    findReceiptPaymentAccount(id){
+      if(id!=null||id!=''){
+        const _this = this.$refs.accountform
+        receiptPaymentAccountById(id).then(res => {
+           _this.dialog= true
+          _this.form= res
+         }).catch(err => {
+
+         })
+      }
     }
   }
 }
