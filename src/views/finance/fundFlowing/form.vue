@@ -14,25 +14,25 @@
       	描述：当前账户余额应为计算得出的结果
       -->
       <el-form-item label="当前账户余额" >
-        
+
       </el-form-item>
       <el-form-item label="收付款人名称" prop= "receiptPaymentName">
         <el-input v-model="form.receiptPaymentName" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="收入支出项" prop = "tallyType">
-        <el-select v-model="form.tallyType.id"  placeholder="请选择记账类型" style="width: 370px;">
-	        <el-option v-for="item in tallyType" 
-	        	:key="item.key" 
-	        	:label="item.value" 
+        <el-select v-model="form.tallyType.id"  placeholder="请选择支出类型" style="width: 370px;">
+	        <el-option v-for="item in tallyType"
+	        	:key="item.key"
+	        	:label="item.value"
 	        	:value="item.key"/>
       	</el-select>
       </el-form-item>
       <el-form-item label="交易方式" prop = "tradTypeId">
       	<el-select v-model="form.tradType.id"  placeholder="请选择交易类型" style="width: 370px;">
           <el-option
-            v-for="(item, index) in tradType" 
-	      		:key="item.id" 
-	      		:label="item.label" 
+            v-for="(item, index) in tradType"
+	      		:key="item.id"
+	      		:label="item.label"
 	      		:value="item.id"/>
         </el-select>
       </el-form-item>
@@ -61,18 +61,15 @@
 </template>
 
 <script>
-import { add, edit } from '@/api/journalAccountOfCapital'
+import { add, edit } from '@/api/fundFlowing'
 import { getDictMap } from '@/api/dictDetail'
 import store from '@/store'
 export default {
-	created() {
-		this.getTallyType()
-	},
   props: {
     isAdd: {
       type: Boolean,
       required: true
-    }
+    },
   },
   data() {
   	//验证
@@ -116,7 +113,7 @@ export default {
     }
   },
   methods: {
-  	getTallyType() {
+		getTallyType() {
       this.typeList = this.$parent.typeList
       this.tradType = this.$parent.tradType
     },
@@ -131,6 +128,10 @@ export default {
       this.resetForm()
     },
     doSubmit() {
+    	this.typeList = this.$parent.typeList
+      this.tradType = this.$parent.tradType
+      debugger
+      //(this.typeList)
       this.loading = true
       if (this.isAdd) {
         this.doAdd()

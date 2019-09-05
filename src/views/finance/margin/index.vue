@@ -9,10 +9,10 @@
 		    <el-date-picker v-model="query.applicationsDateEnd" type="date" placeholder="选择日期" style="width: 200px;" class="filter-item"></el-date-picker>
 	    	<!-- 搜索 -->
         <el-select v-model="query.deptId" clearable placeholder="请选择园区" class="filter-item" style="width: 130px">
-          <el-option 
-          	v-for="item in depts" 
-          	:key="item.id" 
-          	:label="item.label" 
+          <el-option
+          	v-for="item in depts"
+          	:key="item.id"
+          	:label="item.label"
           	:value="item.id"/>
         </el-select>
       	<el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
@@ -25,10 +25,10 @@
             <span style="color: red;font-weight: 800;font-size: 20px;">毛利:{{gross}}</span>
           </div>
 			    <!--表格渲染-->
-			    <el-table 
-			    	v-loading="loading" 
-			    	:data="pevenues" 
-			    	size="small" 
+			    <el-table
+			    	v-loading="loading"
+			    	:data="pevenues"
+			    	size="small"
 			    	style="width: 100%;"
 			    	:summary-method="getSummaries"
 			    	show-summary>
@@ -49,7 +49,7 @@
 			      <el-table-column prop="electricityRent" label="电费"/>
 			      <el-table-column prop="arrersRent" label="欠款"/>
 			    </el-table>
-			    <!--<div> 
+			    <!--<div>
 			    	<span style="color: red;font-weight: 800;font-size: 20px;">收入合计：</span><span style="font-weight: 800;font-size: 20px;" id="incomeTotal">0</span>
             <span style="color: red;font-weight: 800;font-size: 20px;">成本合计：</span><span style="font-weight: 800;font-size: 20px;" id="costTotal">0</span>
             <span style="color: red;font-weight: 800;font-size: 20px;">毛利合计：</span><span style="font-weight: 800;font-size: 20px;" id="marginTotal">0</span>
@@ -119,7 +119,7 @@ export default {
   	parseDate,
     checkPermission,
     beforeInit() {
-			this.url = 'api/finaceMargin'
+			this.url = 'api/margin'
       const sort = 'createTime,desc'
       const query = this.query
   		this.params = { page: this.page, size: this.size, sort: sort, }
@@ -130,7 +130,7 @@ export default {
       const deptId = query.deptId
       //获取部门信息
       this.depts = JSON.parse(sessionStorage.getItem("depts"))
-      
+
       if (deptId) {this.params['deptId'] = deptId }
       //转化日期格式
       if (applicationsDateStart){

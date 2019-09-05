@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<!--表格渲染-->
-	    <el-table 
-	    	v-loading="loading" 
-	    	:data="costs" 
-	    	size="small" 
+	    <el-table
+	    	v-loading="loading"
+	    	:data="costs"
+	    	size="small"
 	    	style="width: 100%;"
 	    	:summary-method="getSummaries"
 	    	show-summary>
@@ -19,7 +19,7 @@
 	      <el-table-column prop="propertyRent" label="物业费"/>
 	      <el-table-column prop="taxCost" label="税赋成本"/>
 	      <el-table-column prop="otherRent" label="其他费"/>
-	      
+
 	    </el-table>
 	    <!--分页组件-->
 	    <el-pagination
@@ -29,8 +29,7 @@
 	      layout="total, prev, pager, next, sizes"
 	      @size-change="sizeChange"
 	      @current-change="pageChange"/>
-		</div>
-	</div>
+  </div>
 </template>
 
 <script>

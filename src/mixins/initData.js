@@ -52,6 +52,7 @@ export default {
       this.page = 0
       this.init()
     },
+    
     async financeInit() {
       if (!await this.beforeInit()) {
         return

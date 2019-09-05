@@ -93,7 +93,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del } from '@/api/journalAccountOfCapital'
+import { del } from '@/api/fundFlowing'
 import { getDictMap } from '@/api/dictDetail'
 import { parseDate } from '@/utils/index'
 import eForm from './form'
@@ -122,29 +122,25 @@ export default {
     getType() {
       getDictMap('transaction_type').then(res => {
         this.tallyTypeList = res.transaction_type
-      }).catch(err => {
-        console.log(err.response.data.message)
       })
       getDictMap('trade_type').then(res => {
       	this.typeList = res.trade_type
-      }).catch(err => {
-        console.log(err.response.data.message)
       })
       getDictMap('transaction_mode').then(res => {
         this.tradType = res.transaction_mode
-      }).catch(err => {
-        console.log(err.response.data.message)
       })
+
     },
     beforeInit() {
-      this.url = 'api/journalAccountOfCapital'
+      this.url = 'api/fundFlowing'
       const sort = 'id,desc'
       const query = this.query
-      this.params = { page: this.page, size: this.size, sort: sort }
+      const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
+      this.params = { page: this.page, size: this.size, sort: sort,deptId :deptId}
       //查询的值
       const applicationsDateStart = query.applicationsDateStart
       const applicationsDateEnd = query.applicationsDateEnd
-      
+
      	//交易方式
      	const tradType = query.tradType
       //交易类型id

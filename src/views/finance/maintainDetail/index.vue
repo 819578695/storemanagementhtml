@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="deptName === ''">
+		<div v-if="deptId === ''">
 			<div class="my-code">点击资金账户查看详情</div>
 		</div>
 		<div v-else>
@@ -20,11 +20,7 @@
 			<eForm ref="form" :is-add="isAdd"/>
 			<!--表格渲染-->
 	    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-	    	<el-table-column label="所属园区">
-	          <template slot-scope="scope">
-	            {{ deptName }}
-	          </template>
-	        </el-table-column>
+	      <el-table-column prop="deptName" label="所属园区"/>
 	      <el-table-column prop="tradTypeLabel" label="交易账户类型"/>
 	      <el-table-column prop="remaining" label="余额"/>
 	      <el-table-column prop="transactionDate" label="最近交易日期">
@@ -65,7 +61,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del } from '@/api/financeMaintarinDetail'
+import { del } from '@/api/maintarinDetail'
 import { parseTime } from '@/utils/index'
 import { getDictMap } from '@/api/dictDetail'
 import eForm from './form'
@@ -76,8 +72,9 @@ export default {
     return {
       tradType: [],
       delLoading: false,
-      deptName:'',
+      deptId:'',
       maintainId:'',
+      deptName:'',
     }
   },
   created() {
@@ -90,8 +87,8 @@ export default {
     parseTime,
     checkPermission,
     beforeInit() {
-      this.url = 'api/financeMaintarinDetail'
-      this.params = { page: this.page, size: this.size, deptName: this.deptName }
+      this.url = 'api/maintarinDetail'
+      this.params = { page: this.page, size: this.size, deptId: this.deptId }
       return true
     },
     subDelete(id) {

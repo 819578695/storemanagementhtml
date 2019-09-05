@@ -55,14 +55,14 @@
 			      layout="total, prev, pager, next, sizes"
 			      @size-change="sizeChange"
 			      @current-change="pageChange"/>
-        </el-card>	
+        </el-card>
       </el-col>
       <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>账户详情</span>
             <el-button
-              v-if="checkPermission(['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT','FINANCEMAINTARINDETAIL_DELETE']) && this.$refs.financeMaintarinDetail && this.$refs.financeMaintarinDetail.deptName"
+              v-if="checkPermission(['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT','FINANCEMAINTARINDETAIL_DELETE']) && this.$refs.financeMaintarinDetail && this.$refs.financeMaintarinDetail.deptId"
               class="filter-item"
               size="mini"
               style="float: right;padding: 4px 10px"
@@ -80,7 +80,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del } from '@/api/financeMaintain'
+import { del } from '@/api/maintain'
 import maintainDetail from '../maintainDetail/index'
 import eForm from './form'
 export default {
@@ -102,9 +102,9 @@ export default {
   methods: {
     checkPermission,
     beforeInit() {
-      this.url = 'api/financeMaintain'
-      const sort = 'id,desc'
-      this.params = { page: this.page, size: this.size, sort: sort }
+      this.url = 'api/maintain'
+      const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
+      this.params = { deptId }
       const query = this.query
       const type = query.type
       const value = query.value
@@ -139,8 +139,7 @@ export default {
     },
     handleCurrentChange(val) {
     	if(val){
-    		this.$refs.maintainDetail.deptName = val.deptName
-    		this.$refs.maintainDetail.maintainId = val.deptId
+    		this.$refs.maintainDetail.deptId = val.deptId
     		this.$refs.maintainDetail.init()
     	}
     },

@@ -4,9 +4,9 @@
       <el-form-item label="交易方式" >
         <el-select v-model="form.tradType.id"  placeholder="请选择交易方式" style="width: 370px;" >
           <el-option
-            v-for="(item, index) in tradType" 
-	      		:key="item.id" 
-	      		:label="item.label" 
+            v-for="(item, index) in tradType"
+	      		:key="item.id"
+	      		:label="item.label"
 	      		:value="item.id"/>
         </el-select>
       </el-form-item>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { add, edit } from '@/api/financeMaintarinDetail'
+import { add, edit } from '@/api/maintarinDetail'
 export default {
 	created() {
 		this.getType()
