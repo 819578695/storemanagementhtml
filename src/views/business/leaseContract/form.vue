@@ -1,50 +1,82 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="500px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="合同编号" >
-        <el-input v-model="form.contractNo" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="租户id" prop="tenantinformation.id">
-        <el-select v-model="form.tenantinformation.id"  placeholder="请选择租户信息">
-          <el-option
-            v-for="(item, index) in tenantinformationList"
-            :key="item.index"
-            :label="item.linkman"
-            :value="item.id"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="档口编号" prop="archivesmouthsmanagement.id">
-        <el-select v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号">
-          <el-option
-            v-for="(item, index) in archivesmouthsmanagementList"
-            :key="item.index"
-            :label="item.housenumber"
-            :value="item.id"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="合同名称" >
-        <el-input v-model="form.contractName" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="起止日期" >
-        <el-date-picker v-model="form.startDate" type="date" placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="截止日期" >
-        <el-date-picker v-model="form.endDate" type="date" placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="免租期" >
-        <el-input v-model="form.rentFreePeriod" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="保证金" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.deposit" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="合同总金额" >
-        <el-input v-model="form.contractAmount" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="文件名" >
-        <el-input v-model="form.fileName" style="width: 370px;"/>
-      </el-form-item>
+      <el-divider content-position="left">合同信息</el-divider>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="合同编号" >
+            <el-input v-model="form.contractNo" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="合同名称" prop="contractName">
+            <el-input v-model="form.contractName" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="起止日期" >
+            <el-date-picker v-model="form.startDate" type="date" placeholder="选择日期" style="width: 170px;">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="截止日期" >
+            <el-date-picker v-model="form.endDate" type="date" placeholder="选择日期" style="width: 170px;">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="免租期" >
+            <el-input v-model="form.rentFreePeriod" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="保证金" >
+            <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.deposit" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="合同金额" >
+            <el-input v-model="form.contractAmount" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="文件名" >
+            <el-input v-model="form.fileName" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-divider content-position="left">其他信息</el-divider>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="租户信息" prop="tenantinformation.id">
+            <el-select v-model="form.tenantinformation.id"  placeholder="请选择租户信息" style="width: 170px;">
+              <el-option
+                v-for="(item, index) in tenantinformationList"
+                :key="item.index"
+                :label="item.linkman"
+                :value="item.id"/>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="档口编号" prop="archivesmouthsmanagement.id">
+            <el-select v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" style="width: 170px;">
+              <el-option
+                v-for="(item, index) in archivesmouthsmanagementList"
+                :key="item.index"
+                :label="item.housenumber"
+                :value="item.id"/>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>

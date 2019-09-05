@@ -5,16 +5,16 @@
       <!-- 搜索  -->
         <el-date-picker v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
         <el-date-picker v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
-        <el-input v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
-        <!-- <el-select v-model="query.receiptPaymentAccountId"  placeholder="请选择档口编号">
+        <el-input v-model="query.houseNumber" clearable placeholder="输入编号" style="width: 200px;" />
+         <el-select v-model="query.deptId"  placeholder="请选择园区">
           <el-option
-            v-for="(item, index) in receiptPaymentAccountList"
-            :key="item.name"
+            v-for="(item, index) in deptList"
+            :key="item.id"
             :label="item.name"
             :value="item.id"
             class="filter-item" @keyup.enter.native="toQuery"
             />
-        </el-select> -->
+        </el-select>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -55,7 +55,13 @@
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseDate(scope.row.createTime) }}</span>
+        </template>
+      </el-table-column>
+      <!-- 合计-->
+      <el-table-column prop="creaeTime" label="合计" >
+        <template slot-scope="scope">
+          <span>{{ parseFloat(scope.row.houseRent+scope.row.propertyRent+scope.row.waterRent+scope.row.electricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent+scope.row.arrersRent) }}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT','PARKPEVENUE_DELETE'])" label="操作" width="150px" align="center">
@@ -73,11 +79,6 @@
             </div>
             <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini"/>
           </el-popover>
-        </template>
-      </el-table-column>
-      <el-table-column prop="creaeTime" label="合计">
-        <template slot-scope="scope">
-          <span>{{ parseFloat(scope.row.houseRent+scope.row.propertyRent+scope.row.waterRent+scope.row.electricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent+scope.row.arrersRent) }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -108,6 +109,7 @@ export default {
   mixins: [initData,initDict],
   data() {
     return {
+      deptList:[],
       deptId:'',
       delLoading: false,
     }
@@ -120,10 +122,13 @@ export default {
        this.init()
      })
       this.getDict('transaction_mode')
+      //取值给部门集合
+      this.deptList=JSON.parse(sessionStorage.getItem("depts"))
     })
   },
   methods: {
     parseTime,
+    parseDate,
     checkPermission,
     beforeInit() {
      /* this.receiptPaymentAccountList=this.$refs.form.receiptPaymentAccountList */
@@ -135,6 +140,7 @@ export default {
       const supplierName = query.supplierName
       const createDateStart = query.createDateStart
       const createDateEnd = query.createDateEnd
+      const deptId = query.deptId
       //最高级别查询所有数据
       if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
@@ -144,6 +150,7 @@ export default {
       }
       //档口编号
       if (houseNumber) { this.params['houseNumber'] = houseNumber }
+      if (deptId) { this.params['deptId'] = deptId }
       //转化日期格式
       if (createDateStart){
         this.params['createTimeStart'] = parseDate(createDateStart)

@@ -26,12 +26,12 @@
       <el-table-column prop="contractName" label="合同名称"/>
       <el-table-column prop="startDate" label="起止日期">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.startDate) }}</span>
+          <span>{{ parseDate(scope.row.startDate) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="endDate" label="截止日期">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.endDate) }}</span>
+          <span>{{ parseDate(scope.row.endDate) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="rentFreePeriod" label="免租期"/>
@@ -79,6 +79,7 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/rentContract'
 import { parseTime } from '@/utils/index'
+import { parseDate } from '@/utils/index'          //格式化日期
 import eForm from './form'
 import store from '@/store'
 export default {
@@ -100,6 +101,7 @@ export default {
   },
   methods: {
     parseTime,
+    parseDate,
     checkPermission,
     beforeInit() {
       this.url = 'api/rentContract'

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" title="收付款信息详情" width="500px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" title="付款信息详情" width="500px">
     <el-form ref="accountform" :model="form"  size="small" label-width="100px" prop="prop">
       <el-form-item label="名称" >
         <el-input disabled v-model="form.name" style="width: 370px;"/>
