@@ -3,7 +3,18 @@
     <!--工具栏-->
     <div class="head-container">
       <!-- 搜索 -->
-      <el-input v-model="query.deptName" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+      <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
+      <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
+      <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
+      <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
+        <el-option
+          v-for="(item, index) in deptList"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+          class="filter-item" @keyup.enter.native="toQuery"
+          />
+      </el-select>
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -24,7 +35,7 @@
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="主键"/>
       <el-table-column prop="rentContractName" label="合同名称"/>
-      <el-table-column prop="basicsParkName" label="档口名称"/>
+      <el-table-column prop="houseNumber" label="档口名称"/>
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="siteRent" label="场地租金"/>
       <el-table-column prop="waterRent" label="水费"/>
@@ -89,7 +100,8 @@ export default {
   data() {
     return {
       delLoading: false,
-      deptId:''
+      deptId:'',
+      deptList:[],
     }
   },
   created() {
@@ -100,6 +112,7 @@ export default {
         this.init()
       })
       // 加载数据字典
+      this.deptList=JSON.parse(sessionStorage.getItem("depts"))
       this.getDict('transaction_mode')
     })
   },
@@ -111,7 +124,11 @@ export default {
       this.url = 'api/parkCost'
       const sort = 'id,desc'
       const query = this.query
+      const houseNumber = query.houseNumber
+      const createDateStart = query.createDateStart
+      const createDateEnd = query.createDateEnd
       const deptName = query.deptName
+      const deptId = query.deptId
        //最高级别查询所有数据
        if(this.deptId==1){
          this.params = { page: this.page, size: this.size, sort: sort}
@@ -119,7 +136,14 @@ export default {
        else{
           this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId }
        }
-       if (deptName) { this.params['deptName'] = deptName }
+       if (deptId) { this.params['deptId'] = deptId }
+       //转化日期格式
+       if (createDateStart){
+         this.params['createTimeStart'] = parseDate(createDateStart)
+       }
+       if (createDateEnd){
+         this.params['createTimeEnd'] = parseDate(createDateEnd)
+       }
        return true
     },
     subDelete(id) {
@@ -151,9 +175,9 @@ export default {
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
-        basicsPark:{
-          id:data.parkId
-        },
+       archivesmouthsmanagement:{
+         id:data.archivesMouthsId
+       },
         rentContract:{
           id:data.rentContractId
         },
@@ -169,7 +193,10 @@ export default {
         },
         receiptPaymentAccount: {
           id:data.receiptPaymentAccountId
-        }
+        },
+        dept:{
+          id:data.deptId
+        },
       }
       _this.dialog = true
     },

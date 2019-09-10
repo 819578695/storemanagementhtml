@@ -4,14 +4,14 @@
       <el-divider content-position="left">基本信息</el-divider>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="园区名称" prop="basicsPark.id">
-           <el-select v-model="form.basicsPark.id"  placeholder="请选择园区" style="width: 170px;">
-             <el-option
-               v-for="(item, index) in basicsParkList"
-               :key="item.index"
-               :label="item.garden"
-               :value="item.id" />
-           </el-select>
+          <el-form-item label="档口编号"  prop="archivesmouthsmanagement.id">
+            <el-select v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" >
+              <el-option
+                v-for="(item, index) in archivesmouthsmanagementList"
+                :key="item.index"
+                :label="item.housenumber"
+                :value="item.id"/>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -99,7 +99,7 @@
 <script>
 import { add, edit } from '@/api/parkCost'
 import store from '@/store'
-import { basicsParkByDeptId} from '@/api/thearchives'
+import { archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
 import { rentContractByDeptId} from '@/api/rentContract'
 export default {
@@ -116,7 +116,7 @@ export default {
   data() {
     return {
       receiptPaymentAccountList:[],
-      basicsParkList:[],//园区集合
+      archivesmouthsmanagementList:[],//档口的集合
       rentContractList:[],//合同
       loading: false,
        dialog: false,
@@ -137,7 +137,7 @@ export default {
         dept:{
           id:''
         },
-        basicsPark:{
+        archivesmouthsmanagement:{
           id:''
         },
         receiptPaymentAccount: {
@@ -151,10 +151,10 @@ export default {
             { required: true, message: '请选择支付方式', trigger: 'change' }
           ],
         },
-        basicsPark:
+        archivesmouthsmanagement:
         {
          id: [
-            { required: true, message: '请选择园区', trigger: 'change' }
+            { required: true, message: '请选择档口编号', trigger: 'change' }
           ],
         },
         rentContract:
@@ -248,6 +248,9 @@ export default {
         receiptPaymentAccount: {
           id:''
         },
+        archivesmouthsmanagement:{
+          id:''
+        },
       }
     },
     //查询所有的集合
@@ -258,11 +261,11 @@ export default {
         }).catch(err => {
           console.log(err.response.data.message)
         })
-        basicsParkByDeptId(res.deptId).then(res => {
-          this.basicsParkList = res
-        }).catch(err => {
-          console.log(err.response.data.message)
-        })
+       archivesmouthsmanagementByDeptId(res.deptId).then(res => {
+         this.archivesmouthsmanagementList = res
+       }).catch(err => {
+         console.log(err.response.data.message)
+       })
         rentContractByDeptId(res.deptId).then(res => {
           this.rentContractList = res
         }).catch(err => {

@@ -30,3 +30,11 @@ export function edit(data) {
     data
   })
 }
+
+export function upload(data,contractNo) {
+  return request({
+    url: 'api/upload/'+contractNo,
+    method: 'post',
+    data
+  })
+}

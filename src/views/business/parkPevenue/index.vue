@@ -3,10 +3,10 @@
     <!--工具栏-->
     <div>
       <!-- 搜索  -->
-        <el-date-picker v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
-        <el-date-picker v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
-        <el-input v-model="query.houseNumber" clearable placeholder="输入编号" style="width: 200px;" />
-         <el-select v-model="query.deptId"  placeholder="请选择园区">
+        <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
+        <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
+        <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
+         <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
           <el-option
             v-for="(item, index) in deptList"
             :key="item.id"
@@ -121,9 +121,9 @@ export default {
        this.deptId=res.deptId
        this.init()
      })
+     this.deptList=JSON.parse(sessionStorage.getItem("depts"))
       this.getDict('transaction_mode')
       //取值给部门集合
-      this.deptList=JSON.parse(sessionStorage.getItem("depts"))
     })
   },
   methods: {
@@ -137,7 +137,6 @@ export default {
       const query = this.query
       //获取query搜索的值
       const houseNumber = query.houseNumber
-      const supplierName = query.supplierName
       const createDateStart = query.createDateStart
       const createDateEnd = query.createDateEnd
       const deptId = query.deptId
