@@ -38,6 +38,7 @@ export default {
     	tradType: [],
       loading: false, dialog: false,
       form: {
+      	id: '',
       	tradType: {id:''},
         maintainId: '',
         remaining: '',
@@ -92,6 +93,7 @@ export default {
       this.dialog = false
       this.$refs['form'].resetFields()
       this.form = {
+      	id: '',
         tradType: {id:''},
         maintainId: '',
         remaining: '',

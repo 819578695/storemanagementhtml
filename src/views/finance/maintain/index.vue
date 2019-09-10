@@ -90,7 +90,7 @@ export default {
     return {
       delLoading: false,
       queryTypeOptions: [
-        { key: 'deptId', display_name: '园区名称' }
+        { key: 'deptName', display_name: '园区名称' }
       ]
     }
   },
@@ -104,12 +104,14 @@ export default {
     beforeInit() {
       this.url = 'api/maintain'
       const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
-      this.params = { deptId }
       const query = this.query
       const type = query.type
       const value = query.value
+
+      
+      this.params = { deptId :deptId, }
       if (type && value) { this.params[type] = value }
-      if(this.$refs.maintainDetail){
+			if(this.$refs.maintainDetail){
       	this.$refs.maintainDetail.data=[]
       	this.$refs.maintainDetail.deptId=''
       }
@@ -146,6 +148,7 @@ export default {
     edit(data) {
       this.isAdd = false
       const _this = this.$refs.form
+      debugger
       _this.form = {
         id: data.id,
         deptId: data.deptId,
