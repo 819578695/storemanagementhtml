@@ -52,7 +52,7 @@ export default {
       this.page = 0
       this.init()
     },
-    
+//  财务
     async financeInit() {
       if (!await this.beforeInit()) {
         return
@@ -73,6 +73,14 @@ export default {
           reject(err)
         })
       })
+    },
+    toFinanceQuery(){
+    	this.page = 0
+    	this.financeInit()
+    },
+    financePageChange(e) {
+      this.page = e - 1
+      this.financeInit()
     },
   }
 }

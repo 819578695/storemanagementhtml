@@ -28,7 +28,7 @@
 	      :current-page="page + 1"
 	      layout="total, prev, pager, next, sizes"
 	      @size-change="sizeChange"
-	      @current-change="pageChange"/>
+	      @current-change="financePageChange"/>
   </div>
 </template>
 

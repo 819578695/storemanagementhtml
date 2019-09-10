@@ -15,15 +15,18 @@
           	:label="item.label"
           	:value="item.id"/>
         </el-select>
-      	<el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
+      	<el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toFinanceQuery">搜索</el-button>
 			</div>
-      <el-col :xs="28" :sm="28" :md="14" :lg="14" :xl="14">
+			<div >
+            <span style="font-size: 20px;">收入:{{getSum}}</span>&emsp;&emsp;
+            <span style="font-size: 20px;">支出:{{this.costsum}}</span>&emsp;&emsp;
+            <span style="color: red;font-size: 20px;">毛利:{{gross}}</span>
+			</div>
+      <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
         <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>园区收入</span>
-            <span >合计:{{getSum}}</span>
-            <span style="color: red;font-weight: 800;font-size: 20px;">毛利:{{gross}}</span>
-          </div>
+        	<div slot="header" class="clearfix">
+        		<span>园区收入</span>
+        	</div>
 			    <!--表格渲染-->
 			    <el-table
 			    	v-loading="loading"
@@ -32,9 +35,9 @@
 			    	style="width: 100%;"
 			    	:summary-method="getSummaries"
 			    	show-summary>
-			    	<el-table-column prop="createTime" label="时间">
-			      	<template slot-scope="scope">
-			          <span>{{ parseDate(scope.row.createTime) }}</span>
+			    	<el-table-column prop="createTime" label="时间" width="100">
+			      	<template slot-scope="scope" >
+			          <span >{{ parseDate(scope.row.createTime) }}</span>
 			        </template>
 			      </el-table-column>
 			      <el-table-column prop="propertyRent" label="物业费"/>
@@ -49,11 +52,6 @@
 			      <el-table-column prop="electricityRent" label="电费"/>
 			      <el-table-column prop="arrersRent" label="欠款"/>
 			    </el-table>
-			    <!--<div>
-			    	<span style="color: red;font-weight: 800;font-size: 20px;">收入合计：</span><span style="font-weight: 800;font-size: 20px;" id="incomeTotal">0</span>
-            <span style="color: red;font-weight: 800;font-size: 20px;">成本合计：</span><span style="font-weight: 800;font-size: 20px;" id="costTotal">0</span>
-            <span style="color: red;font-weight: 800;font-size: 20px;">毛利合计：</span><span style="font-weight: 800;font-size: 20px;" id="marginTotal">0</span>
-			    </div>-->
 			    <!--分页组件-->
 			    <el-pagination
 			      :total="total"
@@ -61,17 +59,15 @@
 			      :current-page="page + 1"
 			      layout="total, prev, pager, next, sizes"
 			      @size-change="sizeChange"
-			      @current-change="pageChange">
-			    </el-pagination>
+			      @current-change="financePageChange"/>
 			  </el-card>
 			</el-col>
 			<!-- 右侧 -->
-			<el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
+			<el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
         <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>园区成本</span>
-            <span>合计:{{this.costsum}}</span>
-          </div>
+        	<div slot="header" class="clearfix">
+        		<span>园区支出</span>
+        	</div>
 			    <pevenueIndex ref="pevenueIndex"  v-on:costSum="getCostSum"/>
 			  </el-card>
 			</el-col>
@@ -122,22 +118,22 @@ export default {
 			this.url = 'api/margin'
       const sort = 'createTime,desc'
       const query = this.query
-  		this.params = { page: this.page, size: this.size, sort: sort, }
+      const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
+  		this.params = { page: this.page, size: this.size, sort: sort, deptId: deptId}
   		//查询的值
       const applicationsDateStart = query.applicationsDateStart
       const applicationsDateEnd = query.applicationsDateEnd
-      //查询部门
-      const deptId = query.deptId
       //获取部门信息
       this.depts = JSON.parse(sessionStorage.getItem("depts"))
-
-      if (deptId) {this.params['deptId'] = deptId }
+			//查询部门
+      this.deptId = query.deptId
+      if (query.deptId!=null) {this.params['deptId'] = query.deptId }
       //转化日期格式
       if (applicationsDateStart){
-        this.params['tradDateStart'] = parseDate(applicationsDateStart)
+        this.params['createTimeStart'] = parseDate(applicationsDateStart)
       }
       if (applicationsDateEnd){
-        this.params['tradDateEnd'] = parseDate(applicationsDateEnd)
+        this.params['createTimeEnd'] = parseDate(applicationsDateEnd)
       }
 	  	return true
     },
