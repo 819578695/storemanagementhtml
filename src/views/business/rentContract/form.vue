@@ -202,6 +202,7 @@ export default {
         contractNo: ''
       }
     },
+    //文件上传
     beforeUpload(file){
       this.isShowUploading = true;
       this.imageFrontFile = file;

@@ -4,8 +4,12 @@
 
 <script>
 import echarts from 'echarts'
+import store from '@/store'
 require('echarts/theme/macarons') // echarts theme
 import { debounce } from '@/utils'
+import { findPevenueMoney } from '@/api/parkPevenue'
+
+const animationDuration = 6000
 
 export default {
   props: {
@@ -24,11 +28,20 @@ export default {
   },
   data() {
     return {
+      deptId:'',
       chart: null
     }
   },
   mounted() {
-    this.initChart()
+    store.dispatch('GetInfo').then(res => {
+       if (this.deptId==1) {
+         this.deptId=''
+       }
+       else{
+         this.deptId=res.deptId
+       }
+       this.initChart()
+     })
     this.__resizeHandler = debounce(() => {
       if (this.chart) {
         this.chart.resize()
@@ -46,37 +59,50 @@ export default {
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(this.$el, 'macarons')
-
-      this.chart.setOption({
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
-        },
-        legend: {
-          left: 'center',
-          bottom: '10',
-          data: ['Industries', 'Technology', 'Forex', 'Gold', 'Forecasts']
-        },
-        calculable: true,
-        series: [
-          {
-            name: 'WEEKLY WRITE ARTICLES',
-            type: 'pie',
-            roseType: 'radius',
-            radius: [15, 95],
-            center: ['50%', '38%'],
-            data: [
-              { value: 320, name: 'Industries' },
-              { value: 240, name: 'Technology' },
-              { value: 149, name: 'Forex' },
-              { value: 100, name: 'Gold' },
-              { value: 59, name: 'Forecasts' }
-            ],
-            animationEasing: 'cubicInOut',
-            animationDuration: 2600
-          }
-        ]
+      findPevenueMoney(this.deptId).then(res => {
+          var money =''
+          money=res  //统计金额
+          this.chart = echarts.init(this.$el, 'macarons')
+          var mounth=[new Date().getMonth()+'月',new Date().getMonth()+1+'月']//保存时间的数组
+          this.chart.setOption({
+            title:{
+              text:'园区收入',
+            },
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+              }
+            },
+            grid: {
+              left: '2%',
+              right: '2%',
+              bottom: '3%',
+              containLabel: true
+            },
+            xAxis: [{
+              type: 'category',
+              data: mounth,
+              axisTick: {
+                alignWithLabel: true
+              }
+            }],
+            yAxis: [{
+              type: 'value',
+              axisTick: {
+                show: false
+              }
+            }],
+            series: [{
+              name: '成本',
+              type: 'bar',
+              stack: 'vistors',
+              barWidth: '20%',
+              data: money,
+              animationDuration
+            }]
+          })
+      }).catch(err => {
       })
     }
   }
