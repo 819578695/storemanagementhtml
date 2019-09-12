@@ -117,7 +117,6 @@ export default {
     edit(data) {
       this.isAdd = false
       const _this = this.$refs.form
-      debugger
       _this.form = {
         id: data.id,
         tradType: {id : data.tradTypeId },

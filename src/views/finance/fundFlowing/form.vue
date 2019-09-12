@@ -8,13 +8,8 @@
       <el-form-item label="金额" prop = "money">
         <el-input v-model="form.money" style="width: 370px;"/>
       </el-form-item>
-      <!--
-      	作者：mingkun_niu@126.com
-      	时间：2019-08-23
-      	描述：当前账户余额应为计算得出的结果
-      -->
-      <el-form-item label="当前账户余额" >
-
+      <el-form-item label="当前账户总余额" >
+				<span>{{money}}</span>
       </el-form-item>
       <el-form-item label="收付款人名称" prop= "receiptPaymentName">
         <el-input v-model="form.receiptPaymentName" style="width: 370px;"/>
@@ -63,6 +58,7 @@
 <script>
 import { add, edit } from '@/api/fundFlowing'
 import { getDictMap } from '@/api/dictDetail'
+import { getMoney } from '@/api/maintarinDetail'
 import store from '@/store'
 export default {
   props: {
@@ -91,7 +87,9 @@ export default {
     	tradType: [],//交易方式
     	typeList: [],
       loading: false, dialog: false,from: {money:'' , tradDate:'', receiptPaymentName:'',},
+      money: '',
       form: {
+      	id:'',
         tradDate: '',
         tradType: {id:''},
         money: '',
@@ -100,7 +98,7 @@ export default {
         typeDict: {id:''},
         backNum: '',
         backAccount: '',
-        deptId: ''
+        dept: {id: ''}
       },
       rules: {
       	money: [{ required: true, trigger: 'blur', validator: moneyNum}],
@@ -130,8 +128,6 @@ export default {
     doSubmit() {
     	this.typeList = this.$parent.typeList
       this.tradType = this.$parent.tradType
-      debugger
-      //(this.typeList)
       this.loading = true
       if (this.isAdd) {
         this.doAdd()
@@ -139,7 +135,7 @@ export default {
     },
     doAdd() {
     	store.dispatch('GetInfo').then(res => {
-    		this.form.deptId = res.deptPid
+    		this.form.dept.id = res.deptId
 	      add(this.form).then(res => {
 	        this.resetForm()
 	        this.$notify({
@@ -185,6 +181,12 @@ export default {
         backNum: '',
         backAccount: ''
       }
+    },
+    getMoney(){
+    	const params = { deptId :JSON.parse(sessionStorage.getItem("user")).deptId, }
+			getMoney(params).then(res=>{
+    		this.money = res
+    	})
     }
   }
 }

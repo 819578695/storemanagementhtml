@@ -52,14 +52,7 @@
 			      <el-table-column prop="electricityRent" label="电费"/>
 			      <el-table-column prop="arrersRent" label="欠款"/>
 			    </el-table>
-			    <!--分页组件-->
-			    <el-pagination
-			      :total="total"
-			      style="margin-top: 8px;"
-			      :current-page="page + 1"
-			      layout="total, prev, pager, next, sizes"
-			      @size-change="sizeChange"
-			      @current-change="financePageChange"/>
+			    
 			  </el-card>
 			</el-col>
 			<!-- 右侧 -->
@@ -71,6 +64,17 @@
 			    <pevenueIndex ref="pevenueIndex"  v-on:costSum="getCostSum"/>
 			  </el-card>
 			</el-col>
+			<div style="text-align: center">
+				&emsp;&emsp;
+				<!--分页组件-->
+			    <el-pagination
+			      :total="total"
+			      style="margin-top: 8px;"
+			      :current-page="page + 1"
+			      layout="total, prev, pager, next, sizes"
+			      @size-change="sizeChange"
+			      @current-change="financePageChange"/>
+			</div>
 		</el-row>
   </div>
 </template>

@@ -60,10 +60,11 @@ export default {
       return new Promise((resolve, reject) => {
         this.loading = true
         initData(this.url, this.params).then(res => {
-        	this.total = res.pevenuesTotal
+        	this.total = res.pevenuesTotal > res.costsTotal ? res.pevenuesTotal:res.costsTotal
+//      	this.total = res.pevenuesTotal
           this.pevenues = res.pevenues
           this.$refs.pevenueIndex.costs=res.costs
-          this.$refs.pevenueIndex.total=res.costsTotal
+//        this.$refs.pevenueIndex.total=res.costsTotal
           setTimeout(() => {
             this.loading = false
           }, this.time)

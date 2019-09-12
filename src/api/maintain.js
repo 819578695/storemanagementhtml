@@ -21,4 +21,5 @@ export function edit(data) {
     method: 'put',
     data
   })
+
 }

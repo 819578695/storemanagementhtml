@@ -8,7 +8,7 @@
 	    	style="width: 100%;"
 	    	:summary-method="getSummaries"
 	    	show-summary>
-	      <el-table-column prop="createTime" label="时间">
+	      <el-table-column prop="createTime" label="时间" width="100">
 	      	<template slot-scope="scope">
 	          <span>{{ parseDate(scope.row.createTime) }}</span>
 	        </template>
@@ -22,13 +22,13 @@
 
 	    </el-table>
 	    <!--分页组件-->
-	    <el-pagination
+	    <!--<el-pagination
 	      :total="total"
 	      style="margin-top: 8px;"
 	      :current-page="page + 1"
 	      layout="total, prev, pager, next, sizes"
 	      @size-change="sizeChange"
-	      @current-change="financePageChange"/>
+	      @current-change="financePageChange"/>-->
   </div>
 </template>
 

@@ -43,6 +43,28 @@
           icon="el-icon-plus"
           @click="add">新增</el-button>
       </div>
+      <!--导出-->
+      <div style="display: inline-block;">
+        <el-button
+          v-permission="['ADMIN']"
+          :loading="downloadLoading"
+          size="mini"
+          class="filter-item"
+          type="warning"
+          icon="el-icon-download"
+          @click="download">导出</el-button>
+      </div>
+      <!-- 全部导出 -->
+      <div style="display: inline-block;">
+        <el-button
+          v-permission="['ADMIN']"
+          :loading="downloadAllLoading"
+          size="mini"
+          class="filter-item"
+          type="warning"
+          icon="el-icon-download"
+          @click="downloadAll">全部导出</el-button>
+      </div>
     </div>
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd"/>
@@ -103,10 +125,12 @@ export default {
   data() {
     return {
       delLoading: false,
-
       tallyTypeList: [],
       typeList: [],
-      tradType: []
+      tradType: [],
+      downloadLoading: false,//导出加载
+      downloadAllLoading: false,//全部导出加载
+      delLoading: false,//删除加载
     }
   },
   created() {
@@ -115,7 +139,6 @@ export default {
       this.getType()
     })
   },
-
   methods: {
     parseDate,
     checkPermission,
@@ -184,6 +207,8 @@ export default {
     	this.$refs.ruleform
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.getTallyType()
+      this.$refs.form.getMoney()
     },
     edit(data) {
       this.isAdd = false
@@ -202,7 +227,41 @@ export default {
         backAccount: data.backAccount
       }
       _this.dialog = true
-    }
+    },
+    // 导出
+    download() {
+       this.downloadLoading = true
+      import('@/utils/export2Excel').then(excel => {
+        const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '付款比例', '申请金额', '申请日期', '应付日期', '实际付款金额', '实际付款日期', '付款方式','收付款账户']
+        const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
+        const data = this.formatJson(filterVal, this.data)
+        excel.export_json_to_excel({
+          header: tHeader,  //表头
+          data,             //数据
+          filename: 'table-list' //文件名
+        })
+        this.downloadLoading = false
+      })
+    },// 全部导出
+    downloadAll() {
+     const sort = 'id,desc'
+     const params = { sort: sort }
+     getProcurementInformationAll(params).then(res => {
+       this.downloadAllLoading = true
+       this.dataALL = res
+       import('@/utils/export2Excel').then(excel => {
+         const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '付款比例', '申请金额', '申请日期', '应付日期', '实际付款金额', '实际付款日期', '付款方式','收付款账户']
+         const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
+         const data = this.formatJson(filterVal, this.dataALL)
+         excel.export_json_to_excel({
+           header: tHeader,
+           data,
+           filename: 'table-list'
+         })
+         this.downloadAllLoading = false
+       })
+     })
+    },
   }
 }
 </script>

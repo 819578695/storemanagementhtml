@@ -22,3 +22,11 @@ export function edit(data) {
     data
   })
 }
+
+export function getMoney(params){
+	return request({
+		url: 'api/getMoney',
+		method: 'get',
+		params
+	})
+}
