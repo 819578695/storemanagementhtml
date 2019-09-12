@@ -46,11 +46,20 @@
       <el-table-column prop="parkingRent" label="停车费"/>
       <el-table-column prop="lateRent" label="滞纳金"/>
       <el-table-column prop="groundPoundRent" label="地磅费"/>
-      <el-table-column prop="arrersRent" label="欠款金额"/>
-      <el-table-column prop="paymentTypeName" label="交易类型"/>
+      <el-table-column prop="paymentTypeName" label="交易方式"/>
+      <el-table-column prop="type" label="交易类型">
+        <template slot-scope="scope">
+          <span>{{scope.row.type==1?'实付':scope.row.type==2?'欠款':'补缴'}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="收款信息">
         <template slot-scope="scope">
           <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="updateTime" label="修改时间">
+        <template slot-scope="scope">
+          <span>{{ parseDate(scope.row.updateTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间">
@@ -61,7 +70,7 @@
       <!-- 合计-->
       <el-table-column prop="creaeTime" label="合计" >
         <template slot-scope="scope">
-          <span>{{ parseFloat(scope.row.houseRent+scope.row.propertyRent+scope.row.waterRent+scope.row.electricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent+scope.row.arrersRent) }}</span>
+          <span>{{ parseFloat(scope.row.houseRent+scope.row.propertyRent+scope.row.waterRent+scope.row.electricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent) }}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT','PARKPEVENUE_DELETE'])" label="操作" width="150px" align="center">
@@ -181,10 +190,11 @@ export default {
       this.isAdd = true
       this.$refs.form.dialog = true
       this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
+      this.$refs.paybackShow = false //隐藏补缴按钮
     },
     edit(data) {
       this.isAdd = false
-	  this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
+	    this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
@@ -196,9 +206,9 @@ export default {
         liquidatedRent: data.liquidatedRent,
         lateRent: data.lateRent,
         groundPoundRent: data.groundPoundRent,
-        arrersRent: data.arrersRent,
         managementRent:data.managementRent,
         parkingRent:data.parkingRent,
+        type:data.type,
         leaseContract:{
           id:data.leaseContractId
         },
@@ -213,9 +223,10 @@ export default {
         },
         receiptPaymentAccount: {
           id:data.receiptPaymentAccountId
-        }
+        },
       }
       _this.dialog = true
+      _this.paybackShow = true //显示补缴按钮
     },
     //查看收付款信息详情
     findReceiptPaymentAccount(id){

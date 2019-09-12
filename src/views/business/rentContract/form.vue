@@ -46,26 +46,29 @@
             <el-input v-model="form.contractAmount" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-divider content-position="left">合同附件</el-divider>
+      <el-row>
         <el-col :span="12">
           <el-form-item label="文件名" >
-			  <el-upload v-show="imageFrontUrl == null"
-          name="upfile"
-          drag
-          :headers="headers"
-          :with-credentials=true
-			    :action="uploadUrl"
-          :before-upload="beforeUpload"
-			    multiple>
-			    <i class="el-icon-upload"></i>
-			    <div class="el-upload__text"><p v-if="imageFrontFile !== null">文件名称: {{ imageFrontFile.name }}</p>
-          <p v-else>点击或拖拽文件上传</p></div>
-			  </el-upload>
-        <div class="text-xs-center" v-show="imageFrontUrl != null">
-            <img :src="imageFrontUrl" />
-         </div>
-        <el-button outline  @click="clearFile">
-                  删除文件
-        </el-button>
+          <el-upload
+          class="upload-demo"
+          v-show="imageFrontUrl == null"
+            name="upfile"
+            drag
+            :headers="headers"
+            :with-credentials=true
+            :action="uploadUrl"
+            :before-upload="beforeUpload"
+            multiple>
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text"><p v-if="imageFrontFile !== null">文件名称: {{ imageFrontFile.name }}</p>
+            <p v-else>点击或拖拽文件上传</p></div>
+          </el-upload>
+           <div class="text-xs-center" v-show="imageFrontUrl != null">
+              <img :src="imageFrontUrl" />
+              <el-button outline  @click="clearFile">清除</el-button>
+           </div>
           </el-form-item>
         </el-col>
       </el-row>
@@ -91,7 +94,7 @@ export default {
   data() {
     return {
       imageFrontUrl:null, //文件上传路径
-      imageFrontFile: null,//文件上传
+      imageFrontFile: null,//接受文件上传的参数
       isShowUploading: false,//文件上传加载中
       headers: {//设置请求头
                'Authorization': 'Bearer '+ getToken()
@@ -153,7 +156,7 @@ export default {
          this.form.dept.id = res.deptId
          add(this.form).then(res => {
            this.resetForm()
-            this.clearFile();
+            this.clearFile()
            this.$notify({
              title: '添加成功',
              type: 'success',
@@ -165,8 +168,6 @@ export default {
            this.loading = false
            console.log(err.response.data.message)
          })
-          var fileData = new FormData();
-           fileData.append('upfile', this.file);//upfile是键，file是值，就是要传的文件
       })
     },
     doEdit() {
@@ -250,9 +251,11 @@ export default {
         }
     },
     //清除文件
-      clearFile(){
-          this.imageFrontUrl = null;
-      },
+    clearFile(){
+        this.imageFrontUrl = null;
+        this.form.fileName = null;
+        this.imageFrontFile = null;
+    },
   }
 }
 </script>

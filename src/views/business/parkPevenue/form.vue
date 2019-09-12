@@ -77,20 +77,13 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="欠款金额" label-width="100px" >
-              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.arrersRent" style="width: 170px;"/>
-            </el-form-item>
+             <el-form-item label="停车费" label-width="100px" >
+               <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.parkingRent" style="width: 170px;"/>
+             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="管理费" label-width="100px" >
               <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.managementRent" style="width: 170px;"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="停车费" label-width="100px" >
-              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.parkingRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -119,16 +112,35 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="类型" label-width="100px" prop="type">
+                <el-select v-model="form.type"  placeholder="请选择类型">
+                  <el-option  v-for="(item, index) in typeList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="text" @click="cancel">取消</el-button>
-      <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
+      <el-row>
+        <el-col :span="4" v-show="paybackShow">
+          <el-button  style="text-align: left;" :loading="paybackloading" type="success" @click="doPayback">补缴</el-button>
+        </el-col>
+        <el-col :span="20">
+          <el-button type="text" @click="cancel">取消</el-button>
+          <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
+        </el-col>
+      </el-row>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { add, edit } from '@/api/parkPevenue'
+import { add, edit,payBack } from '@/api/parkPevenue'
 import store from '@/store'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
 import { archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
@@ -146,7 +158,13 @@ export default {
   },
   data() {
     return {
+      paybackShow:false,
+      typeList:[
+        {value:1,label:'实付'},
+        {value:2,label:'欠款'},
+      ],//类型集合
       loading: false,
+      paybackloading:false,
       dialog: false,
       leaseContractList:[],
       receiptPaymentAccountList:[],
@@ -161,7 +179,6 @@ export default {
         liquidatedRent: '',
         lateRent: '',
         groundPoundRent: '',
-        arrersRent: '',
         managementRent:'',
         parkingRent:'',
         leaseContract:{
@@ -179,6 +196,7 @@ export default {
         dictDetail:{
           id:''
         },
+        type:''
       },
       rules: {
         archivesmouthsmanagement:
@@ -205,6 +223,8 @@ export default {
             { required: true, message: '请选择收款账户', trigger: 'change' }
           ],
         },
+        type:
+            { required: true, message: '请选择类型', trigger: 'change' }
       }
     }
   },
@@ -257,6 +277,33 @@ export default {
         console.log(err.response.data.message)
       })
     },
+    doPayback(){
+      //只有欠款才能进行补缴
+      if(this.form.type==2){
+         this.form.type=3
+          payBack(this.form).then(res => {
+            this.resetForm()
+            this.$notify({
+              title: '补缴成功',
+              type: 'success',
+              duration: 2500
+            })
+            this.paybackloading = false
+            this.$parent.init()
+          }).catch(err => {
+            this.paybackloading = false
+            console.log(err.response.data.message)
+          })
+      }
+      else{
+        this.$notify({
+          title: '只有欠款才能补缴',
+          type: 'success',
+          duration: 2500
+        })
+      }
+
+    },
     resetForm() {
       this.dialog = false
       this.$refs['form'].resetFields()
@@ -271,7 +318,6 @@ export default {
         liquidatedRent: '',
         lateRent: '',
         groundPoundRent: '',
-        arrersRent: '',
         managementRent:'',
         parkingRent:'',
         dept:{
@@ -289,6 +335,7 @@ export default {
         dictDetail:{
           id:''
         },
+        type:''
       }
     },
     //查询所有的集合
