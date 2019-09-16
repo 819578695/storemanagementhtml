@@ -22,3 +22,11 @@ export function edit(data) {
     data
   })
 }
+
+export function getFundFlowing(params){
+	return request({
+		url: 'api/fundFlowingAll',
+		method: 'get',
+		params
+	})
+}

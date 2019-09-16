@@ -115,7 +115,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del } from '@/api/fundFlowing'
+import { getFundFlowing } from '@/api/fundFlowing'
 import { getDictMap } from '@/api/dictDetail'
 import { parseDate } from '@/utils/index'
 import eForm from './form'
@@ -232,35 +232,50 @@ export default {
     download() {
        this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
-        const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '付款比例', '申请金额', '申请日期', '应付日期', '实际付款金额', '实际付款日期', '付款方式','收付款账户']
-        const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
+        const tHeader = ['交易日期', '交易方式', '金额', '收入支出项', '当前账户余额', '收付款人名称', '交易类型', '银行账号', '银行户名']
+        const filterVal = ['tradDate', 'tradTypeLabel', 'money', 'tallyTypeIdLabel', 'urrentBalance', 'receiptPaymentName', 'typeLabel', 'backNum', 'backAccount']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader,  //表头
           data,             //数据
-          filename: 'table-list' //文件名
+          filename: '资金流水' //文件名
         })
         this.downloadLoading = false
       })
     },// 全部导出
     downloadAll() {
      const sort = 'id,desc'
-     const params = { sort: sort }
-     getProcurementInformationAll(params).then(res => {
+     const query = this.query
+     const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
+     //查询的值
+      const tradDateStart = parseDate(query.applicationsDateStart)
+      const tradDateEnd = parseDate(query.applicationsDateEnd)
+     const params = { sort: sort, deptId: deptId,tradDateStart: tradDateStart,tradDateEnd: tradDateEnd }
+     getFundFlowing(params).then(res => {
        this.downloadAllLoading = true
        this.dataALL = res
        import('@/utils/export2Excel').then(excel => {
-         const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '付款比例', '申请金额', '申请日期', '应付日期', '实际付款金额', '实际付款日期', '付款方式','收付款账户']
-         const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
-         const data = this.formatJson(filterVal, this.dataALL)
-         excel.export_json_to_excel({
-           header: tHeader,
-           data,
-           filename: 'table-list'
-         })
-         this.downloadAllLoading = false
+				const tHeader = ['交易日期', '交易方式', '金额', '收入支出项', '当前账户余额', '收付款人名称', '交易类型', '银行账号', '银行户名']
+        const filterVal = ['tradDate', 'tradTypeLabel', 'money', 'tallyTypeIdLabel', 'urrentBalance', 'receiptPaymentName', 'typeLabel', 'backNum', 'backAccount']
+		    const data = this.formatJson(filterVal, this.dataALL)
+		    excel.export_json_to_excel({
+		      header: tHeader,
+		      data,
+		      filename: 'table-list'
+		    })
+		    this.downloadAllLoading = false
        })
      })
+    },
+    //数据转换
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'tradDate') {
+          return parseDate(v[j])
+        }  else {
+          return v[j]
+        }
+      }))
     },
   }
 }

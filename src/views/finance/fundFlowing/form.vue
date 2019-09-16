@@ -1,52 +1,83 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="550px">
-    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="120px">
-      <el-form-item label="交易日期" prop ="tradDate" >
-        <el-date-picker v-model="form.tradDate" type="date" placeholder="选择日期" style="width: 370px;">
-         </el-date-picker>
-      </el-form-item>
-      <el-form-item label="金额" prop = "money">
-        <el-input v-model="form.money" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="当前账户总余额" >
-				<span>{{money}}</span>
-      </el-form-item>
-      <el-form-item label="收付款人名称" prop= "receiptPaymentName">
-        <el-input v-model="form.receiptPaymentName" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="收入支出项" prop = "tallyType">
-        <el-select v-model="form.tallyType.id"  placeholder="请选择支出类型" style="width: 370px;">
-	        <el-option v-for="item in tallyType"
-	        	:key="item.key"
-	        	:label="item.value"
-	        	:value="item.key"/>
-      	</el-select>
-      </el-form-item>
-      <el-form-item label="交易方式" prop = "tradTypeId">
-      	<el-select v-model="form.tradType.id"  placeholder="请选择交易类型" style="width: 370px;">
-          <el-option
-            v-for="(item, index) in tradType"
-	      		:key="item.id"
-	      		:label="item.label"
-	      		:value="item.id"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="交易类型" prop="typeDict">
-      	<el-select v-model="form.typeDict.id" placeholder="请选择" style="width: 370px;">
-			    <el-option
-			      v-for="(item, index) in typeList"
-			      :key="item.id"
-			      :label="item.label"
-			      :value="item.id">
-			    </el-option>
-			  </el-select>
-      </el-form-item>
-      <el-form-item label="银行账号" >
-        <el-input v-model="form.backNum" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="银行户名" >
-        <el-input v-model="form.backAccount" style="width: 370px;"/>
-      </el-form-item>
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="600px">
+    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
+    	<el-divider content-position="left">费用信息</el-divider>
+	    	<el-row>
+	    		<el-col :span="12">
+	    			<el-form-item label="交易日期" prop ="tradDate" >
+			        <el-date-picker v-model="form.tradDate" type="date" placeholder="选择日期" style="width: 180px;">
+			         </el-date-picker>
+			      </el-form-item>
+	    		</el-col>	
+	    		<el-col :span="12">
+	    			<el-form-item label="金额" prop = "money">
+			        <el-input v-model="form.money" />
+			      </el-form-item>
+	    		</el-col>
+	    	</el-row>
+	    	<el-row>
+	    		<el-col :span="12">
+	    			<el-form-item label="收入支出项" prop = "tallyType">
+			        <el-select v-model="form.tallyType.id"  placeholder="请选择支出类型" >
+				        <el-option v-for="item in tallyType"
+				        	:key="item.key"
+				        	:label="item.value"
+				        	:value="item.key"/>
+			      	</el-select>
+			      </el-form-item>
+			    </el-col>
+			    <el-col :span="12">
+			    	<el-form-item label="交易方式" prop = "tradTypeId">
+			      	<el-select v-model="form.tradType.id"  placeholder="请选择交易类型" >
+			          <el-option
+			            v-for="(item, index) in tradType"
+				      		:key="item.id"
+				      		:label="item.label"
+				      		:value="item.id"/>
+			        </el-select>
+			      </el-form-item>
+			    </el-col>
+	    	</el-row>
+	    	<el-row>
+	    		<el-col :span="12">
+	    			<el-form-item label="交易类型" prop="typeDict">
+			      	<el-select v-model="form.typeDict.id" placeholder="请选择" >
+						    <el-option
+						      v-for="(item, index) in typeList"
+						      :key="item.id"
+						      :label="item.label"
+						      :value="item.id">
+						    </el-option>
+						  </el-select>
+			      </el-form-item>
+	    		</el-col>
+	    	</el-row>
+      	<el-row>
+      		<el-form-item label="账户总余额" >
+						<span>{{money}}</span>
+		      </el-form-item>
+      	</el-row>
+      <el-divider content-position="left">基本信息</el-divider>
+      	<el-row>
+      		<el-col :span="12">
+      			<el-form-item label="收付款人" prop= "receiptPaymentName" label-width="100px" >
+			        <el-input v-model="form.receiptPaymentName" />
+			      </el-form-item>
+      		</el-col>
+      	</el-row>
+	      <el-row>
+	      	<el-col :span="12">
+	      		<el-form-item label="银行户名" label-width="100px">
+			        <el-input v-model="form.backAccount" />
+			      </el-form-item>
+	      	</el-col>
+	      	<el-col :span="12">
+	      		<el-form-item label="银行账号" label-width="100px">
+			        <el-input v-model="form.backNum" />
+			      </el-form-item>
+	      	</el-col>
+	      </el-row>
+      	
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
