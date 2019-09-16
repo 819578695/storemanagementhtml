@@ -127,10 +127,10 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-row>
-        <el-col :span="4" v-if="!isAdd">
+        <el-col :span="4" v-if="!isAdd&&form.type==2" >
           <el-button  style="text-align: left;" :loading="paybackloading" type="success" @click="doPayback">补缴</el-button>
         </el-col>
-        <el-col :span="20">
+        <el-col :span="20" v-if="form.type!=3">
           <el-button type="text" @click="cancel">取消</el-button>
           <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
         </el-col>
