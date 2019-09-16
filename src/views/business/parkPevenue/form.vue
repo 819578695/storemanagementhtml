@@ -127,10 +127,10 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-row>
-        <el-col :span="4" v-show="paybackShow">
+        <el-col :span="4" v-if="!isAdd&&form.type==2" >
           <el-button  style="text-align: left;" :loading="paybackloading" type="success" @click="doPayback">补缴</el-button>
         </el-col>
-        <el-col :span="20">
+        <el-col :span="20" v-if="form.type!=3">
           <el-button type="text" @click="cancel">取消</el-button>
           <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
         </el-col>
@@ -158,7 +158,6 @@ export default {
   },
   data() {
     return {
-      paybackShow:false,
       typeList:[
         {value:1,label:'实付'},
         {value:2,label:'欠款'},
@@ -280,14 +279,25 @@ export default {
     doPayback(){
       //只有欠款才能进行补缴
       if(this.form.type==2){
-         this.form.type=3
+         this.paybackloading = true
           payBack(this.form).then(res => {
             this.resetForm()
-            this.$notify({
-              title: '补缴成功',
-              type: 'success',
-              duration: 2500
-            })
+            if(res.type==3){
+              this.$notify({
+                title: '补缴成功,您当前无欠款',
+                type: 'success',
+                duration: 2500
+              })
+            }
+            else{
+              this.$notify({
+                dangerouslyUseHTMLString: true,
+                title:'补缴成功',
+                message: "当前欠款<strong style='color:red;'>"+parseFloat(res.houseRent+res.propertyRent+res.waterRent+res.electricityRent+res.sanitationRent+res.lateRent+res.groundPoundRent)+'</strong>',
+                type: 'warning',
+                duration: 2500
+              })
+            }
             this.paybackloading = false
             this.$parent.init()
           }).catch(err => {
@@ -298,7 +308,7 @@ export default {
       else{
         this.$notify({
           title: '只有欠款才能补缴',
-          type: 'success',
+          type: 'error',
           duration: 2500
         })
       }

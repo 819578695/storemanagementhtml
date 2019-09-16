@@ -1,12 +1,14 @@
 <template>
   <div class="app-container">
+    <el-row :gutter="20">
+      <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
-    <div class="head-container">
+      <div class="head-container">
       <!-- 搜索 -->
       <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
       <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
-      <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
-      <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
+      <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width:130px;" />
+      <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width: 130px">
         <el-option
           v-for="(item, index) in deptList"
           :key="item.id"
@@ -80,6 +82,8 @@
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
       @current-change="pageChange"/>
+    </el-col>
+   </el-row>
   </div>
 </template>
 

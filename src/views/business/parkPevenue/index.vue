@@ -15,6 +15,15 @@
             class="filter-item" @keyup.enter.native="toQuery"
             />
         </el-select>
+        <el-select clearable v-model="query.type" clearable placeholder="请选择类型" class="filter-item">
+          <el-option
+            v-for="(item, index) in typeList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            class="filter-item" @keyup.enter.native="toQuery"
+            />
+        </el-select>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -74,7 +83,7 @@
         </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT','PARKPEVENUE_DELETE'])" label="操作" width="150px" align="center">
-        <template slot-scope="scope">
+        <template slot-scope="scope" >
           <el-button v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
           <el-popover
             v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_DELETE']"
@@ -118,6 +127,11 @@ export default {
   mixins: [initData,initDict],
   data() {
     return {
+      typeList:[
+        {value:1,label:'实付'},
+        {value:2,label:'欠款'},
+        {value:3,label:'补缴'},
+      ],//类型集合
       deptList:[],
       deptId:'',
       delLoading: false,
@@ -149,6 +163,7 @@ export default {
       const createDateStart = query.createDateStart
       const createDateEnd = query.createDateEnd
       const deptId = query.deptId
+      const type = query.type
       //最高级别查询所有数据
       if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
@@ -159,6 +174,12 @@ export default {
       //档口编号
       if (houseNumber) { this.params['houseNumber'] = houseNumber }
       if (deptId) { this.params['deptId'] = deptId }
+      if (type) {
+        this.params['type'] = type
+         }
+         else{
+          this.params['type'] = 1
+         }
       //转化日期格式
       if (createDateStart){
         this.params['createTimeStart'] = parseDate(createDateStart)
@@ -190,7 +211,6 @@ export default {
       this.isAdd = true
       this.$refs.form.dialog = true
       this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
-      this.$refs.paybackShow = false //隐藏补缴按钮
     },
     edit(data) {
       this.isAdd = false
@@ -226,7 +246,6 @@ export default {
         },
       }
       _this.dialog = true
-      _this.paybackShow = true //显示补缴按钮
     },
     //查看收付款信息详情
     findReceiptPaymentAccount(id){
