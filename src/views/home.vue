@@ -1,12 +1,11 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-editor-container">
-      <panel-group/>
-
-      <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+     <!-- <panel-group/> -->
+    <!--  <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
         <line-chart/>
       </el-row>
-
+ -->
       <el-row :gutter="32">
         <el-col :xs="24" :sm="24" :lg="8">
           <div class="chart-wrapper">
