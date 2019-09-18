@@ -31,6 +31,7 @@ export function edit(data) {
   })
 }
 
+
 export function upload(data,contractNo) {
   return request({
     url: 'api/upload/'+contractNo,

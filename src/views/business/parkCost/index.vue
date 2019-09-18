@@ -1,5 +1,9 @@
 <template>
   <div class="app-container">
+    <!--表单组件-->
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
+    <!--表单组件-->
+    <accountForm ref="accountform" />
     <el-row :gutter="20">
       <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
@@ -60,10 +64,6 @@
           @click="downloadAll">全部导出</el-button>
       </div>
     </div>
-    <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
-    <!--表单组件-->
-    <accountForm ref="accountform" />
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="rentContractName" label="合同名称"/>
@@ -266,10 +266,10 @@ export default {
          const params = { sort: sort }
          getParkCostAll(params).then(res => {
            this.downloadAllLoading = true
-           this.dataALL = res
+           this.dataALL = res.content
            import('@/utils/export2Excel').then(excel => {
              const tHeader = ['合同名称', '档口编号', '部门名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型', '创建时间', '收付款账户名称']
-             const filterVal = ['rentContractName', 'houseNumber', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent', 'createTime', 'receiptPaymentAccountName']
+             const filterVal = ['rentContractName', 'houseNumber', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent','paymentTypeName', 'createTime', 'receiptPaymentAccountName']
              const data = this.formatJson(filterVal, this.dataALL)
              excel.export_json_to_excel({
                header: tHeader,

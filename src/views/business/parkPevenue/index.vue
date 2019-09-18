@@ -1,5 +1,9 @@
 <template>
   <div class="app-container">
+    <!--表单组件-->
+    <eForm ref="form" :is-add="isAdd" :dictMap="dictMap"  />
+    <!--表单组件-->
+    <accountForm ref="accountform" />
     <el-row :gutter="20">
       <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
       <!--工具栏-->
@@ -69,10 +73,6 @@
           @click="downloadAll">全部导出</el-button>
       </div>
     </div>
-    <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dictMap="dictMap"  />
-    <!--表单组件-->
-    <accountForm ref="accountform" />
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <!-- <el-table-column prop="basicsParkName" label="园区id"/> -->
@@ -285,18 +285,18 @@ export default {
     },
     // 导出
     download() {
-       this.downloadLoading = true
+      this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
         const tHeader = ['公司名称', '档口编号', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','修改时间','创建时间','合计']
-        const filterVal = ['deptName', 'houseNumber', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','type','updateTime','createTime','total']
+        const filterVal = ['deptName', 'houseNumber', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','updateTime','createTime','total']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader,  //表头
           data,             //数据
           filename: 'table-list' //文件名
         })
-        this.downloadLoading = false
       })
+       this.downloadLoading = false
     },
     // 全部导出
     downloadAll() {
@@ -304,7 +304,7 @@ export default {
          const params = { sort: sort }
          getParkPevenueAll(params).then(res => {
            this.downloadAllLoading = true
-           this.dataALL = res
+           this.dataALL = res.content
            import('@/utils/export2Excel').then(excel => {
              const tHeader = ['公司名称', '档口编号', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','修改时间','创建时间','合计']
              const filterVal = ['deptName', 'houseNumber', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','updateTime','createTime','total']
