@@ -3,9 +3,18 @@
     <!--工具栏-->
     <div>
       <!-- 搜索  -->
-        <el-date-picker v-model="query.startDate" type="date" placeholder="选择开始日期"></el-date-picker>&nbsp;-
-        <el-date-picker v-model="query.endDate" type="date" placeholder="选择截止日期"></el-date-picker>
-      <el-input v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
+        <el-date-picker clearable v-model="query.startDate" type="date" placeholder="选择开始日期"></el-date-picker>&nbsp;-
+        <el-date-picker clearable v-model="query.endDate" type="date" placeholder="选择截止日期"></el-date-picker>
+      <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
+      <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
+        <el-option
+          v-for="(item, index) in deptList"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+          class="filter-item" @keyup.enter.native="toQuery"
+          />
+      </el-select>
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -91,6 +100,8 @@ export default {
   mixins: [initData],
   data() {
     return {
+      deptList:[],
+      deptId:'',
       delLoading: false,
     }
   },
@@ -101,6 +112,7 @@ export default {
        this.deptId=res.deptId
        this.init()
      })
+     this.deptList=JSON.parse(sessionStorage.getItem("depts"))
     })
   },
   methods: {
@@ -115,6 +127,7 @@ export default {
       const houseNumber = query.houseNumber
       const startDate = query.startDate
       const endDate = query.endDate
+      const deptId = query.deptId
       //最高级别查询所有数据
       if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
@@ -124,6 +137,7 @@ export default {
       }
       //档口编号
       if (houseNumber) { this.params['houseNumber'] = houseNumber }
+      if (deptId) { this.params['deptId'] = deptId }
       //转化日期格式
       if (startDate){
         this.params['startDate'] = parseDate(startDate)

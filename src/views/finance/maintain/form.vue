@@ -3,9 +3,9 @@
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-form-item label="园区名称" >
         <el-select v-model="form.deptId"  placeholder="请选择园区名称" style="width: 370px;">
-	        <el-option v-for="item in depts" 
-	        	:key="item.id" 
-	        	:label="item.name" 
+	        <el-option v-for="item in depts"
+	        	:key="item.id"
+	        	:label="item.name"
 	        	:value="item.id"/>
       	</el-select>
       </el-form-item>
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { add, edit } from '@/api/financeMaintain'
+import { add, edit } from '@/api/maintain'
 export default {
 	created() {
 		this.getDepts()

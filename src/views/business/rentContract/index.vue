@@ -1,10 +1,18 @@
 <template>
   <div class="app-container">
     <!--工具栏-->
-    <div class="head-container">
+    <div >
       <!-- 搜索 -->
-      <el-input v-model="query.deptName" clearable placeholder="输入部门名称" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-      <el-input v-model="query.contractNo" clearable placeholder="输入合同编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+      <el-input clearable v-model="query.contractNo" clearable placeholder="输入合同编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+      <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
+        <el-option
+          v-for="(item, index) in deptList"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+          class="filter-item" @keyup.enter.native="toQuery"
+          />
+      </el-select>
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -26,12 +34,12 @@
       <el-table-column prop="contractName" label="合同名称"/>
       <el-table-column prop="startDate" label="起止日期">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.startDate) }}</span>
+          <span>{{ parseDate(scope.row.startDate) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="endDate" label="截止日期">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.endDate) }}</span>
+          <span>{{ parseDate(scope.row.endDate) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="rentFreePeriod" label="免租期"/>
@@ -79,6 +87,7 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/rentContract'
 import { parseTime } from '@/utils/index'
+import { parseDate } from '@/utils/index'          //格式化日期
 import eForm from './form'
 import store from '@/store'
 export default {
@@ -88,6 +97,7 @@ export default {
     return {
       deptId:'',
       delLoading: false,
+      deptList:[],
     }
   },
   created() {
@@ -96,16 +106,18 @@ export default {
        this.deptId=res.deptId
        this.init()
      })
+      this.deptList=JSON.parse(sessionStorage.getItem("depts"))
     })
   },
   methods: {
     parseTime,
+    parseDate,
     checkPermission,
     beforeInit() {
       this.url = 'api/rentContract'
       const sort = 'id,desc'
       const query = this.query
-      const deptName = query.deptName
+      const deptId = query.deptId
       //最高级别查询所有数据
       if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
@@ -113,7 +125,7 @@ export default {
       else{
          this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
       }
-      if (deptName) { this.params['deptName'] = deptName }
+      if (deptId) { this.params['deptId'] = deptId }
       return true
     },
     subDelete(id) {

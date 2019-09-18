@@ -43,6 +43,28 @@
           icon="el-icon-plus"
           @click="add">新增</el-button>
       </div>
+      <!--导出-->
+      <div style="display: inline-block;">
+        <el-button
+          v-permission="['ADMIN']"
+          :loading="downloadLoading"
+          size="mini"
+          class="filter-item"
+          type="warning"
+          icon="el-icon-download"
+          @click="download">导出</el-button>
+      </div>
+      <!-- 全部导出 -->
+      <div style="display: inline-block;">
+        <el-button
+          v-permission="['ADMIN']"
+          :loading="downloadAllLoading"
+          size="mini"
+          class="filter-item"
+          type="warning"
+          icon="el-icon-download"
+          @click="downloadAll">全部导出</el-button>
+      </div>
     </div>
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd"/>
@@ -93,7 +115,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del } from '@/api/journalAccountOfCapital'
+import { getFundFlowing } from '@/api/fundFlowing'
 import { getDictMap } from '@/api/dictDetail'
 import { parseDate } from '@/utils/index'
 import eForm from './form'
@@ -103,10 +125,12 @@ export default {
   data() {
     return {
       delLoading: false,
-
       tallyTypeList: [],
       typeList: [],
-      tradType: []
+      tradType: [],
+      downloadLoading: false,//导出加载
+      downloadAllLoading: false,//全部导出加载
+      delLoading: false,//删除加载
     }
   },
   created() {
@@ -115,36 +139,31 @@ export default {
       this.getType()
     })
   },
-
   methods: {
     parseDate,
     checkPermission,
     getType() {
       getDictMap('transaction_type').then(res => {
         this.tallyTypeList = res.transaction_type
-      }).catch(err => {
-        console.log(err.response.data.message)
       })
       getDictMap('trade_type').then(res => {
       	this.typeList = res.trade_type
-      }).catch(err => {
-        console.log(err.response.data.message)
       })
       getDictMap('transaction_mode').then(res => {
         this.tradType = res.transaction_mode
-      }).catch(err => {
-        console.log(err.response.data.message)
       })
+
     },
     beforeInit() {
-      this.url = 'api/journalAccountOfCapital'
+      this.url = 'api/fundFlowing'
       const sort = 'id,desc'
       const query = this.query
-      this.params = { page: this.page, size: this.size, sort: sort }
+      const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
+      this.params = { page: this.page, size: this.size, sort: sort,deptId :deptId}
       //查询的值
       const applicationsDateStart = query.applicationsDateStart
       const applicationsDateEnd = query.applicationsDateEnd
-      
+
      	//交易方式
      	const tradType = query.tradType
       //交易类型id
@@ -188,6 +207,8 @@ export default {
     	this.$refs.ruleform
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.getTallyType()
+      this.$refs.form.getMoney()
     },
     edit(data) {
       this.isAdd = false
@@ -206,7 +227,56 @@ export default {
         backAccount: data.backAccount
       }
       _this.dialog = true
-    }
+    },
+    // 导出
+    download() {
+       this.downloadLoading = true
+      import('@/utils/export2Excel').then(excel => {
+        const tHeader = ['交易日期', '交易方式', '金额', '收入支出项', '当前账户余额', '收付款人名称', '交易类型', '银行账号', '银行户名']
+        const filterVal = ['tradDate', 'tradTypeLabel', 'money', 'tallyTypeIdLabel', 'urrentBalance', 'receiptPaymentName', 'typeLabel', 'backNum', 'backAccount']
+        const data = this.formatJson(filterVal, this.data)
+        excel.export_json_to_excel({
+          header: tHeader,  //表头
+          data,             //数据
+          filename: '资金流水' //文件名
+        })
+        this.downloadLoading = false
+      })
+    },// 全部导出
+    downloadAll() {
+     const sort = 'id,desc'
+     const query = this.query
+     const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
+     //查询的值
+      const tradDateStart = parseDate(query.applicationsDateStart)
+      const tradDateEnd = parseDate(query.applicationsDateEnd)
+     const params = { sort: sort, deptId: deptId,tradDateStart: tradDateStart,tradDateEnd: tradDateEnd }
+     getFundFlowing(params).then(res => {
+       this.downloadAllLoading = true
+       this.dataALL = res
+       import('@/utils/export2Excel').then(excel => {
+				const tHeader = ['交易日期', '交易方式', '金额', '收入支出项', '当前账户余额', '收付款人名称', '交易类型', '银行账号', '银行户名']
+        const filterVal = ['tradDate', 'tradTypeLabel', 'money', 'tallyTypeIdLabel', 'urrentBalance', 'receiptPaymentName', 'typeLabel', 'backNum', 'backAccount']
+		    const data = this.formatJson(filterVal, this.dataALL)
+		    excel.export_json_to_excel({
+		      header: tHeader,
+		      data,
+		      filename: 'table-list'
+		    })
+		    this.downloadAllLoading = false
+       })
+     })
+    },
+    //数据转换
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'tradDate') {
+          return parseDate(v[j])
+        }  else {
+          return v[j]
+        }
+      }))
+    },
   }
 }
 </script>

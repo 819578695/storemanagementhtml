@@ -1,99 +1,150 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog"  :title="isAdd ? '新增' : '编辑'" width="500px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog"  :title="isAdd ? '新增' : '编辑'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
-      <el-form-item label="园区名称" prop="basicsPark.id">
-       <el-select v-model="form.basicsPark.id"  placeholder="请选择园区">
-         <el-option
-           v-for="(item, index) in basicsParkList"
-           :key="item.index"
-           :label="item.garden"
-           :value="item.id"/>
-       </el-select>
-      </el-form-item>
-      <el-form-item label="档口编号" label-width="100px" prop="archivesmouthsmanagement.id">
-        <el-select v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号">
-          <el-option
-            v-for="(item, index) in archivesmouthsmanagementList"
-            :key="item.index"
-            :label="item.housenumber"
-            :value="item.id"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="合同名称" prop="leaseContract.id">
-       <el-select v-model="form.leaseContract.id"  placeholder="请选择园区">
-         <el-option
-           v-for="(item, index) in leaseContractList"
-           :key="item.index"
-           :label="item.contractName"
-           :value="item.id"/>
-       </el-select>
-      </el-form-item>
-      <el-form-item label="房租" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.houseRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="物业费" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.propertyRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="水费" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.waterRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="电费" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.electricityRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="卫生费" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.sanitationRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="违约金" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.liquidatedRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="滞纳金" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.lateRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="地磅费" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.groundPoundRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="欠款金额" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.arrersRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="管理费" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.managementRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="停车费" label-width="100px" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.parkingRent" style="width: 170px;"/>
-      </el-form-item>
-      <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
-        <el-select v-model="form.dictDetail.id"  placeholder="请选择支付方式">
-          <el-option
-            v-for="(item, index) in dicts"
-            :key="item.index"
-            :label="item.label"
-            :value="item.id"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="收付款账户" label-width="100px" prop="receiptPaymentAccount.id">
-        <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收付款名称">
-          <el-option
-            v-for="(item, index) in receiptPaymentAccountList"
-            :key="item.name"
-            :label="item.name"
-            :value="item.id"/>
-        </el-select>
-      </el-form-item>
+      <el-divider content-position="left">基本信息</el-divider>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="档口编号"  prop="archivesmouthsmanagement.id">
+              <el-select v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" >
+                <el-option
+                  v-for="(item, index) in archivesmouthsmanagementList"
+                  :key="item.index"
+                  :label="item.housenumber"
+                  :value="item.id"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="合同名称" prop="leaseContract.id">
+             <el-select v-model="form.leaseContract.id"  placeholder="请选择合同名称">
+               <el-option
+                 v-for="(item, index) in leaseContractList"
+                 :key="item.index"
+                 :label="item.contractName"
+                 :value="item.id"/>
+             </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider content-position="left">费用信息</el-divider>
+        <el-row>
+          <el-col :span="12">
+              <el-form-item label="房租" label-width="100px" >
+                <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.houseRent" style="width: 170px;"/>
+              </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="物业费" label-width="100px" >
+              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.propertyRent" style="width: 170px;"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="水费" label-width="100px" >
+              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.waterRent" style="width: 170px;"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="电费" label-width="100px" >
+              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.electricityRent" style="width: 170px;"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="卫生费" label-width="100px" >
+              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.sanitationRent" style="width: 170px;"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="违约金" label-width="100px" >
+              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.liquidatedRent" style="width: 170px;"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="滞纳金" label-width="100px" >
+              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.lateRent" style="width: 170px;"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="地磅费" label-width="100px" >
+              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.groundPoundRent" style="width: 170px;"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+             <el-form-item label="停车费" label-width="100px" >
+               <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.parkingRent" style="width: 170px;"/>
+             </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="管理费" label-width="100px" >
+              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.managementRent" style="width: 170px;"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      <el-divider content-position="left">收款信息</el-divider>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
+                <el-select v-model="form.dictDetail.id"  placeholder="请选择支付方式">
+                  <el-option
+                    v-for="(item, index) in dicts"
+                    :key="item.index"
+                    :label="item.label"
+                    :value="item.id"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="收款账户" label-width="100px" prop="receiptPaymentAccount.id">
+                <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收款名称">
+                  <el-option
+                    v-for="(item, index) in receiptPaymentAccountList"
+                    :key="item.name"
+                    :label="item.name"
+                    :value="item.id"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="类型" label-width="100px" prop="type">
+                <el-select v-model="form.type"  placeholder="请选择类型">
+                  <el-option  v-for="(item, index) in typeList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="text" @click="cancel">取消</el-button>
-      <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
+      <el-row>
+        <el-col :span="4" v-if="!isAdd&&form.type==2" >
+          <el-button  style="text-align: left;" :loading="paybackloading" type="success" @click="doPayback">补缴</el-button>
+        </el-col>
+        <el-col :span="20" v-if="form.type!=3">
+          <el-button type="text" @click="cancel">取消</el-button>
+          <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
+        </el-col>
+      </el-row>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { add, edit } from '@/api/parkPevenue'
+import { add, edit,payBack } from '@/api/parkPevenue'
 import store from '@/store'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
 import { archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
 import { leaseContractByDeptId} from '@/api/leaseContract'
-import { basicsParkByDeptId} from '@/api/thearchives'
 export default {
   props: {
     isAdd: {
@@ -107,12 +158,16 @@ export default {
   },
   data() {
     return {
+      typeList:[
+        {value:1,label:'实付'},
+        {value:2,label:'欠款'},
+      ],//类型集合
       loading: false,
+      paybackloading:false,
       dialog: false,
       leaseContractList:[],
       receiptPaymentAccountList:[],
       archivesmouthsmanagementList:[],//档口的集合
-      basicsParkList:[],//园区集合
       form: {
         id: '',
         houseRent: '',
@@ -123,7 +178,6 @@ export default {
         liquidatedRent: '',
         lateRent: '',
         groundPoundRent: '',
-        arrersRent: '',
         managementRent:'',
         parkingRent:'',
         leaseContract:{
@@ -141,15 +195,19 @@ export default {
         dictDetail:{
           id:''
         },
-        basicsPark:{
-          id:''
-        },
+        type:''
       },
       rules: {
         archivesmouthsmanagement:
         {
          id: [
             { required: true, message: '请选择档口编号', trigger: 'change' }
+          ],
+        },
+        leaseContract:
+        {
+         id: [
+            { required: true, message: '请选择合同名称', trigger: 'change' }
           ],
         },
         dictDetail:
@@ -161,15 +219,11 @@ export default {
         receiptPaymentAccount:
         {
          id: [
-            { required: true, message: '请选择收付款账户', trigger: 'change' }
+            { required: true, message: '请选择收款账户', trigger: 'change' }
           ],
         },
-        basicsPark:
-        {
-         id: [
-            { required: true, message: '请选择园区', trigger: 'change' }
-          ],
-        }
+        type:
+            { required: true, message: '请选择类型', trigger: 'change' }
       }
     }
   },
@@ -222,6 +276,44 @@ export default {
         console.log(err.response.data.message)
       })
     },
+    doPayback(){
+      //只有欠款才能进行补缴
+      if(this.form.type==2){
+         this.paybackloading = true
+          payBack(this.form).then(res => {
+            this.resetForm()
+            if(res.type==3){
+              this.$notify({
+                title: '补缴成功,您当前无欠款',
+                type: 'success',
+                duration: 2500
+              })
+            }
+            else{
+              this.$notify({
+                dangerouslyUseHTMLString: true,
+                title:'补缴成功',
+                message: "当前欠款<strong style='color:red;'>"+parseFloat(res.houseRent+res.propertyRent+res.waterRent+res.electricityRent+res.sanitationRent+res.lateRent+res.groundPoundRent)+'</strong>',
+                type: 'warning',
+                duration: 2500
+              })
+            }
+            this.paybackloading = false
+            this.$parent.init()
+          }).catch(err => {
+            this.paybackloading = false
+            console.log(err.response.data.message)
+          })
+      }
+      else{
+        this.$notify({
+          title: '只有欠款才能补缴',
+          type: 'error',
+          duration: 2500
+        })
+      }
+
+    },
     resetForm() {
       this.dialog = false
       this.$refs['form'].resetFields()
@@ -236,7 +328,6 @@ export default {
         liquidatedRent: '',
         lateRent: '',
         groundPoundRent: '',
-        arrersRent: '',
         managementRent:'',
         parkingRent:'',
         dept:{
@@ -254,9 +345,7 @@ export default {
         dictDetail:{
           id:''
         },
-        basicsPark:{
-          id:''
-        },
+        type:''
       }
     },
     //查询所有的集合
@@ -269,11 +358,6 @@ export default {
       	})
         archivesmouthsmanagementByDeptId(res.deptId).then(res => {
           this.archivesmouthsmanagementList = res
-        }).catch(err => {
-          console.log(err.response.data.message)
-        })
-        basicsParkByDeptId(res.deptId).then(res => {
-          this.basicsParkList = res
         }).catch(err => {
           console.log(err.response.data.message)
         })

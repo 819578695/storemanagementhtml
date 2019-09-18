@@ -1,14 +1,14 @@
 <template>
 	<div>
 		<!--表格渲染-->
-	    <el-table 
-	    	v-loading="loading" 
-	    	:data="costs" 
-	    	size="small" 
+	    <el-table
+	    	v-loading="loading"
+	    	:data="costs"
+	    	size="small"
 	    	style="width: 100%;"
 	    	:summary-method="getSummaries"
 	    	show-summary>
-	      <el-table-column prop="createTime" label="时间">
+	      <el-table-column prop="createTime" label="时间" width="100">
 	      	<template slot-scope="scope">
 	          <span>{{ parseDate(scope.row.createTime) }}</span>
 	        </template>
@@ -19,18 +19,17 @@
 	      <el-table-column prop="propertyRent" label="物业费"/>
 	      <el-table-column prop="taxCost" label="税赋成本"/>
 	      <el-table-column prop="otherRent" label="其他费"/>
-	      
+
 	    </el-table>
 	    <!--分页组件-->
-	    <el-pagination
+	    <!--<el-pagination
 	      :total="total"
 	      style="margin-top: 8px;"
 	      :current-page="page + 1"
 	      layout="total, prev, pager, next, sizes"
 	      @size-change="sizeChange"
-	      @current-change="pageChange"/>
-		</div>
-	</div>
+	      @current-change="financePageChange"/>-->
+  </div>
 </template>
 
 <script>

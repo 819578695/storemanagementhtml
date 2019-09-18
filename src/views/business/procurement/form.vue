@@ -1,66 +1,111 @@
 <template>
   <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增采购信息' : '编辑采购信息'" width="600px">
     <el-form  ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="项目编号" label-width="100px" prop="pno">
-        <el-input v-model="form.pno" style="width: 270px;"/>
-      </el-form-item>
-      <el-form-item label="项目名称" label-width="100px" prop="projectName">
-        <el-input v-model="form.projectName" style="width: 270px;"/>
-      </el-form-item>
-      <el-form-item label="供应商名称" label-width="100px" prop="supplierName">
-        <el-input v-model="form.supplierName"  style="width: 270px;"/>
-      </el-form-item>
-      <el-form-item label="采购说明" label-width="100px">
-        <el-input v-model="form.purchaseDescription" style="width: 270px;"/>
-      </el-form-item>
-      <el-form-item label="合同截止日" label-width="100px" prop="contractEndDate">
-         <el-date-picker v-model="form.contractEndDate" type="date" placeholder="选择日期">
-         </el-date-picker>
-      </el-form-item>
-      <el-form-item label="合同总金额" label-width="100px">
-        <el-input v-model="form.contractAmount" style="width: 270px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
-      </el-form-item>
-      <el-form-item label="付款比例" label-width="100px">
-        <el-input v-model="form.paymentRatio" style="width: 270px;"/>
-      </el-form-item>
-      <el-form-item label="申请金额" label-width="100px">
-        <el-input v-model="form.applicationsAmount" style="width: 270px;"/>
-      </el-form-item>
-      <el-form-item label="应付日期" label-width="100px" prop="dueDate">
-        <el-date-picker
-             v-model="form.dueDate"
-             type="date"
-             placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="实际付款金额" label-width="100px">
-        <el-input v-model="form.actualPaymentAmount" style="width: 270px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
-      </el-form-item>
-      <el-form-item label="实际付款日期" label-width="100px">
-        <el-date-picker
-             v-model="form.actualPaymentDate"
-             type="date"
-             placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
-        <el-select v-model="form.dictDetail.id"  placeholder="请选择收付款名称">
-          <el-option
-            v-for="(item, index) in dicts"
-            :key="item.index"
-            :label="item.label"
-            :value="item.id"/>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="收付款账户" label-width="100px" prop="receiptPaymentAccount.id">
-        <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收付款名称">
-          <el-option
-            v-for="(item, index) in receiptPaymentAccountList"
-            :key="item.index"
-            :label="item.name"
-            :value="item.id"/>
-        </el-select>
-      </el-form-item>
+       <el-divider content-position="left">项目信息</el-divider>
+         <el-row>
+           <el-col :span="12">
+             <el-form-item label="项目编号" label-width="100px" prop="pno">
+                <el-input v-model="form.pno" style="width: 150px;"/>
+             </el-form-item>
+           </el-col>
+           <el-col :span="12">
+             <el-form-item label="项目名称" label-width="100px" prop="projectName">
+                <el-input v-model="form.projectName" style="width: 150px;" />
+             </el-form-item>
+           </el-col>
+         </el-row>
+         <el-row>
+           <el-col :span="12">
+             <el-form-item label="供应商名称" label-width="100px" prop="supplierName">
+               <el-input v-model="form.supplierName" style="width: 150px;" />
+             </el-form-item>
+           </el-col>
+           <el-col :span="12">
+             <el-form-item label="采购说明" label-width="100px">
+               <el-input v-model="form.purchaseDescription" style="width: 150px;"/>
+             </el-form-item>
+           </el-col>
+         </el-row>
+         <el-row>
+           <el-col :span="12">
+             <el-form-item label="合同总金额" label-width="100px">
+               <el-input v-model="form.contractAmount" style="width: 150px;"  onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
+             </el-form-item>
+           </el-col>
+           <el-col :span="12">
+             <el-form-item label="付款比例" label-width="100px">
+               <el-input v-model="form.paymentRatio" style="width: 150px;"/>
+             </el-form-item>
+           </el-col>
+         </el-row>
+         <el-row>
+           <el-col :span="12">
+             <el-form-item label="合同截止日" label-width="100px" prop="contractEndDate">
+                <el-date-picker v-model="form.contractEndDate" type="date" placeholder="选择日期" style="width: 150px;">
+                </el-date-picker>
+             </el-form-item>
+           </el-col>
+           <el-col :span="12">
+             <el-form-item label="应付日期" label-width="100px" prop="dueDate">
+               <el-date-picker
+                    v-model="form.dueDate"
+                    type="date"
+                    placeholder="选择日期"  style="width: 150px;">
+               </el-date-picker>
+             </el-form-item>
+           </el-col>
+         </el-row>
+         <el-row>
+           <el-col :span="12">
+             <el-form-item label="申请金额" label-width="100px">
+               <el-input v-model="form.applicationsAmount" style="width: 150px;"/>
+             </el-form-item>
+           </el-col>
+         </el-row>
+         <!-- 付款信息-->
+         <el-divider content-position="left">付款信息</el-divider>
+         <el-row>
+           <el-col :span="12">
+             <el-form-item label="实际付款金额" label-width="100px">
+               <el-input v-model="form.actualPaymentAmount" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"  style="width: 150px;"/>
+             </el-form-item>
+           </el-col>
+           <el-col :span="12">
+             <el-form-item label="实际付款日期" label-width="100px">
+               <el-date-picker
+                    v-model="form.actualPaymentDate"
+                    type="date"
+                    placeholder="选择日期"
+                    style="width: 150px;"
+                    >
+               </el-date-picker>
+             </el-form-item>
+           </el-col>
+         </el-row>
+         <el-row>
+           <el-col :span="12">
+             <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
+               <el-select v-model="form.dictDetail.id"  placeholder="请选择收付款名称" style="width: 150px;">
+                 <el-option
+                   v-for="(item, index) in dicts"
+                   :key="item.index"
+                   :label="item.label"
+                   :value="item.id"/>
+               </el-select>
+             </el-form-item>
+           </el-col>
+           <el-col :span="12">
+             <el-form-item label="收付款账户" label-width="100px" prop="receiptPaymentAccount.id">
+               <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收付款名称" style="width: 150px;">
+                 <el-option
+                   v-for="(item, index) in receiptPaymentAccountList"
+                   :key="item.index"
+                   :label="item.name"
+                   :value="item.id"/>
+               </el-select>
+             </el-form-item>
+           </el-col>
+         </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>

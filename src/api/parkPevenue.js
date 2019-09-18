@@ -30,3 +30,18 @@ export function edit(data) {
     data
   })
 }
+
+export function payBack(data) {
+  return request({
+    url: 'api/parkPevenuePayBack',
+    method: 'put',
+    data
+  })
+}
+
+export function findPevenueMoney(deptId) {
+  return request({
+    url: 'api/findPevenueMoney/'+deptId,
+    method: 'get',
+  })
+}

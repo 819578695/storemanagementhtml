@@ -1,9 +1,22 @@
 <template>
   <div class="app-container">
+    <el-row :gutter="20">
+      <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
-    <div class="head-container">
+      <div class="head-container">
       <!-- 搜索 -->
-      <el-input v-model="query.deptName" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+      <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
+      <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
+      <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width:130px;" />
+      <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width: 130px">
+        <el-option
+          v-for="(item, index) in deptList"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+          class="filter-item" @keyup.enter.native="toQuery"
+          />
+      </el-select>
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -18,11 +31,13 @@
     </div>
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
+    <!--表单组件-->
+    <accountForm ref="accountform" />
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="id" label="主键"/>
       <el-table-column prop="rentContractName" label="合同名称"/>
-      <el-table-column prop="basicsParkName" label="档口名称"/>
+      <el-table-column prop="houseNumber" label="档口名称"/>
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="siteRent" label="场地租金"/>
       <el-table-column prop="waterRent" label="水费"/>
@@ -34,6 +49,11 @@
       <el-table-column prop="createTime" label="创建时间" width="100">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.createTime) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="收款信息">
+        <template slot-scope="scope">
+          <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
         </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','PARKCOST_ALL','PARKCOST_EDIT','PARKCOST_DELETE'])" label="操作" width="150px" align="center">
@@ -62,25 +82,30 @@
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
       @current-change="pageChange"/>
+    </el-col>
+   </el-row>
   </div>
 </template>
 
 <script>
 import checkPermission from '@/utils/permission'
+import { receiptPaymentAccountById } from '@/api/receiptPaymentAccount'
 import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
 import { del } from '@/api/parkCost'
 import { parseTime } from '@/utils/index'
 import { parseDate } from '@/utils/index'
 import eForm from './form'
+import accountForm from './accountform'
 import store from '@/store'
 export default {
-  components: { eForm },
+  components: { eForm,accountForm},
   mixins: [initData,initDict],
   data() {
     return {
       delLoading: false,
-      deptId:''
+      deptId:'',
+      deptList:[],
     }
   },
   created() {
@@ -91,6 +116,7 @@ export default {
         this.init()
       })
       // 加载数据字典
+      this.deptList=JSON.parse(sessionStorage.getItem("depts"))
       this.getDict('transaction_mode')
     })
   },
@@ -102,7 +128,11 @@ export default {
       this.url = 'api/parkCost'
       const sort = 'id,desc'
       const query = this.query
+      const houseNumber = query.houseNumber
+      const createDateStart = query.createDateStart
+      const createDateEnd = query.createDateEnd
       const deptName = query.deptName
+      const deptId = query.deptId
        //最高级别查询所有数据
        if(this.deptId==1){
          this.params = { page: this.page, size: this.size, sort: sort}
@@ -110,7 +140,14 @@ export default {
        else{
           this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId }
        }
-       if (deptName) { this.params['deptName'] = deptName }
+       if (deptId) { this.params['deptId'] = deptId }
+       //转化日期格式
+       if (createDateStart){
+         this.params['createTimeStart'] = parseDate(createDateStart)
+       }
+       if (createDateEnd){
+         this.params['createTimeEnd'] = parseDate(createDateEnd)
+       }
        return true
     },
     subDelete(id) {
@@ -142,9 +179,9 @@ export default {
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
-        basicsPark:{
-          id:data.parkId
-        },
+       archivesmouthsmanagement:{
+         id:data.archivesMouthsId
+       },
         rentContract:{
           id:data.rentContractId
         },
@@ -158,8 +195,26 @@ export default {
         dictDetail: {
           id:data.paymentType
         },
+        receiptPaymentAccount: {
+          id:data.receiptPaymentAccountId
+        },
+        dept:{
+          id:data.deptId
+        },
       }
       _this.dialog = true
+    },
+    //查看收付款信息详情
+    findReceiptPaymentAccount(id){
+      if(id!=null||id!=''){
+        const _this = this.$refs.accountform
+        receiptPaymentAccountById(id).then(res => {
+           _this.dialog= true
+          _this.form= res
+         }).catch(err => {
+
+         })
+      }
     }
   }
 }

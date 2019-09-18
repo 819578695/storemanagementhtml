@@ -1,12 +1,21 @@
 <template>
   <div class="app-container">
     <!--工具栏-->
-    <div >
+    <div class="head-container">
       <!-- 搜索  -->
-        <el-date-picker v-model="query.applicationsDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
-        <el-date-picker v-model="query.applicationsDateEnd" type="date" placeholder="选择日期"></el-date-picker>
-        <el-input v-model="query.pno" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-        <el-input v-model="query.supplierName" clearable placeholder="输入供应商名称" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+        <el-date-picker clearable v-model="query.applicationsDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
+        <el-date-picker clearable v-model="query.applicationsDateEnd" type="date" placeholder="选择日期"></el-date-picker>
+<!--        <el-input v-model="query.pno" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+ -->
+        <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
+         <el-option
+           v-for="(item, index) in deptList"
+           :key="item.id"
+           :label="item.name"
+           :value="item.id"
+           />
+        </el-select>
+        <el-input clearable v-model="query.supplierName" clearable placeholder="输入供应商名称" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
         <!-- 新增 -->
         <div style="display: inline-block;margin: 0px 2px;">
@@ -47,6 +56,7 @@
     <el-table    v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="pno" label="项目编号"/>
       <el-table-column prop="projectName" label="项目名称"/>
+      <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="supplierName" label="供应商名称"/>
       <el-table-column prop="purchaseDescription" label="采购说明"/>
       <el-table-column prop="contractEndDate" label="合同截止日" width="100">
@@ -123,7 +133,8 @@ export default {
       downloadLoading: false,//导出加载
       downloadAllLoading: false,//全部导出加载
       delLoading: false,//删除加载
-      deptId:''
+      deptId:'',
+      deptList:[],
     }
   },
   created() {
@@ -133,6 +144,7 @@ export default {
        this.deptId=res.deptId
        this.init()
      })
+     this.deptList=JSON.parse(sessionStorage.getItem("depts"))
       this.getDict('transaction_mode')
     })
   },
@@ -149,6 +161,7 @@ export default {
       const value = query.pno
       const supplierName = query.supplierName
       const applicationsDateStart = query.applicationsDateStart
+      const deptId = query.deptId
       const applicationsDateEnd = query.applicationsDateEnd
       //最高级别查询所有数据
       if(this.deptId==1){
@@ -159,6 +172,7 @@ export default {
       }
       if (value) { this.params['pno'] = value }
       if (supplierName) { this.params['supplierName'] = supplierName }
+      if (deptId) { this.params['deptId'] = deptId }
       //转化日期格式
       if (applicationsDateStart){
         this.params['applicationsDateStart'] = parseDate(applicationsDateStart)

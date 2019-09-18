@@ -30,3 +30,10 @@ export function edit(data) {
     data
   })
 }
+
+export function findCostsMoney(deptId) {
+  return request({
+    url: 'api/findCostsMoney/'+deptId,
+    method: 'get',
+  })
+}
