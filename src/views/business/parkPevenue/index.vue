@@ -3,10 +3,10 @@
     <!--工具栏-->
     <div>
       <!-- 搜索  -->
-        <el-date-picker v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
-        <el-date-picker v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
-        <el-input v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
-        <!-- <el-select v-model="query.receiptPaymentAccountId"  placeholder="请选择档口编号">
+      <el-date-picker v-model="query.createDateStart" type="date" placeholder="选择日期"/>&nbsp;-
+      <el-date-picker v-model="query.createDateEnd" type="date" placeholder="选择日期"/>
+      <el-input v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
+      <!-- <el-select v-model="query.receiptPaymentAccountId"  placeholder="请选择档口编号">
           <el-option
             v-for="(item, index) in receiptPaymentAccountList"
             :key="item.name"
@@ -15,7 +15,7 @@
             class="filter-item" @keyup.enter.native="toQuery"
             />
         </el-select> -->
-        <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
+      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
@@ -28,7 +28,7 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts"  />
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
     <!--表单组件-->
     <accountForm ref="accountform" />
     <!--表格渲染-->
@@ -84,8 +84,8 @@
     <!--分页组件-->
     <el-pagination
       :total="total"
-      style="margin-top: 8px;"
       :current-page="page + 1"
+      style="margin-top: 8px;"
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
       @current-change="pageChange"/>
@@ -99,26 +99,26 @@ import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
 import { del } from '@/api/parkPevenue'
 import { parseTime } from '@/utils/index'
-import { parseDate } from '@/utils/index'          //格式化日期
+import { parseDate } from '@/utils/index' // 格式化日期
 import eForm from './form'
 import accountForm from './accountform'
 import store from '@/store'
 export default {
-  components: { eForm,accountForm },
-  mixins: [initData,initDict],
+  components: { eForm, accountForm },
+  mixins: [initData, initDict],
   data() {
     return {
-      deptId:'',
-      delLoading: false,
+      deptId: '',
+      delLoading: false
     }
   },
   created() {
     this.$nextTick(() => {
-     //将用户的上级部门id带入后台查询
-     store.dispatch('GetInfo').then(res => {
-       this.deptId=res.deptId
-       this.init()
-     })
+      // 将用户的上级部门id带入后台查询
+      store.dispatch('GetInfo').then(res => {
+        this.deptId = res.deptId
+        this.init()
+      })
       this.getDict('transaction_mode')
     })
   },
@@ -126,29 +126,28 @@ export default {
     parseTime,
     checkPermission,
     beforeInit() {
-     /* this.receiptPaymentAccountList=this.$refs.form.receiptPaymentAccountList */
+      /* this.receiptPaymentAccountList=this.$refs.form.receiptPaymentAccountList */
       this.url = 'api/parkPevenue'
       const sort = 'id,desc'
       const query = this.query
-      //获取query搜索的值
+      // 获取query搜索的值
       const houseNumber = query.houseNumber
       const supplierName = query.supplierName
       const createDateStart = query.createDateStart
       const createDateEnd = query.createDateEnd
-      //最高级别查询所有数据
-      if(this.deptId==1){
-        this.params = { page: this.page, size: this.size, sort: sort}
+      // 最高级别查询所有数据
+      if (this.deptId == 1) {
+        this.params = { page: this.page, size: this.size, sort: sort }
+      } else {
+        this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }
       }
-      else{
-         this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
-      }
-      //档口编号
+      // 档口编号
       if (houseNumber) { this.params['houseNumber'] = houseNumber }
-      //转化日期格式
-      if (createDateStart){
+      // 转化日期格式
+      if (createDateStart) {
         this.params['createTimeStart'] = parseDate(createDateStart)
       }
-      if (createDateEnd){
+      if (createDateEnd) {
         this.params['createTimeEnd'] = parseDate(createDateEnd)
       }
       return true
@@ -174,56 +173,56 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
-      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
+      this.$refs.form.getReceiptPaymentAccountList() // 初始化加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
-	  this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
+	  this.$refs.form.getReceiptPaymentAccountList() // 初始化加载下拉查询数据
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
         houseRent: data.houseRent,
         propertyRent: data.propertyRent,
         waterRent: data.waterRent,
-        electricityRent:data.electricityRent,
+        electricityRent: data.electricityRent,
         sanitationRent: data.sanitationRent,
         liquidatedRent: data.liquidatedRent,
         lateRent: data.lateRent,
         groundPoundRent: data.groundPoundRent,
         arrersRent: data.arrersRent,
-        managementRent:data.managementRent,
-        parkingRent:data.parkingRent,
-        leaseContract:{
-          id:data.leaseContractId
+        managementRent: data.managementRent,
+        parkingRent: data.parkingRent,
+        leaseContract: {
+          id: data.leaseContractId
         },
-        archivesmouthsmanagement:{
-          id:data.archivesMouthsId
+        archivesmouthsmanagement: {
+          id: data.archivesMouthsId
         },
-        basicsPark:{
-          id:data.parkId
+        basicsPark: {
+          id: data.parkId
         },
-        dictDetail:{
-          id:data.paymentType
+        dictDetail: {
+          id: data.paymentType
         },
-        dept:{
-          id:data.deptId
+        dept: {
+          id: data.deptId
         },
         receiptPaymentAccount: {
-          id:data.receiptPaymentAccountId
+          id: data.receiptPaymentAccountId
         }
       }
       _this.dialog = true
     },
-    //查看收付款信息详情
-    findReceiptPaymentAccount(id){
-      if(id!=null||id!=''){
+    // 查看收付款信息详情
+    findReceiptPaymentAccount(id) {
+      if (id != null || id != '') {
         const _this = this.$refs.accountform
         receiptPaymentAccountById(id).then(res => {
-           _this.dialog= true
-          _this.form= res
-         }).catch(err => {
+          _this.dialog = true
+          _this.form = res
+        }).catch(err => {
 
-         })
+        })
       }
     }
   }

@@ -42,7 +42,7 @@
       </div>
     </div>
     <!-- 表单组件-->
-    <eForm ref="form" :is-add="isAdd"/>
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts"/>
     <!-- 表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="housenumber" label="门牌号"/>
@@ -50,7 +50,7 @@
       <el-table-column prop="earnest" label="定金"/>
       <el-table-column prop="contractmoney" label="合同保证金"/>
       <el-table-column prop="contacts" label="联系人"/>
-      <el-table-column prop="leasetype" label="租用类型"/>
+      <el-table-column prop="stalltypeName" label="租用类型"/>
       <el-table-column prop="picturetoview" label="图片查看">
         <template slot-scope="scope">
           <a :href="scope.row.picturetoview" style="color: #42b983" target="_blank"><img :src="scope.row.picturetoview" alt="点击打开" class="el-avatar"></a>
@@ -82,13 +82,15 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
+import initDict from '@/mixins/initDict'
 import { del, getarchivesmouthsmanagementAll } from '@/api/archivesmouthsmanagement'
 import { parseDate } from '@/utils/index'
+import store from '@/store'
 import eForm from './form'
 
 export default {
   components: { eForm },
-  mixins: [initData],
+  mixins: [initData, initDict],
   data() {
     return {
       delLoading: false,
@@ -104,7 +106,12 @@ export default {
   },
   created() {
     this.$nextTick(() => {
-      this.init()
+      // 将用户的上级部门id带入后台查询
+      store.dispatch('GetInfo').then(res => {
+        this.deptId = res.deptId
+        this.init()
+      })
+      this.getDict('stall_type')
     })
   },
   methods: {
@@ -113,7 +120,12 @@ export default {
     beforeInit() {
       this.url = 'api/archivesmouthsmanagement'
       const sort = 'id,desc'
-      this.params = { page: this.page, size: this.size, sort: sort }
+      // 最高级别查询所有数据
+      if (this.deptId == 0) {
+        this.params = { page: this.page, size: this.size, sort: sort }
+      } else {
+        this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }
+      }
       const query = this.query
       const type = query.type
       const value = query.value
@@ -153,7 +165,13 @@ export default {
         contractmoney: data.contractmoney,
         contacts: data.contacts,
         leasetype: data.leasetype,
-        picturetoview: data.picturetoview
+        picturetoview: data.picturetoview,
+        dept: {
+          id: data.deptId
+        },
+        dictDetail: {
+          id: data.stalltypeName
+        }
       }
       _this.dialog = true
     },
