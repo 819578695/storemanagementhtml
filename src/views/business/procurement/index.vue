@@ -1,13 +1,18 @@
 <template>
   <div class="app-container">
+    <!--表单组件-->
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
+    <el-row :gutter="24">
+   <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
     <div class="head-container">
       <!-- 搜索  -->
-        <el-date-picker clearable v-model="query.applicationsDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
-        <el-date-picker clearable v-model="query.applicationsDateEnd" type="date" placeholder="选择日期"></el-date-picker>
+        <el-date-picker clearable v-model="query.applicationsDateStart" type="date" placeholder="选择日期" style="width:150px;"
+         class="filter-item"></el-date-picker>&nbsp;-
+        <el-date-picker clearable v-model="query.applicationsDateEnd" type="date" placeholder="选择日期" style="width:150px;" class="filter-item"></el-date-picker>
 <!--        <el-input v-model="query.pno" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
  -->
-        <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
+        <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
          <el-option
            v-for="(item, index) in deptList"
            :key="item.id"
@@ -15,8 +20,17 @@
            :value="item.id"
            />
         </el-select>
-        <el-input clearable v-model="query.supplierName" clearable placeholder="输入供应商名称" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+        <el-input clearable v-model="query.supplierName" clearable placeholder="输入供应商名称" style="width: 130px;" class="filter-item" @keyup.enter.native="toQuery"/>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
+        <!-- 重置 -->
+        <div style="display: inline-block;margin: 0px 2px;">
+          <el-button
+            class="filter-item"
+            size="mini"
+            type="info"
+            icon="el-icon-refresh-left"
+            @click="reset">重置</el-button>
+        </div>
         <!-- 新增 -->
         <div style="display: inline-block;margin: 0px 2px;">
           <el-button
@@ -27,31 +41,29 @@
             icon="el-icon-plus"
             @click="add">新增</el-button>
         </div>
-      <!-- 导出 -->
-      <div style="display: inline-block;">
-        <el-button
-          v-permission="['ADMIN']"
-          :loading="downloadLoading"
-          size="mini"
-          class="filter-item"
-          type="warning"
-          icon="el-icon-download"
-          @click="download">导出</el-button>
-      </div>
-      <!-- 全部导出 -->
-      <div style="display: inline-block;">
-        <el-button
-          v-permission="['ADMIN']"
-          :loading="downloadAllLoading"
-          size="mini"
-          class="filter-item"
-          type="warning"
-          icon="el-icon-download"
-          @click="downloadAll">全部导出</el-button>
-      </div>
+        <!-- 导出 -->
+        <div style="display: inline-block;">
+          <el-button
+            v-permission="['ADMIN']"
+            :loading="downloadLoading"
+            size="mini"
+            class="filter-item"
+            type="warning"
+            icon="el-icon-download"
+            @click="download">导出</el-button>
+        </div>
+        <!-- 全部导出 -->
+        <div style="display: inline-block;">
+          <el-button
+            v-permission="['ADMIN']"
+            :loading="downloadAllLoading"
+            size="mini"
+            class="filter-item"
+            type="warning"
+            icon="el-icon-download"
+            @click="downloadAll">全部导出</el-button>
+        </div>
     </div>
-    <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
     <!--表格渲染-->
     <el-table    v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="pno" label="项目编号"/>
@@ -111,6 +123,8 @@
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
       @current-change="pageChange"/>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -237,10 +251,15 @@ export default {
       //下拉框赋值
       this.$refs.form.dialog = true
     },
-   /* //全选
-    handleSelectionChange(val) {
-      this.multipleSelection = val;
-    }, */
+   //重置
+   reset(){
+     this.query.pno= ''
+     this.query.supplierName= ''
+     this.query.applicationsDateEnd = null
+     this.query.applicationsDateStart = null
+     this.query.deptId=''
+     this.init()
+   },
     // 导出
     download() {
        this.downloadLoading = true
@@ -275,7 +294,6 @@ export default {
              this.downloadAllLoading = false
            })
          })
-
     },
     // 数据转换
     formatJson(filterVal, jsonData) {

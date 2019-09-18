@@ -93,7 +93,7 @@
               <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
                 <el-select v-model="form.dictDetail.id"  placeholder="请选择支付方式">
                   <el-option
-                    v-for="(item, index) in dicts"
+                    v-for="(item, index) in dictMap.transaction_mode"
                     :key="item.index"
                     :label="item.label"
                     :value="item.id"/>
@@ -114,12 +114,12 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="类型" label-width="100px" prop="type">
-                <el-select v-model="form.type"  placeholder="请选择类型">
-                  <el-option  v-for="(item, index) in typeList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value" />
+              <el-form-item label="类型" label-width="100px" prop="payType.id">
+                <el-select v-model="form.payType.id"  placeholder="请选择类型">
+                  <el-option  v-for="(item, index) in dictMap.pevenue_status"
+                    :key="item.index"
+                    :label="item.label"
+                    :value="item.id" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -127,10 +127,10 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-row>
-        <el-col :span="4" v-if="!isAdd&&form.type==2" >
+        <el-col :span="4" v-if="!isAdd&&form.payType.value=='PEVENUE_UNDER'" >
           <el-button  style="text-align: left;" :loading="paybackloading" type="success" @click="doPayback">补缴</el-button>
         </el-col>
-        <el-col :span="20" v-if="form.type!=3">
+        <el-col :span="20" v-if="form.payType.value!='PEVENUE_PAYBACK'">
           <el-button type="text" @click="cancel">取消</el-button>
           <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
         </el-col>
@@ -151,17 +151,13 @@ export default {
       type: Boolean,
       required: true
     },
-    dicts: {
+    dictMap: {
       type: Array,
       required: true
     }
   },
   data() {
     return {
-      typeList:[
-        {value:1,label:'实付'},
-        {value:2,label:'欠款'},
-      ],//类型集合
       loading: false,
       paybackloading:false,
       dialog: false,
@@ -195,7 +191,9 @@ export default {
         dictDetail:{
           id:''
         },
-        type:''
+        payType:{
+          id:''
+        },
       },
       rules: {
         archivesmouthsmanagement:
@@ -222,8 +220,11 @@ export default {
             { required: true, message: '请选择收款账户', trigger: 'change' }
           ],
         },
-        type:
-            { required: true, message: '请选择类型', trigger: 'change' }
+        payType:{
+         id: [
+             { required: true, message: '请选择类型', trigger: 'change' }
+          ],
+        }
       }
     }
   },
@@ -278,11 +279,11 @@ export default {
     },
     doPayback(){
       //只有欠款才能进行补缴
-      if(this.form.type==2){
+      if(this.form.payType.value=='PEVENUE_UNDER'){
          this.paybackloading = true
           payBack(this.form).then(res => {
             this.resetForm()
-            if(res.type==3){
+            if(res.payTypeValue=='PEVENUE_PAYBACK'){
               this.$notify({
                 title: '补缴成功,您当前无欠款',
                 type: 'success',
@@ -345,7 +346,9 @@ export default {
         dictDetail:{
           id:''
         },
-        type:''
+        payType:{
+          id:''
+        },
       }
     },
     //查询所有的集合

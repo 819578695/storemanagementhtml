@@ -5,9 +5,9 @@
     <!--工具栏-->
       <div class="head-container">
       <!-- 搜索 -->
-      <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
-      <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
-      <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width:130px;" />
+      <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期" class="filter-item"></el-date-picker>&nbsp;-&nbsp;
+      <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期" class="filter-item"></el-date-picker>
+      <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width:130px;" class="filter-item"/>
       <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width: 130px">
         <el-option
           v-for="(item, index) in deptList"
@@ -18,6 +18,15 @@
           />
       </el-select>
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
+      <!-- 重置 -->
+      <div style="display: inline-block;margin: 0px 2px;">
+        <el-button
+          class="filter-item"
+          size="mini"
+          type="info"
+          icon="el-icon-refresh-left"
+          @click="reset">重置</el-button>
+      </div>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
@@ -28,6 +37,28 @@
           icon="el-icon-plus"
           @click="add">新增</el-button>
       </div>
+      <!-- 导出 -->
+      <div style="display: inline-block;">
+        <el-button
+          v-permission="['ADMIN']"
+          :loading="downloadLoading"
+          size="mini"
+          class="filter-item"
+          type="warning"
+          icon="el-icon-download"
+          @click="download">导出</el-button>
+      </div>
+      <!-- 全部导出 -->
+      <div style="display: inline-block;">
+        <el-button
+          v-permission="['ADMIN']"
+          :loading="downloadAllLoading"
+          size="mini"
+          class="filter-item"
+          type="warning"
+          icon="el-icon-download"
+          @click="downloadAll">全部导出</el-button>
+      </div>
     </div>
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
@@ -35,7 +66,6 @@
     <accountForm ref="accountform" />
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <el-table-column prop="id" label="主键"/>
       <el-table-column prop="rentContractName" label="合同名称"/>
       <el-table-column prop="houseNumber" label="档口名称"/>
       <el-table-column prop="deptName" label="部门名称"/>
@@ -92,7 +122,7 @@ import checkPermission from '@/utils/permission'
 import { receiptPaymentAccountById } from '@/api/receiptPaymentAccount'
 import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
-import { del } from '@/api/parkCost'
+import { del,getParkCostAll } from '@/api/parkCost'
 import { parseTime } from '@/utils/index'
 import { parseDate } from '@/utils/index'
 import eForm from './form'
@@ -103,6 +133,9 @@ export default {
   mixins: [initData,initDict],
   data() {
     return {
+      dataALL:[], //保存全部导出的数据
+      downloadLoading: false,//导出加载
+      downloadAllLoading: false,//全部导出加载
       delLoading: false,
       deptId:'',
       deptList:[],
@@ -204,6 +237,49 @@ export default {
       }
       _this.dialog = true
     },
+    //重置
+    reset(){
+      this.query.createDateStart=null
+      this.query.createDateEnd=null
+      this.query.houseNumber=''
+      this.query.deptId=''
+      this.init()
+    },
+    // 导出
+    download() {
+       this.downloadLoading = true
+      import('@/utils/export2Excel').then(excel => {
+        const tHeader = ['合同名称', '档口编号', '公司名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型', '创建时间', '收付款账户名称']
+        const filterVal = ['rentContractName', 'houseNumber', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent','paymentTypeName', 'createTime', 'receiptPaymentAccountName']
+        const data = this.formatJson(filterVal, this.data)
+        excel.export_json_to_excel({
+          header: tHeader,  //表头
+          data,             //数据
+          filename: 'table-list' //文件名
+        })
+        this.downloadLoading = false
+      })
+    },
+    // 全部导出
+    downloadAll() {
+         const sort = 'id,desc'
+         const params = { sort: sort }
+         getParkCostAll(params).then(res => {
+           this.downloadAllLoading = true
+           this.dataALL = res
+           import('@/utils/export2Excel').then(excel => {
+             const tHeader = ['合同名称', '档口编号', '部门名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型', '创建时间', '收付款账户名称']
+             const filterVal = ['rentContractName', 'houseNumber', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent', 'createTime', 'receiptPaymentAccountName']
+             const data = this.formatJson(filterVal, this.dataALL)
+             excel.export_json_to_excel({
+               header: tHeader,
+               data,
+               filename: 'table-list'
+             })
+             this.downloadAllLoading = false
+           })
+         })
+    },
     //查看收付款信息详情
     findReceiptPaymentAccount(id){
       if(id!=null||id!=''){
@@ -215,7 +291,17 @@ export default {
 
          })
       }
-    }
+    },
+    // 数据转换
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'createTime') {
+          return parseDate(v[j])
+        }  else {
+          return v[j]
+        }
+      }))
+    },
   }
 }
 </script>
