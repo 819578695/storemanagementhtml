@@ -42,7 +42,7 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd"/>
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
     <!--表单组件-->
     <eFormxq ref="formxq"/>
     <!--表格渲染-->
@@ -50,7 +50,7 @@
       <el-table-column prop="area" label="面积(m²)"/>
       <el-table-column prop="stall" label="档口/电商楼">
         <template slot-scope="scope">
-          <span style="margin-left: 10px;color: #409EFF;cursor : pointer;" @click="adduser(scope.row.id)">{{ scope.row.stall }}</span>
+          <span style="margin-left: 10px;color: #409EFF;cursor : pointer;" @click="adduser(scope.row.id)">{{ scope.row.stalltypeName }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="roomnumber" label="房号(门牌号)"/>
@@ -99,13 +99,14 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del, gettenantinformationAll } from '@/api/tenantinformation'
 import { parseDate } from '@/utils/index'
+import initDict from '@/mixins/initDict'
 import store from '@/store'
 import eForm from './form'
 import eFormxq from './formxq'
 
 export default {
   components: { eForm, eFormxq },
-  mixins: [initData],
+  mixins: [initData, initDict],
   data() {
     return {
       delLoading: false,
@@ -121,11 +122,12 @@ export default {
   },
   created() {
     this.$nextTick(() => {
-     //将用户的上级部门id带入后台查询
-     store.dispatch('GetInfo').then(res => {
-       this.deptId=res.deptId
-       this.init()
-     })
+      // 将用户的上级部门id带入后台查询
+      store.dispatch('GetInfo').then(res => {
+        this.deptId = res.deptId
+        this.init()
+      })
+      this.getDict('stall_type')
     })
   },
   methods: {
@@ -134,12 +136,11 @@ export default {
     beforeInit() {
       this.url = 'api/tenantinformation'
       const sort = 'id,desc'
-      //最高级别查询所有数据
-      if(this.deptId==0){
-        this.params = { page: this.page, size: this.size, sort: sort}
-      }
-      else{
-         this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
+      // 最高级别查询所有数据
+      if (this.deptId == 0) {
+        this.params = { page: this.page, size: this.size, sort: sort }
+      } else {
+        this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }
       }
       const query = this.query
       const type = query.type
@@ -181,8 +182,11 @@ export default {
         logisticsline: data.logisticsline,
         linkman: data.linkman,
         phone: data.phone,
-        dept:{
-          id:data.deptId
+        dept: {
+          id: data.deptId
+        },
+        dictDetail: {
+          id: data.stalltypeName
         }
       }
       _this.dialog = true

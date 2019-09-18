@@ -16,8 +16,14 @@
       <el-form-item label="联系人" >
         <el-input v-model="form.contacts" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="租用类型" >
-        <el-input v-model="form.leasetype" style="width: 370px;"/>
+      <el-form-item label="租用类型" prop="dictDetail.id" >
+        <el-select v-model="form.dictDetail.id" style="width: 370px;" placeholder="请选择档口类型">
+          <el-option
+            v-for="(item, index) in dicts"
+            :key="item.index"
+            :label="item.label"
+            :value="item.id"/>
+        </el-select>
       </el-form-item>
       <!--上传图片-->
       <el-upload
@@ -48,6 +54,10 @@ export default {
     isAdd: {
       type: Boolean,
       required: true
+    },
+    dicts: {
+      type: Array,
+      required: true
     }
   },
   data() {
@@ -65,9 +75,18 @@ export default {
         contractmoney: '',
         contacts: '',
         leasetype: '',
-        picturetoview: ''
+        picturetoview: '',
+        dictDetail: {
+          id: ''
+        }
       },
       rules: {
+        dictDetail:
+        {
+          id: [
+            { required: true, message: '请选择档口', trigger: 'change' }
+          ]
+        }
       }
     }
   },
@@ -129,7 +148,10 @@ export default {
         contractmoney: '',
         contacts: '',
         leasetype: '',
-        picturetoview: ''
+        picturetoview: '',
+        dictDetail: {
+          id: ''
+        }
       }
     },
     handleSuccess(response, file) {
