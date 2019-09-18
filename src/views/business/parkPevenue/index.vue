@@ -1,125 +1,146 @@
 <template>
   <div class="app-container">
-    <!--工具栏-->
-    <div>
-      <!-- 搜索  -->
-<<<<<<< HEAD
-      <el-date-picker v-model="query.createDateStart" type="date" placeholder="选择日期"/>&nbsp;-
-      <el-date-picker v-model="query.createDateEnd" type="date" placeholder="选择日期"/>
-      <el-input v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
-      <!-- <el-select v-model="query.receiptPaymentAccountId"  placeholder="请选择档口编号">
-=======
-        <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期"></el-date-picker>&nbsp;-
-        <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期"></el-date-picker>
-        <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
-         <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
->>>>>>> 4a2723f7b249b2fb7c40d33903ad71cc675da922
-          <el-option
-            v-for="(item, index) in deptList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-            class="filter-item" @keyup.enter.native="toQuery"
+    <el-row :gutter="20">
+      <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
+        <!--工具栏-->
+        <div class="head-container">
+          <!-- 搜索  -->
+          <el-date-picker v-model="query.createDateStart" clearable type="date" placeholder="选择日期" style="width:150px;" class="filter-item"/>&nbsp;-
+          <el-date-picker v-model="query.createDateEnd" clearable type="date" placeholder="选择日期" style="width:150px;" class="filter-item"/>
+          <el-input v-model="query.houseNumber" clearable clearable placeholder="输入档口编号" style="width: 130px;" class="filter-item" />
+          <el-select v-model="query.deptId" clearable placeholder="请选择园区" class="filter-item" style="width:130px;">
+            <el-option
+              v-for="(item, index) in deptList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+              class="filter-item"
+              @keyup.enter.native="toQuery"
             />
-<<<<<<< HEAD
-        </el-select> -->
-      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
-=======
-        </el-select>
-        <el-select clearable v-model="query.type" clearable placeholder="请选择类型" class="filter-item">
-          <el-option
-            v-for="(item, index) in typeList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-            class="filter-item" @keyup.enter.native="toQuery"
+          </el-select>
+          <el-select v-model="query.type" clearable clearable placeholder="请选择类型" class="filter-item" style="width:130px;">
+            <el-option
+              v-for="(item, index) in dictMap.pevenue_status"
+              :key="item.index"
+              :label="item.label"
+              :value="item.id"
+              class="filter-item"
+              @keyup.enter.native="toQuery"
             />
-        </el-select>
-        <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
->>>>>>> 4a2723f7b249b2fb7c40d33903ad71cc675da922
-      <!-- 新增 -->
-      <div style="display: inline-block;margin: 0px 2px;">
-        <el-button
-          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_CREATE']"
-          class="filter-item"
-          size="mini"
-          type="primary"
-          icon="el-icon-plus"
-          @click="add">新增</el-button>
-      </div>
-    </div>
-    <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
-    <!--表单组件-->
-    <accountForm ref="accountform" />
-    <!--表格渲染-->
-    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <!-- <el-table-column prop="basicsParkName" label="园区id"/> -->
-      <el-table-column prop="deptName" label="部门名称"/>
-      <el-table-column prop="houseNumber" label="档口编号"/>
-      <el-table-column prop="houseRent" label="房租"/>
-      <el-table-column prop="propertyRent" label="物业费"/>
-      <el-table-column prop="waterRent" label="水费"/>
-      <el-table-column prop="electricityRent" label="电费"/>
-      <el-table-column prop="sanitationRent" label="卫生费"/>
-      <el-table-column prop="liquidatedRent" label="违约金"/>
-      <el-table-column prop="managementRent" label="管理费"/>
-      <el-table-column prop="parkingRent" label="停车费"/>
-      <el-table-column prop="lateRent" label="滞纳金"/>
-      <el-table-column prop="groundPoundRent" label="地磅费"/>
-      <el-table-column prop="paymentTypeName" label="交易方式"/>
-      <el-table-column prop="type" label="交易类型">
-        <template slot-scope="scope">
-          <span>{{scope.row.type==1?'实付':scope.row.type==2?'欠款':'补缴'}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="收款信息">
-        <template slot-scope="scope">
-          <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="updateTime" label="修改时间">
-        <template slot-scope="scope">
-          <span>{{ parseDate(scope.row.updateTime) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="createTime" label="创建时间">
-        <template slot-scope="scope">
-          <span>{{ parseDate(scope.row.createTime) }}</span>
-        </template>
-      </el-table-column>
-      <!-- 合计-->
-      <el-table-column prop="creaeTime" label="合计" >
-        <template slot-scope="scope">
-          <span>{{ parseFloat(scope.row.houseRent+scope.row.propertyRent+scope.row.waterRent+scope.row.electricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column v-if="checkPermission(['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT','PARKPEVENUE_DELETE'])" label="操作" width="150px" align="center">
-        <template slot-scope="scope" >
-          <el-button v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
-          <el-popover
-            v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_DELETE']"
-            :ref="scope.row.id"
-            placement="top"
-            width="180">
-            <p>确定删除本条数据吗？</p>
-            <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
-              <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定</el-button>
-            </div>
-            <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini"/>
-          </el-popover>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!--分页组件-->
-    <el-pagination
-      :total="total"
-      :current-page="page + 1"
-      style="margin-top: 8px;"
-      layout="total, prev, pager, next, sizes"
-      @size-change="sizeChange"
-      @current-change="pageChange"/>
+          </el-select>
+          <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
+          <!-- 重置 -->
+          <div style="display: inline-block;margin: 0px 2px;">
+            <el-button
+              class="filter-item"
+              size="mini"
+              type="info"
+              icon="el-icon-refresh-left"
+              @click="reset">重置</el-button>
+          </div>
+          <!-- 新增 -->
+          <div style="display: inline-block;margin: 0px 2px;">
+            <el-button
+              v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_CREATE']"
+              class="filter-item"
+              size="mini"
+              type="primary"
+              icon="el-icon-plus"
+              @click="add">新增</el-button>
+          </div>
+          <!-- 导出 -->
+          <div style="display: inline-block;">
+            <el-button
+              v-permission="['ADMIN']"
+              :loading="downloadLoading"
+              size="mini"
+              class="filter-item"
+              type="warning"
+              icon="el-icon-download"
+              @click="download">导出</el-button>
+          </div>
+          <!-- 全部导出 -->
+          <div style="display: inline-block;">
+            <el-button
+              v-permission="['ADMIN']"
+              :loading="downloadAllLoading"
+              size="mini"
+              class="filter-item"
+              type="warning"
+              icon="el-icon-download"
+              @click="downloadAll">全部导出</el-button>
+          </div>
+        </div>
+        <!--表单组件-->
+        <eForm ref="form" :is-add="isAdd" :dict-map="dictMap" />
+        <!--表单组件-->
+        <accountForm ref="accountform" />
+        <!--表格渲染-->
+        <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
+          <!-- <el-table-column prop="basicsParkName" label="园区id"/> -->
+          <el-table-column prop="deptName" label="部门名称"/>
+          <el-table-column prop="houseNumber" label="档口编号"/>
+          <el-table-column prop="houseRent" label="房租"/>
+          <el-table-column prop="propertyRent" label="物业费"/>
+          <el-table-column prop="waterRent" label="水费"/>
+          <el-table-column prop="electricityRent" label="电费"/>
+          <el-table-column prop="sanitationRent" label="卫生费"/>
+          <el-table-column prop="liquidatedRent" label="违约金"/>
+          <el-table-column prop="managementRent" label="管理费"/>
+          <el-table-column prop="parkingRent" label="停车费"/>
+          <el-table-column prop="lateRent" label="滞纳金"/>
+          <el-table-column prop="groundPoundRent" label="地磅费"/>
+          <el-table-column prop="paymentTypeName" label="交易方式"/>
+          <el-table-column prop="payTypeName" label="交易类型"/>
+          <el-table-column label="收款信息">
+            <template slot-scope="scope">
+              <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="updateTime" label="修改时间">
+            <template slot-scope="scope">
+              <span>{{ parseDate(scope.row.updateTime) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="createTime" label="创建时间">
+            <template slot-scope="scope">
+              <span>{{ parseDate(scope.row.createTime) }}</span>
+            </template>
+          </el-table-column>
+          <!-- 合计-->
+          <el-table-column prop="total" label="合计" >
+            <template slot-scope="scope">
+              <span>{{ parseFloat(scope.row.houseRent+scope.row.propertyRent+scope.row.waterRent+scope.row.electricityRent+scope.row.sanitationRent+scope.row.lateRent+scope.row.groundPoundRent) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column v-if="checkPermission(['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT','PARKPEVENUE_DELETE'])" label="操作" width="150px" align="center">
+            <template slot-scope="scope" >
+              <el-button v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
+              <el-popover
+                v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_DELETE']"
+                :ref="scope.row.id"
+                placement="top"
+                width="180">
+                <p>确定删除本条数据吗？</p>
+                <div style="text-align: right; margin: 0">
+                  <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
+                  <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定</el-button>
+                </div>
+                <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini"/>
+              </el-popover>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--分页组件-->
+        <el-pagination
+          :total="total"
+          :current-page="page + 1"
+          style="margin-top: 8px;"
+          layout="total, prev, pager, next, sizes"
+          @size-change="sizeChange"
+          @current-change="pageChange"/>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -128,7 +149,7 @@ import checkPermission from '@/utils/permission'
 import { receiptPaymentAccountById } from '@/api/receiptPaymentAccount'
 import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
-import { del } from '@/api/parkPevenue'
+import { del, getParkPevenueAll } from '@/api/parkPevenue'
 import { parseTime } from '@/utils/index'
 import { parseDate } from '@/utils/index' // 格式化日期
 import eForm from './form'
@@ -139,39 +160,24 @@ export default {
   mixins: [initData, initDict],
   data() {
     return {
-<<<<<<< HEAD
+      dataALL: [], // 保存全部导出的数据
+      downloadLoading: false, // 导出加载
+      downloadAllLoading: false, // 全部导出加载
+      deptList: [],
       deptId: '',
       delLoading: false
-=======
-      typeList:[
-        {value:1,label:'实付'},
-        {value:2,label:'欠款'},
-        {value:3,label:'补缴'},
-      ],//类型集合
-      deptList:[],
-      deptId:'',
-      delLoading: false,
->>>>>>> 4a2723f7b249b2fb7c40d33903ad71cc675da922
     }
   },
   created() {
     this.$nextTick(() => {
-<<<<<<< HEAD
       // 将用户的上级部门id带入后台查询
       store.dispatch('GetInfo').then(res => {
         this.deptId = res.deptId
         this.init()
       })
-=======
-     //将用户的上级部门id带入后台查询
-     store.dispatch('GetInfo').then(res => {
-       this.deptId=res.deptId
-       this.init()
-     })
-     this.deptList=JSON.parse(sessionStorage.getItem("depts"))
->>>>>>> 4a2723f7b249b2fb7c40d33903ad71cc675da922
-      this.getDict('transaction_mode')
-      //取值给部门集合
+      // 取值给部门集合
+      this.deptList = JSON.parse(sessionStorage.getItem('depts'))
+      this.getDictMap('transaction_mode,pevenue_status')
     })
   },
   methods: {
@@ -187,39 +193,20 @@ export default {
       const houseNumber = query.houseNumber
       const createDateStart = query.createDateStart
       const createDateEnd = query.createDateEnd
-<<<<<<< HEAD
+      const deptId = query.deptId
+      const type = query.type
       // 最高级别查询所有数据
       if (this.deptId == 1) {
         this.params = { page: this.page, size: this.size, sort: sort }
       } else {
         this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }
-=======
-      const deptId = query.deptId
-      const type = query.type
-      //最高级别查询所有数据
-      if(this.deptId==1){
-        this.params = { page: this.page, size: this.size, sort: sort}
-      }
-      else{
-         this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
->>>>>>> 4a2723f7b249b2fb7c40d33903ad71cc675da922
       }
       // 档口编号
       if (houseNumber) { this.params['houseNumber'] = houseNumber }
-<<<<<<< HEAD
+      if (deptId) { this.params['deptId'] = deptId }
+      if (type) { this.params['type'] = type }
       // 转化日期格式
       if (createDateStart) {
-=======
-      if (deptId) { this.params['deptId'] = deptId }
-      if (type) {
-        this.params['type'] = type
-         }
-         else{
-          this.params['type'] = 1
-         }
-      //转化日期格式
-      if (createDateStart){
->>>>>>> 4a2723f7b249b2fb7c40d33903ad71cc675da922
         this.params['createTimeStart'] = parseDate(createDateStart)
       }
       if (createDateEnd) {
@@ -252,11 +239,7 @@ export default {
     },
     edit(data) {
       this.isAdd = false
-<<<<<<< HEAD
-	  this.$refs.form.getReceiptPaymentAccountList() // 初始化加载下拉查询数据
-=======
-	    this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
->>>>>>> 4a2723f7b249b2fb7c40d33903ad71cc675da922
+	    this.$refs.form.getReceiptPaymentAccountList() // 初始化加载下拉查询数据
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
@@ -268,47 +251,73 @@ export default {
         liquidatedRent: data.liquidatedRent,
         lateRent: data.lateRent,
         groundPoundRent: data.groundPoundRent,
-<<<<<<< HEAD
-        arrersRent: data.arrersRent,
         managementRent: data.managementRent,
         parkingRent: data.parkingRent,
+        payType: {
+          id: data.payTypeId,
+          value: data.payTypeValue
+        },
         leaseContract: {
           id: data.leaseContractId
-=======
-        managementRent:data.managementRent,
-        parkingRent:data.parkingRent,
-        type:data.type,
-        leaseContract:{
-          id:data.leaseContractId
->>>>>>> 4a2723f7b249b2fb7c40d33903ad71cc675da922
         },
         archivesmouthsmanagement: {
           id: data.archivesMouthsId
         },
-<<<<<<< HEAD
-        basicsPark: {
-          id: data.parkId
-        },
         dictDetail: {
           id: data.paymentType
-=======
-        dictDetail:{
-          id:data.paymentType
->>>>>>> 4a2723f7b249b2fb7c40d33903ad71cc675da922
         },
         dept: {
           id: data.deptId
         },
         receiptPaymentAccount: {
-<<<<<<< HEAD
           id: data.receiptPaymentAccountId
         }
-=======
-          id:data.receiptPaymentAccountId
-        },
->>>>>>> 4a2723f7b249b2fb7c40d33903ad71cc675da922
       }
       _this.dialog = true
+    },
+    // 重置
+    reset() {
+      this.query.createDateStart = null
+      this.query.createDateEnd = null
+      this.query.houseNumber = ''
+      this.query.deptId = ''
+      this.query.type = null
+      this.init()
+    },
+    // 导出
+    download() {
+      this.downloadLoading = true
+      import('@/utils/export2Excel').then(excel => {
+        const tHeader = ['公司名称', '档口编号', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费', '交易方式', '交易类型', '修改时间', '创建时间', '合计']
+        const filterVal = ['deptName', 'houseNumber', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent', 'groundPoundRent', 'paymentTypeName', 'type', 'updateTime', 'createTime', 'total']
+        const data = this.formatJson(filterVal, this.data)
+        excel.export_json_to_excel({
+          header: tHeader, // 表头
+          data, // 数据
+          filename: 'table-list' // 文件名
+        })
+        this.downloadLoading = false
+      })
+    },
+    // 全部导出
+    downloadAll() {
+      const sort = 'id,desc'
+      const params = { sort: sort }
+      getParkPevenueAll(params).then(res => {
+        this.downloadAllLoading = true
+        this.dataALL = res
+           import('@/utils/export2Excel').then(excel => {
+             const tHeader = ['公司名称', '档口编号', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费', '交易方式', '交易类型', '修改时间', '创建时间', '合计']
+             const filterVal = ['deptName', 'houseNumber', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent', 'groundPoundRent', 'paymentTypeName', 'payTypeName', 'updateTime', 'createTime', 'total']
+             const data = this.formatJson(filterVal, this.dataALL)
+             excel.export_json_to_excel({
+               header: tHeader,
+               data,
+               filename: 'table-list'
+             })
+             this.downloadAllLoading = false
+           })
+      })
     },
     // 查看收付款信息详情
     findReceiptPaymentAccount(id) {
@@ -321,6 +330,18 @@ export default {
 
         })
       }
+    },
+    // 数据转换
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'createTime' || j === 'updateTime') {
+          return parseDate(v[j])
+        } else if (j === 'total') {
+          return parseFloat(v['houseRent'] + v['propertyRent'] + v['waterRent'] + v['electricityRent'] + v['sanitationRent'] + v['lateRent'] + v['groundPoundRent'])
+        } else {
+          return v[j]
+        }
+      }))
     }
   }
 }
