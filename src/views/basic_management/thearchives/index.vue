@@ -42,7 +42,14 @@
       <el-table-column prop="theContractInformation" label="合同信息"/>
       <el-table-column prop="imageUpload" label="图片上传">
         <template slot-scope="scope">
-          <a :href="scope.row.imageUpload" style="color: #42b983" target="_blank"><img :src="scope.row.imageUpload" alt="点击打开" class="el-avatar"></a>
+          <!-- <a :href="scope.row.imageUpload" style="color: #42b983" target="_blank"><img :src="scope.row.imageUpload" alt="点击打开" class="el-avatar"></a> -->
+		  <el-popover
+		    placement="right"
+		    title=""
+		    trigger="click">
+		    <i slot="default"><img :src="scope.row.imageUpload"></i>
+		    <img slot="reference" :src="scope.row.imageUpload" :alt="scope.row.imageUpload" class="el-avatar">
+		  </el-popover>
         </template>
       </el-table-column>
       <el-table-column :show-overflow-tooltip="true" prop="parkdate" label="创建日期">

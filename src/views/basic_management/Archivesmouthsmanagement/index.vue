@@ -53,7 +53,17 @@
       <el-table-column prop="stalltypeName" label="租用类型"/>
       <el-table-column prop="picturetoview" label="图片查看">
         <template slot-scope="scope">
-          <a :href="scope.row.picturetoview" style="color: #42b983" target="_blank"><img :src="scope.row.picturetoview" alt="点击打开" class="el-avatar"></a>
+          <!-- <i slot="default"><img :src="scope.row.picturetoview" alt="点击打开" class="el-avatar"></i>
+          <el-dialog :visible.sync="dialogVisible">
+            <img :src="scope.row.picturetoview" width="100%" alt="">
+          </el-dialog> -->
+          <el-popover
+            placement="right"
+            title=""
+            trigger="click">
+            <i slot="default"><img :src="scope.row.picturetoview"></i>
+            <img slot="reference" :src="scope.row.picturetoview" :alt="scope.row.picturetoview" class="el-avatar">
+          </el-popover>
         </template>
       </el-table-column>
       <el-table-column :show-overflow-tooltip="true" prop="stalldate" label="创建日期">
@@ -97,6 +107,7 @@ export default {
       dataALL: [], // 保存全部导出的数据
       downloadLoading: false, // 导出加载
       downloadAllLoading: false, // 全部导出加载
+      dialogVisible: false,
       queryTypeOptions: [
         { key: 'housenumber', display_name: '门牌号' },
         { key: 'contacts', display_name: '联系人' },
@@ -221,6 +232,9 @@ export default {
           return v[j]
         }
       }))
+    },
+    handlePictureCardPreview(file) {
+      this.dialogVisible = true
     }
   }
 }
