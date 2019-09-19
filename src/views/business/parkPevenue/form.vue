@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog"  :title="isAdd ? '新增' : '编辑'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm"  :title="isAdd ? '新增' : '编辑'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
       <el-divider content-position="left">基本信息</el-divider>
         <el-row>
@@ -119,7 +119,9 @@
                   <el-option  v-for="(item, index) in dictMap.pevenue_status"
                     :key="item.index"
                     :label="item.label"
-                    :value="item.id" />
+                    :value="item.id"
+                    :disabled="item.value=='PEVENUE_PAYBACK'"
+                    />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -152,7 +154,7 @@ export default {
       required: true
     },
     dictMap: {
-      type: Array,
+      type: Object,
       required: true
     }
   },
@@ -192,7 +194,8 @@ export default {
           id:''
         },
         payType:{
-          id:''
+          id:'',
+          value:''
         },
       },
       rules: {
@@ -313,7 +316,6 @@ export default {
           duration: 2500
         })
       }
-
     },
     resetForm() {
       this.dialog = false
@@ -347,7 +349,8 @@ export default {
           id:''
         },
         payType:{
-          id:''
+          id:'',
+          value:''
         },
       }
     },

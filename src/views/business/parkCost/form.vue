@@ -209,13 +209,13 @@ export default {
     doEdit() {
       edit(this.form).then(res => {
         this.resetForm()
+        this.$parent.init()
         this.$notify({
           title: '修改成功',
           type: 'success',
           duration: 2500
         })
         this.loading = false
-        this.$parent.init()
       }).catch(err => {
         this.loading = false
         console.log(err.response.data.message)
