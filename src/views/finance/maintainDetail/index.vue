@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="deptId === ''">
+		<div v-if=" deptId === '' ">
 			<div class="my-code">点击资金账户查看详情</div>
 		</div>
 		<div v-else>
@@ -22,7 +22,7 @@
 	    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
 	      <el-table-column prop="deptName" label="所属园区"/>
 	      <el-table-column prop="tradTypeLabel" label="交易账户类型"/>
-	      <el-table-column prop="remaining" label="余额"/>
+	      <el-table-column prop="remaining" label="金额"/>
 	      <el-table-column prop="transactionDate" label="最近交易日期">
 	        <template slot-scope="scope">
 	          <span>{{ parseTime(scope.row.transactionDate) }}</span>

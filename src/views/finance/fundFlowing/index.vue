@@ -255,13 +255,17 @@ export default {
        this.downloadAllLoading = true
        this.dataALL = res
        import('@/utils/export2Excel').then(excel => {
-				const tHeader = ['交易日期', '交易方式', '金额', '收入支出项', '当前账户余额', '收付款人名称', '交易类型', '银行账号', '银行户名']
-        const filterVal = ['tradDate', 'tradTypeLabel', 'money', 'tallyTypeIdLabel', 'urrentBalance', 'receiptPaymentName', 'typeLabel', 'backNum', 'backAccount']
+				const tHeader = ['园区名称','收入房租', '收入停车费', '收入地磅费', '收入往来款', '收入投资款', '收入水费', '收入电费', '收入其他费用', '收入物业费', '收入赋税成本', '收入违约金', '收入管理费','收入滞纳金','收入卫生费',
+							'支出租金','支出水费','支出电费','支出物业费','支出赋税成本','支出其他费用','支出往来款','支出投资款']
+        const filterVal = ['deptName','pevenueRentSum', 'parkSum', 'wagonSum', 'contactsSum', 'investmentSum', 'waterSum', 'electricSum', 'otherSum', 'propertySum', 'scotSum', 'penalSum','managementSum',
+       'overdueSum','sanitationSum','siteRent','waterRent','electricityRent','propertyRent','taxCost','otherRent','contactsRent','investmentRent']
 		    const data = this.formatJson(filterVal, this.dataALL)
 		    excel.export_json_to_excel({
 		      header: tHeader,
 		      data,
-		      filename: 'table-list'
+		      filename: '资金流水(全)',
+		      autoWidth: true
+		      
 		    })
 		    this.downloadAllLoading = false
        })

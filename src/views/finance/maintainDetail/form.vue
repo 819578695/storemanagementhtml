@@ -10,7 +10,7 @@
 	      		:value="item.id"/>
         </el-select>
       </el-form-item>
-      <el-form-item label="余额" >
+      <el-form-item label="金额" >
         <el-input v-model="form.remaining" style="width: 370px;"/>
       </el-form-item>
     </el-form>
