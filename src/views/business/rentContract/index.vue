@@ -51,7 +51,20 @@
       </el-table-column>
       <el-table-column prop="paymentedExpenses" label="已缴费用"/>
       <el-table-column prop="contractAmount" label="合同总金额"/>
-      <el-table-column prop="fileName" label="文件名"/>
+      <el-table-column  prop="fileName" label="合同附件">
+      <template slot-scope="scope">
+        <el-popover
+          placement="right"
+          title=""
+          trigger="click">
+          <i slot="default">
+            <img v-if="scope.row.fileName!=null":src="scope.row.fileName">
+            <span v-else> 无附件 </span>
+          </i>
+          <span slot="reference" style="cursor: pointer;" :alt="scope.row.fileName">查看</span>
+        </el-popover>
+       </template>
+      </el-table-column>
       <el-table-column prop="contractNo" label="合同编号"/>
       <el-table-column v-if="checkPermission(['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_EDIT','RENTCONTRACT_DELETE'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
@@ -149,6 +162,7 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.imageFrontFile=null
     },
     edit(data) {
       this.isAdd = false
@@ -163,8 +177,9 @@ export default {
         deposit: data.deposit,
         contractAmount: data.contractAmount,
         fileName: data.fileName,
-        contractNo: data.contractNo
+        contractNo: data.contractNo,
       }
+      _this.imageFrontUrl=data.fileName
       _this.dialog = true
     }
   }

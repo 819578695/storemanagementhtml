@@ -75,7 +75,7 @@
       <el-divider content-position="left">合同附件</el-divider>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="文件名" >
+          <el-form-item label="合同附件" >
           <el-upload
           class="upload-demo"
           v-show="imageFrontUrl == null"
@@ -274,50 +274,58 @@ export default {
     },
       //文件上传
       beforeUpload(file){
+         if(this.form.contractNo==''){
+           //表单判断
+           this.$notify.error({
+               title: '请先填写合同信息',
+               duration:2500,
+           });
+           return;
+         }
         this.isShowUploading = true;
         this.imageFrontFile = file;
           let fileName = file.name;
           var fileData = new FormData();
           fileData.append('upfile', file);
           let suffix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length).toLowerCase();
-          if (suffix == "jpg" || suffix == "jpeg" || suffix == "png" || suffix == "pdf") {
-              //格式正确,判断大小在1M以内
-              let fileSize = file.size;
-              if (fileSize > 1024 * 1024) {
-                  //文件太大
-                  this.imageFrontUrl = null;
-                  this.$notify.error({
-                      title: '文件太大',
-                      duration:5,
-                      closable: true
-                  });
-              } else {
-                  upload(fileData,this.form.contractNo).then(res => {
-                    this.form.fileName=res
-                    this.imageFrontUrl=res
-                    this.isShowUploading=false
-                    this.$notify({
-                     title: '上传成功',
-                     type: 'success',
-                     duration: 2500
-                   })
-                  }).catch(err => {
+            if (suffix == "jpg" || suffix == "jpeg" || suffix == "png" || suffix == "pdf") {
+                //格式正确,判断大小在1M以内
+                let fileSize = file.size;
+                if (fileSize > 1024 * 1024) {
+                    //文件太大
+                    this.imageFrontUrl = null;
+                    this.$notify.error({
+                        title: '文件太大',
+                        duration:2500,
+                        closable: true
+                    });
+                } else {
+                    upload(fileData,this.form.contractNo).then(res => {
+                      this.form.fileName=res
+                      this.imageFrontUrl=res
+                      this.isShowUploading=false
                       this.$notify({
-                        title: '上传失败',
-                        type: 'error',
-                        duration: 2500
-                      })
-                  })
-              }
-          } else {
-              this.imageFrontUrl = null;
-              //格式错误
-              this.$notify.error({
-                  title: '文件格式错误',
-                  duration:5,
-                  closable: true
-              });
-          }
+                       title: '上传成功',
+                       type: 'success',
+                       duration: 2500
+                     })
+                    }).catch(err => {
+                        this.$notify({
+                          title: '上传失败',
+                          type: 'error',
+                          duration: 2500
+                        })
+                    })
+                }
+            } else {
+                this.imageFrontUrl = null;
+                //格式错误
+                this.$notify.error({
+                    title: '文件格式错误',
+                    duration:2500,
+                    closable: true
+                });
+            }
       },
       //清除文件
       clearFile(){

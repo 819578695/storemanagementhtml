@@ -163,6 +163,7 @@ export default {
              duration: 2500
            })
            this.loading = false
+		   this.imageFrontFile=null
            this.$parent.init()
          }).catch(err => {
            this.loading = false
@@ -205,6 +206,14 @@ export default {
     },
     //文件上传
     beforeUpload(file){
+      if(this.form.contractNo==''){
+        //表单判断
+        this.$notify.error({
+            title: '请先填写合同信息',
+            duration:2500,
+        });
+        return;
+      }
       this.isShowUploading = true;
       this.imageFrontFile = file;
         let fileName = file.name;
