@@ -31,12 +31,11 @@
     <eForm ref="form" :is-add="isAdd"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <el-table-column prop="id" label="主键"/>
       <el-table-column prop="contractNo" label="合同编号"/>
+      <el-table-column prop="contractName" label="合同名称"/>
       <el-table-column prop="houseNumber" label="档口编号"/>
       <el-table-column prop="tenementName" label="租户名称"/>
       <el-table-column prop="deptName" label="部门名称"/>
-      <el-table-column prop="contractName" label="合同名称"/>
       <el-table-column prop="startDate" label="起止日期">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.startDate) }}</span>
@@ -51,7 +50,7 @@
       <el-table-column prop="deposit" label="保证金"/>
       <el-table-column prop="unpaidExpenses" label="未缴费用">
       <template slot-scope="scope">
-        <span>{{scope.row.contractAmount-scope.row.paymentedExpenses}}
+        <span>{{scope.row.contractAmount-scope.row.paymentedExpenses<0?0:scope.row.contractAmount-scope.row.paymentedExpenses}}
         </span>
       </template>
       </el-table-column>

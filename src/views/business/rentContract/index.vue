@@ -29,7 +29,8 @@
     <eForm ref="form" :is-add="isAdd"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <el-table-column prop="id" label="主键"/>
+      <!-- <el-table-column prop="id" label="主键"/> -->
+      <el-table-column prop="contractNo" label="合同编号"/>
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="contractName" label="合同名称"/>
       <el-table-column prop="startDate" label="起止日期">
@@ -65,7 +66,6 @@
         </el-popover>
        </template>
       </el-table-column>
-      <el-table-column prop="contractNo" label="合同编号"/>
       <el-table-column v-if="checkPermission(['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_EDIT','RENTCONTRACT_DELETE'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
           <el-button v-permission="['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>

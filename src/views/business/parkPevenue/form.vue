@@ -16,12 +16,13 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同名称" prop="leaseContract.id">
-             <el-select v-model="form.leaseContract.id"  placeholder="请选择合同名称">
+             <el-select v-model="form.leaseContract" value-key="id"  placeholder="请选择合同名称" @change="findByContractName">
                <el-option
                  v-for="(item, index) in leaseContractList"
                  :key="item.index"
                  :label="item.contractName"
-                 :value="item.id"/>
+                 :value="item"
+                 />
              </el-select>
             </el-form-item>
           </el-col>
@@ -88,6 +89,20 @@
           </el-col>
         </el-row>
       <el-divider content-position="left">收款信息</el-divider>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="起止日期" prop="startTime">
+                <el-date-picker @change="changeEnd" :picker-options="pickerOptionsStart" v-model="form.startTime" type="date" placeholder="选择日期" style="width: 170px;">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="截止日期" prop="endTime">
+                <el-date-picker  @change="changeStart" :picker-options="pickerOptionsEnd" v-model="form.endTime" type="date" placeholder="选择日期" style="width: 170px;">
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
@@ -160,6 +175,10 @@ export default {
   },
   data() {
     return {
+      pickerOptionsStart: {},
+      pickerOptionsEnd: {},
+      contractStartTime:'',//合同的开始时间
+      contractEndTime:'',//合同的截止时间
       loading: false,
       paybackloading:false,
       dialog: false,
@@ -171,6 +190,8 @@ export default {
         houseRent: '',
         propertyRent: '',
         waterRent: '',
+        startTime:'',
+        endTime:'',
         electricityRent:'',
         sanitationRent: '',
         liquidatedRent: '',
@@ -179,7 +200,6 @@ export default {
         managementRent:'',
         parkingRent:'',
         leaseContract:{
-          id:''
         },
         dept:{
           id:''
@@ -231,7 +251,24 @@ export default {
       }
     }
   },
+  created() {
+
+  },
   methods: {
+      changeStart() {
+          this.pickerOptionsStart = Object.assign({}, this.pickerOptionsStart, {
+            disabledDate: time => {
+              return time.getTime() > this.contractStartTime;
+            }
+          });
+        },
+      changeEnd() {
+        this.pickerOptionsEnd = Object.assign({}, this.pickerOptionsEnd, {
+          disabledDate: time => {
+            return time.getTime() < this.form.startTime;
+          }
+        });
+      },
     cancel() {
       this.resetForm()
     },
@@ -374,6 +411,15 @@ export default {
         })
       })
     },
+    findByContractName(item){
+      this.contractStartTime=item.startDate
+      this.contractEndTime=item.endDate
+      return {
+        disabledDate(time){
+        return time.getTime() > this.contractStartTime//开始时间不选时，结束时间最大值小于等于当天
+           }
+       }
+    }
   }
 }
 </script>

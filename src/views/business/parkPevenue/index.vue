@@ -78,6 +78,7 @@
       <!-- <el-table-column prop="basicsParkName" label="园区id"/> -->
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="houseNumber" label="档口编号"/>
+      <el-table-column prop="leaseContractName" label="合同名称"/>
       <el-table-column prop="houseRent" label="房租"/>
       <el-table-column prop="propertyRent" label="物业费"/>
       <el-table-column prop="waterRent" label="水费"/>
@@ -93,6 +94,16 @@
       <el-table-column label="收款信息">
         <template slot-scope="scope">
           <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="startTime" label="开始时间">
+        <template slot-scope="scope">
+          <span>{{ parseDate(scope.row.startTime) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="endTime" label="截止时间">
+        <template slot-scope="scope">
+          <span>{{ parseDate(scope.row.endTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="updateTime" label="修改时间">
