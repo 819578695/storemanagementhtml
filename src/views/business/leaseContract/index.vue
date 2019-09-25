@@ -46,8 +46,16 @@
           <span>{{ parseDate(scope.row.endDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="rentFreeStartTime" label="免租期(开始时间)"/>
-      <el-table-column prop="rentFreeEndTime" label="免租期(截止时间)"/>
+      <el-table-column prop="rentFreeStartTime" label="免租期(开始时间)">
+        <template slot-scope="scope">
+            <span>{{ parseDate(scope.row.rentFreeStartTime) }}</span>
+          </template>
+      </el-table-column>
+        <el-table-column prop="rentFreeEndTime" label="免租期(截止时间)">
+        <template slot-scope="scope">
+            <span>{{ parseDate(scope.row.rentFreeEndTime) }}</span>
+          </template>
+      </el-table-column>
       <el-table-column prop="deposit" label="保证金"/>
       <el-table-column prop="unpaidExpenses" label="未缴费用">
       <template slot-scope="scope">

@@ -273,6 +273,9 @@ export default {
           id:data.payTypeId,
           value:data.payTypeValue
         },
+        tenantinformation:{
+          id:data.tenementId
+        },
         leaseContract:{
           id:data.leaseContractId
         },
@@ -305,8 +308,8 @@ export default {
     download() {
       this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
-        const tHeader = ['公司名称', '档口编号', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','修改时间','创建时间','合计']
-        const filterVal = ['deptName', 'houseNumber', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','updateTime','createTime','total']
+        const tHeader = ['公司名称', '档口编号','租户名称', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','修改时间','创建时间','合计']
+        const filterVal = ['deptName', 'houseNumber','linkman', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','updateTime','createTime','total']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader,  //表头
@@ -324,8 +327,8 @@ export default {
            this.downloadAllLoading = true
            this.dataALL = res.content
            import('@/utils/export2Excel').then(excel => {
-             const tHeader = ['公司名称', '档口编号', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','修改时间','创建时间','合计']
-             const filterVal = ['deptName', 'houseNumber', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','updateTime','createTime','total']
+             const tHeader = ['公司名称', '档口编号','租户名称', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','修改时间','创建时间','合计']
+             const filterVal = ['deptName', 'houseNumber','linkman', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','updateTime','createTime','total']
              const data = this.formatJson(filterVal, this.dataALL)
              excel.export_json_to_excel({
                header: tHeader,

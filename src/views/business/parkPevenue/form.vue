@@ -5,7 +5,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="档口编号"  prop="archivesmouthsmanagement.id">
-              <el-select v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" >
+              <el-select @change="findByTenantinformation" v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" >
                 <el-option
                   v-for="(item, index) in archivesmouthsmanagementList"
                   :key="item.index"
@@ -14,6 +14,17 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="租户信息"  prop="tenantinformation.id">
+              <el-select v-model="form.tenantinformation.id"  placeholder="请选择租户信息" >
+                <el-option
+                  :label="tenantinformation.linkman"
+                  :value="tenantinformation.id"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="合同名称" prop="leaseContract.id">
              <el-select v-model="form.leaseContract" value-key="id"  placeholder="请选择合同名称" @change="findByContractName">
@@ -162,6 +173,7 @@ import store from '@/store'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
 import { archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
 import { leaseContractByDeptId} from '@/api/leaseContract'
+import { tenantinformationByArchivesmouthsmanagementId} from '@/api/tenantinformation'
 export default {
   props: {
     isAdd: {
@@ -182,7 +194,8 @@ export default {
       loading: false,
       paybackloading:false,
       dialog: false,
-      leaseContractList:[],
+      leaseContractList:[], //合同集合
+      tenantinformation:{}, // 租户信息的集合
       receiptPaymentAccountList:[],
       archivesmouthsmanagementList:[],//档口的集合
       form: {
@@ -210,6 +223,9 @@ export default {
         archivesmouthsmanagement:{
           id:''
         },
+        tenantinformation:{
+          id:''
+        },
         dictDetail:{
           id:''
         },
@@ -223,6 +239,11 @@ export default {
         {
          id: [
             { required: true, message: '请选择档口编号', trigger: 'change' }
+          ],
+        },
+        tenantinformation:{
+         id: [
+            { required: true, message: '请选择租户信息', trigger: 'change' }
           ],
         },
         leaseContract:
@@ -396,6 +417,16 @@ export default {
           console.log(err.response.data.message)
         })
       })
+    },
+    //档口租户联动查询
+    findByTenantinformation(id){
+        tenantinformationByArchivesmouthsmanagementId(id).then(res => {
+          this.tenantinformation = res
+          this.form.tenantinformation.id=res.id
+          console.log(this.tenantinformationList)
+        }).catch(err => {
+          console.log(err.response.data.message)
+        })
     },
     findByContractName(item){
       this.dateProcessing(item.startDate,item.endDate)

@@ -15,6 +15,13 @@ export function tenantinformationByDeptId(id) {
   })
 }
 
+export function tenantinformationByArchivesmouthsmanagementId(id) {
+  return request({
+    url: 'api/tenantinformationByArchivesmouthsmanagementId/'+id,
+    method: 'get',
+  })
+}
+
 export function add(data) {
   return request({
     url: 'api/tenantinformation',
