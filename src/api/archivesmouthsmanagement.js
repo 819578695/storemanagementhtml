@@ -16,6 +16,22 @@ export function archivesmouthsmanagementByDeptId(id) {
   })
 }
 
+// 获取所有的房屋信息(根据部门已出租)
+export function findByDeptIdAndTenementNameIsNotNull(id) {
+  return request({
+    url: 'api/findByDeptIdAndTenementNameIsNotNull/'+id,
+    method: 'get'
+  })
+}
+
+// 获取所有的房屋信息(根据部门未出租)
+export function findByDeptIdAndTenementNameIsNull(id) {
+  return request({
+    url: 'api/findByDeptIdAndTenementNameIsNull/'+id,
+    method: 'get'
+  })
+}
+
 export function add(data) {
   return request({
     url: 'api/archivesmouthsmanagement',

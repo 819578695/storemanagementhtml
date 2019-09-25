@@ -171,7 +171,7 @@
 import { add, edit,payBack } from '@/api/parkPevenue'
 import store from '@/store'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
-import { archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
+import { findByDeptIdAndTenementNameIsNotNull} from '@/api/archivesmouthsmanagement'
 import { leaseContractByDeptId} from '@/api/leaseContract'
 import { tenantinformationByArchivesmouthsmanagementId} from '@/api/tenantinformation'
 export default {
@@ -406,7 +406,7 @@ export default {
       	}).catch(err => {
       	  console.log(err.response.data.message)
       	})
-        archivesmouthsmanagementByDeptId(res.deptId).then(res => {
+        findByDeptIdAndTenementNameIsNotNull(res.deptId).then(res => {
           this.archivesmouthsmanagementList = res
         }).catch(err => {
           console.log(err.response.data.message)

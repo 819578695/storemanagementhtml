@@ -194,7 +194,7 @@ export default {
     },
     edit(data) {
       this.isAdd = false
-      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
+      this.$refs.form.getByDeptIdAndTenementNameIsNotNullList() //初始化加载下拉查询数据
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
