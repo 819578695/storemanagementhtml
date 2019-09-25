@@ -46,7 +46,8 @@
           <span>{{ parseDate(scope.row.endDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="rentFreePeriod" label="免租期"/>
+      <el-table-column prop="rentFreeStartTime" label="免租期(开始时间)"/>
+      <el-table-column prop="rentFreeEndTime" label="免租期(截止时间)"/>
       <el-table-column prop="deposit" label="保证金"/>
       <el-table-column prop="unpaidExpenses" label="未缴费用">
       <template slot-scope="scope">
@@ -202,6 +203,8 @@ export default {
         contractName: data.contractName,
         startDate: data.startDate,
         endDate: data.endDate,
+        rentFreeStartTime:data.rentFreeStartTime,
+        rentFreeEndTime:data.rentFreeEndTime,
         rentFreePeriod: data.rentFreePeriod,
         deposit: data.deposit,
         contractAmount: data.contractAmount,

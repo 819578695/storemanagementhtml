@@ -91,14 +91,14 @@
       <el-divider content-position="left">收款信息</el-divider>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="起止日期" prop="startTime">
-                <el-date-picker @change="changeEnd" :picker-options="pickerOptionsStart" v-model="form.startTime" type="date" placeholder="选择日期" style="width: 170px;">
+              <el-form-item label="开始日期" prop="startTime">
+                <el-date-picker  :picker-options="pickerOptionsStart" v-model="form.startTime" type="date" placeholder="选择日期" style="width: 170px;" >
                 </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="截止日期" prop="endTime">
-                <el-date-picker  @change="changeStart" :picker-options="pickerOptionsEnd" v-model="form.endTime" type="date" placeholder="选择日期" style="width: 170px;">
+                <el-date-picker @change="findByContractRentFreeDate" :picker-options="pickerOptionsEnd" v-model="form.endTime" type="date" placeholder="选择日期" style="width: 170px;">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -175,10 +175,10 @@ export default {
   },
   data() {
     return {
-      pickerOptionsStart: {},
-      pickerOptionsEnd: {},
-      contractStartTime:'',//合同的开始时间
-      contractEndTime:'',//合同的截止时间
+      rentFreeStartTime:'',
+      rentFreeEndTime:'',
+      pickerOptionsStart: {},//控制开始时间禁用
+      pickerOptionsEnd: {},//控制结束时间禁用
       loading: false,
       paybackloading:false,
       dialog: false,
@@ -252,23 +252,8 @@ export default {
     }
   },
   created() {
-
   },
   methods: {
-      changeStart() {
-          this.pickerOptionsStart = Object.assign({}, this.pickerOptionsStart, {
-            disabledDate: time => {
-              return time.getTime() > this.contractStartTime;
-            }
-          });
-        },
-      changeEnd() {
-        this.pickerOptionsEnd = Object.assign({}, this.pickerOptionsEnd, {
-          disabledDate: time => {
-            return time.getTime() < this.form.startTime;
-          }
-        });
-      },
     cancel() {
       this.resetForm()
     },
@@ -287,6 +272,7 @@ export default {
     doAdd() {
     store.dispatch('GetInfo').then(res => {
         this.form.dept.id = res.deptId
+        //所选择的缴费日期在免租期中则提示
       add(this.form).then(res => {
         this.resetForm()
         this.$notify({
@@ -412,14 +398,44 @@ export default {
       })
     },
     findByContractName(item){
-      this.contractStartTime=item.startDate
-      this.contractEndTime=item.endDate
-      return {
-        disabledDate(time){
-        return time.getTime() > this.contractStartTime//开始时间不选时，结束时间最大值小于等于当天
+      this.dateProcessing(item.startDate,item.endDate)
+      if(item.rentFreeStartTime!=''&&item.rentFreeEndTime!=''){
+        this.rentFreeStartTime=item.rentFreeStartTime
+        this.rentFreeEndTime=item.rentFreeEndTime
+      }
+    },
+    //根据合同时间限定收入的时间
+    dateProcessing(startDate,endDate){
+        this.pickerOptionsStart = Object.assign({},this.pickerOptionsStart,{
+          disabledDate:(date)=>{
+            return (date.getTime() + 24 * 3600 ) < startDate||(date.getTime() + 24 * 3600 ) > endDate
+          }
+        }),
+         this.pickerOptionsEnd = Object.assign({},this.pickerOptionsEnd,{
+           disabledDate:(date)=>{
+             //如果开始日期为空,结束日期不得小于合同的开始日期
+             if(this.form.startTime==''){
+               return (date.getTime() + 24 * 3600 ) > endDate|| (date.getTime() + 24 * 3600 ) < startDate
+             }
+             //否则结日期小于已经选择的日期
+             return (date.getTime() + 24 * 3600 ) > endDate|| (date.getTime() + 24 * 3600 ) < this.form.startTime
            }
-       }
-    }
+         })
+      },
+      //提示所缴的日期是否为免租期
+      findByContractRentFreeDate(){
+         const rentFreeStartTime = this.rentFreeStartTime
+         const rentFreeEndTime = this.rentFreeEndTime
+        if(rentFreeStartTime&&rentFreeEndTime){
+          if(this.form.startTime.getTime() + 24 * 3600 >rentFreeStartTime&&this.form.endTime.getTime() + 24 * 3600 <rentFreeEndTime){
+            this.$notify({
+              title: '警告',
+              message: '您选择的日期为免租期,无需缴纳房租',
+              type: 'warning'
+            });
+          }
+        }
+      }
   }
 }
 </script>

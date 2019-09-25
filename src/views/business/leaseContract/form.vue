@@ -42,6 +42,20 @@
       </el-row>
       <el-row>
         <el-col :span="12">
+          <el-form-item label="免租开始日期" prop="rentFreeStartTime">
+            <el-date-picker v-model="form.rentFreeStartTime" type="date" placeholder="选择日期" style="width: 170px;">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="免租截止日期" prop="rentfreeEndTime">
+            <el-date-picker v-model="form.rentfreeEndTime" type="date" placeholder="选择日期" style="width: 170px;">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
           <el-form-item label="合同金额" prop="contractAmount">
             <el-input v-model="form.contractAmount" style="width: 170px;"/>
           </el-form-item>
@@ -131,7 +145,8 @@ export default {
       uploadUrl:'',//文件上传路径
       archivesmouthsmanagementList:[],//档口的集合
       tenantinformationList:[],//租户信息集合
-      loading: false, dialog: false,
+      loading: false,
+      dialog: false,
       form: {
         id: '',
         contractNo: '',
@@ -150,6 +165,8 @@ export default {
         rentFreePeriod: '',
         deposit: '',
         contractAmount: '',
+        rentFreeStartTime:'',
+        rentFreeEndTime:'',
         fileName: ''
       },
       rules: {
@@ -248,6 +265,8 @@ export default {
          archivesmouthsmanagement:{
            id:''
          },
+        rentFreeStartTime:'',
+        rentFreeEndTime:'',
         contractName: '',
         startDate: '',
         endDate: '',

@@ -9,10 +9,9 @@
       <!--工具栏-->
       <div class="head-container">
       <!-- 搜索  -->
-        <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>&nbsp;-
-        <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>
-        <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 130px;"  class="filter-item" />
-         <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
+        <el-date-picker clearable v-model="query.startTime" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>&nbsp;-
+        <el-date-picker clearable v-model="query.endTime" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>
+        <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
           <el-option
             v-for="(item, index) in deptList"
             :key="item.id"
@@ -21,6 +20,8 @@
             class="filter-item" @keyup.enter.native="toQuery"
             />
         </el-select>
+        <el-input clearable v-model="query.linkman" clearable placeholder="输入租户名称" style="width: 130px;"  class="filter-item" />
+        <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 130px;"  class="filter-item" />
         <el-select clearable v-model="query.type" clearable placeholder="请选择类型" class="filter-item" style="width:130px;">
           <el-option
            v-for="(item, index) in dictMap.pevenue_status"
@@ -77,6 +78,7 @@
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <!-- <el-table-column prop="basicsParkName" label="园区id"/> -->
       <el-table-column prop="deptName" label="部门名称"/>
+      <el-table-column prop="linkman" label="租户名称"/>
       <el-table-column prop="houseNumber" label="档口编号"/>
       <el-table-column prop="leaseContractName" label="合同名称"/>
       <el-table-column prop="houseRent" label="房租"/>
@@ -200,10 +202,11 @@ export default {
       const query = this.query
       //获取query搜索的值
       const houseNumber = query.houseNumber
-      const createDateStart = query.createDateStart
-      const createDateEnd = query.createDateEnd
+      const startTime = query.startTime
+      const endTime = query.endTime
       const deptId = query.deptId
       const type = query.type
+      const linkman = query.linkman
       //最高级别查询所有数据
       if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
@@ -214,13 +217,14 @@ export default {
       //档口编号
       if (houseNumber) { this.params['houseNumber'] = houseNumber }
       if (deptId) { this.params['deptId'] = deptId }
+      if (linkman) {this.params['linkman'] = linkman}
       if (type) {this.params['type'] = type}
       //转化日期格式
-      if (createDateStart){
-        this.params['createTimeStart'] = parseDate(createDateStart)
+      if (startTime){
+        this.params['startTime'] = parseDate(startTime)
       }
-      if (createDateEnd){
-        this.params['createTimeEnd'] = parseDate(createDateEnd)
+      if (endTime){
+        this.params['endTime'] = parseDate(endTime)
       }
       return true
     },
@@ -260,6 +264,8 @@ export default {
         sanitationRent: data.sanitationRent,
         liquidatedRent: data.liquidatedRent,
         lateRent: data.lateRent,
+        startTime:data.startTime,
+        endTime:data.endTime,
         groundPoundRent: data.groundPoundRent,
         managementRent:data.managementRent,
         parkingRent:data.parkingRent,
@@ -287,10 +293,11 @@ export default {
     },
     //重置
     reset(){
-      this.query.createDateStart=null
-      this.query.createDateEnd=null
+      this.query.startTime=null
+      this.query.endTime=null
       this.query.houseNumber=''
       this.query.deptId=''
+      this.query.linkman=''
       this.query.type=null
       this.init()
     },
