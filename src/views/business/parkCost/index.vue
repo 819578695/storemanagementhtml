@@ -11,7 +11,7 @@
       <!-- 搜索 -->
       <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期" class="filter-item"></el-date-picker>&nbsp;-&nbsp;
       <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期" class="filter-item"></el-date-picker>
-      <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width:130px;" class="filter-item"/>
+      <el-input  v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width:130px;" class="filter-item"/>
       <el-select v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width: 130px">
         <el-option
           v-for="(item, index) in deptList"
@@ -123,8 +123,7 @@ import { receiptPaymentAccountById } from '@/api/receiptPaymentAccount'
 import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
 import { del,getParkCostAll } from '@/api/parkCost'
-import { parseTime } from '@/utils/index'
-import { parseDate } from '@/utils/index'
+import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import accountForm from './accountform'
 import store from '@/store'

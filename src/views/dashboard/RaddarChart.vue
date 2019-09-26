@@ -61,7 +61,7 @@ export default {
     parseDate,
     checkPermission,
     beforeInit() {
-      this.url = 'api/leaseContract'
+      this.url = 'api/leaseContractNoRole'
       const sort = 'endDate,desc'
       const query = this.query
       //最高级别查询所有数据

@@ -20,7 +20,7 @@
            :value="item.id"
            />
         </el-select>
-        <el-input clearable v-model="query.supplierName" clearable placeholder="输入供应商名称" style="width: 130px;" class="filter-item" @keyup.enter.native="toQuery"/>
+        <el-input clearable v-model="query.supplierName"  placeholder="输入供应商名称" style="width: 130px;" class="filter-item" @keyup.enter.native="toQuery"/>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
         <!-- 重置 -->
         <div style="display: inline-block;margin: 0px 2px;">
@@ -133,9 +133,8 @@ import checkPermission from '@/utils/permission' //权限控制
 import initData from '@/mixins/initData'         //查询表格
 import initDict from '@/mixins/initDict'
 import { del } from '@/api/procurementInformation' //删除
-import { parseTime } from '@/utils/index'         //格式化日期
+import { parseTime,parseDate } from '@/utils/index'         //格式化日期
 import { getProcurementInformationAll } from '@/api/procurementInformation' //查询所有的收付款信息
-import { parseDate } from '@/utils/index'          //格式化日期
 import eForm from './form'                        //表单
 import store from '@/store'
 export default {
