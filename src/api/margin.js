@@ -22,3 +22,10 @@ export function edit(data) {
     data
   })
 }
+
+export function getMarginTree() {
+  return request({
+    url: 'api/marginTree',
+    method: 'get',
+  })
+}
