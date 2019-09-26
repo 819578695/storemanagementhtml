@@ -11,7 +11,7 @@
       <!-- 搜索  -->
         <el-date-picker clearable v-model="query.startTime" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>&nbsp;-
         <el-date-picker clearable v-model="query.endTime" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>
-        <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
+        <el-select v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
           <el-option
             v-for="(item, index) in deptList"
             :key="item.id"
@@ -54,7 +54,7 @@
       <!-- 导出 -->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN']"
+          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EXPORT',]"
           :loading="downloadLoading"
           size="mini"
           class="filter-item"
@@ -65,7 +65,7 @@
       <!-- 全部导出 -->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN']"
+          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EXPORT_ALL',]"
           :loading="downloadAllLoading"
           size="mini"
           class="filter-item"

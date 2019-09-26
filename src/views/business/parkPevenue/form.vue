@@ -15,7 +15,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="租户信息"  prop="tenantinformation.id">
+            <el-form-item label="租户信息">
               <el-select v-model="form.tenantinformation.id"  placeholder="请选择租户信息" >
                 <el-option
                   :label="tenantinformation.linkman"
@@ -241,11 +241,6 @@ export default {
             { required: true, message: '请选择档口编号', trigger: 'change' }
           ],
         },
-        tenantinformation:{
-         id: [
-            { required: true, message: '请选择租户信息', trigger: 'change' }
-          ],
-        },
         leaseContract:
         {
          id: [
@@ -381,6 +376,8 @@ export default {
           id:''
         },
         leaseContract:{
+        },
+        tenantinformation:{
           id:''
         },
         receiptPaymentAccount: {

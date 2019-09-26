@@ -4,7 +4,7 @@
     <div >
       <!-- 搜索 -->
       <el-input clearable v-model="query.contractNo" clearable placeholder="输入合同编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-      <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
+      <el-select v-permission="['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
         <el-option
           v-for="(item, index) in deptList"
           :key="item.id"

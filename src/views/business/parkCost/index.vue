@@ -12,7 +12,7 @@
       <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期" class="filter-item"></el-date-picker>&nbsp;-&nbsp;
       <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期" class="filter-item"></el-date-picker>
       <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width:130px;" class="filter-item"/>
-      <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width: 130px">
+      <el-select v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width: 130px">
         <el-option
           v-for="(item, index) in deptList"
           :key="item.id"
@@ -44,7 +44,7 @@
       <!-- 导出 -->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN']"
+          v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_EXPROT']"
           :loading="downloadLoading"
           size="mini"
           class="filter-item"
@@ -55,7 +55,7 @@
       <!-- 全部导出 -->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN']"
+          v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_EXPROT_ALL']"
           :loading="downloadAllLoading"
           size="mini"
           class="filter-item"
