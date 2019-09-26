@@ -3,8 +3,8 @@
     <!--工具栏-->
     <div >
       <!-- 搜索 -->
-      <el-input clearable v-model="query.contractNo" clearable placeholder="输入合同编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-      <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
+      <el-input clearable v-model="query.contractNo"  placeholder="输入合同编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+      <el-select v-permission="['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
         <el-option
           v-for="(item, index) in deptList"
           :key="item.id"
@@ -47,7 +47,7 @@
       <el-table-column prop="deposit" label="保证金"/>
       <el-table-column prop="unpaidExpenses" label="未缴费用">
       <template slot-scope="scope">
-        <span>{{scope.row.contractAmount-scope.row.paymentedExpenses}}</span>
+        <span>{{scope.row.contractAmount-scope.row.paymentedExpenses<0?0:scope.row.contractAmount-scope.row.paymentedExpenses}}</span>
       </template>
       </el-table-column>
       <el-table-column prop="paymentedExpenses" label="已缴费用"/>
@@ -99,8 +99,7 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/rentContract'
-import { parseTime } from '@/utils/index'
-import { parseDate } from '@/utils/index'          //格式化日期
+import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
 export default {

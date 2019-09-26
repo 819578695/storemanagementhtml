@@ -5,7 +5,7 @@
       <!-- 搜索  -->
         <el-date-picker clearable v-model="query.startDate" type="date" placeholder="选择开始日期"></el-date-picker>&nbsp;-
         <el-date-picker clearable v-model="query.endDate" type="date" placeholder="选择截止日期"></el-date-picker>
-      <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
+      <el-input clearable v-model="query.houseNumber"  placeholder="输入档口编号" style="width: 200px;" />
       <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
         <el-option
           v-for="(item, index) in deptList"
@@ -112,8 +112,7 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/leaseContract'
-import { parseTime } from '@/utils/index'
-import { parseDate } from '@/utils/index'
+import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
 export default {
@@ -194,7 +193,7 @@ export default {
     },
     edit(data) {
       this.isAdd = false
-      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
+      this.$refs.form.getByDeptIdAndTenementNameIsNotNullList() //初始化加载下拉查询数据
       const _this = this.$refs.form
       _this.form = {
         id: data.id,

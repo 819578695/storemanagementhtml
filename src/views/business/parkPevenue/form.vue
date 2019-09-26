@@ -15,7 +15,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="租户信息"  prop="tenantinformation.id">
+            <el-form-item label="租户信息">
               <el-select v-model="form.tenantinformation.id"  placeholder="请选择租户信息" >
                 <el-option
                   :label="tenantinformation.linkman"
@@ -171,7 +171,7 @@
 import { add, edit,payBack } from '@/api/parkPevenue'
 import store from '@/store'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
-import { archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
+import { findByDeptIdAndTenementNameIsNotNull} from '@/api/archivesmouthsmanagement'
 import { leaseContractByDeptId} from '@/api/leaseContract'
 import { tenantinformationByArchivesmouthsmanagementId} from '@/api/tenantinformation'
 export default {
@@ -239,11 +239,6 @@ export default {
         {
          id: [
             { required: true, message: '请选择档口编号', trigger: 'change' }
-          ],
-        },
-        tenantinformation:{
-         id: [
-            { required: true, message: '请选择租户信息', trigger: 'change' }
           ],
         },
         leaseContract:
@@ -381,6 +376,8 @@ export default {
           id:''
         },
         leaseContract:{
+        },
+        tenantinformation:{
           id:''
         },
         receiptPaymentAccount: {
@@ -406,7 +403,7 @@ export default {
       	}).catch(err => {
       	  console.log(err.response.data.message)
       	})
-        archivesmouthsmanagementByDeptId(res.deptId).then(res => {
+        findByDeptIdAndTenementNameIsNotNull(res.deptId).then(res => {
           this.archivesmouthsmanagementList = res
         }).catch(err => {
           console.log(err.response.data.message)

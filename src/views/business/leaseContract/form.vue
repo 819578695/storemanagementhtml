@@ -48,8 +48,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="免租截止日期" prop="rentfreeEndTime">
-            <el-date-picker v-model="form.rentfreeEndTime" type="date" placeholder="选择日期" style="width: 170px;">
+          <el-form-item label="免租截止日期" prop="rentFreeEndTime">
+            <el-date-picker v-model="form.rentFreeEndTime" type="date" placeholder="选择日期" style="width: 170px;">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -122,7 +122,7 @@
 <script>
 import { add, edit} from '@/api/leaseContract'
 import store from '@/store'
-import { archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
+import { findByDeptIdAndTenementNameIsNull,archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
 import { tenantinformationByDeptId} from '@/api/tenantinformation'
 import { getToken } from '@/utils/auth'
 import { upload } from '@/api/rentContract'
@@ -278,6 +278,21 @@ export default {
     },
     //查询所有的集合
     getReceiptPaymentAccountList() {
+      store.dispatch('GetInfo').then(res => {
+      	tenantinformationByDeptId(res.deptId).then(res => {
+      	  this.tenantinformationList = res
+      	}).catch(err => {
+      	  console.log(err.response.data.message)
+      	})
+        findByDeptIdAndTenementNameIsNull(res.deptId).then(res => {
+          this.archivesmouthsmanagementList = res
+        }).catch(err => {
+          console.log(err.response.data.message)
+        })
+      })
+    },
+    //查询所有的集合
+    getByDeptIdAndTenementNameIsNotNullList() {
       store.dispatch('GetInfo').then(res => {
       	tenantinformationByDeptId(res.deptId).then(res => {
       	  this.tenantinformationList = res
