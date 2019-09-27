@@ -66,6 +66,7 @@
           </el-popover>
         </template>
       </el-table-column>
+      <el-table-column :show-overflow-tooltip="true" prop="tenementName" label="租户名称"/>
       <el-table-column :show-overflow-tooltip="true" prop="stalldate" label="创建日期">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.stalldate) }}</span>

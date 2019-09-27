@@ -11,7 +11,7 @@
       <!-- 搜索  -->
         <el-date-picker clearable v-model="query.startTime" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>&nbsp;-
         <el-date-picker clearable v-model="query.endTime" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>
-        <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
+        <el-select v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
           <el-option
             v-for="(item, index) in deptList"
             :key="item.id"
@@ -20,9 +20,9 @@
             class="filter-item" @keyup.enter.native="toQuery"
             />
         </el-select>
-        <el-input clearable v-model="query.linkman" clearable placeholder="输入租户名称" style="width: 130px;"  class="filter-item" />
-        <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 130px;"  class="filter-item" />
-        <el-select clearable v-model="query.type" clearable placeholder="请选择类型" class="filter-item" style="width:130px;">
+        <el-input clearable v-model="query.linkman"  placeholder="输入租户名称" style="width: 130px;"  class="filter-item" />
+        <el-input clearable v-model="query.houseNumber"  placeholder="输入档口编号" style="width: 130px;"  class="filter-item" />
+        <el-select clearable v-model="query.type"  placeholder="请选择类型" class="filter-item" style="width:130px;">
           <el-option
            v-for="(item, index) in dictMap.pevenue_status"
              :key="item.index"
@@ -54,7 +54,7 @@
       <!-- 导出 -->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN']"
+          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EXPORT',]"
           :loading="downloadLoading"
           size="mini"
           class="filter-item"
@@ -65,7 +65,7 @@
       <!-- 全部导出 -->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN']"
+          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EXPORT_ALL',]"
           :loading="downloadAllLoading"
           size="mini"
           class="filter-item"
@@ -161,8 +161,7 @@ import { receiptPaymentAccountById } from '@/api/receiptPaymentAccount'
 import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
 import { del,getParkPevenueAll } from '@/api/parkPevenue'
-import { parseTime } from '@/utils/index'
-import { parseDate } from '@/utils/index'          //格式化日期
+import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import accountForm from './accountform'
 import store from '@/store'

@@ -3,7 +3,7 @@
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
     <el-row :gutter="24">
-   <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
+      <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
     <div class="head-container">
       <!-- 搜索  -->
@@ -12,7 +12,7 @@
         <el-date-picker clearable v-model="query.applicationsDateEnd" type="date" placeholder="选择日期" style="width:150px;" class="filter-item"></el-date-picker>
 <!--        <el-input v-model="query.pno" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
  -->
-        <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
+        <el-select v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
          <el-option
            v-for="(item, index) in deptList"
            :key="item.id"
@@ -20,7 +20,7 @@
            :value="item.id"
            />
         </el-select>
-        <el-input clearable v-model="query.supplierName" clearable placeholder="输入供应商名称" style="width: 130px;" class="filter-item" @keyup.enter.native="toQuery"/>
+        <el-input clearable v-model="query.supplierName"  placeholder="输入供应商名称" style="width: 130px;" class="filter-item" @keyup.enter.native="toQuery"/>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
         <!-- 重置 -->
         <div style="display: inline-block;margin: 0px 2px;">
@@ -44,7 +44,7 @@
         <!-- 导出 -->
         <div style="display: inline-block;">
           <el-button
-            v-permission="['ADMIN']"
+            v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_EXPORT']"
             :loading="downloadLoading"
             size="mini"
             class="filter-item"
@@ -55,7 +55,7 @@
         <!-- 全部导出 -->
         <div style="display: inline-block;">
           <el-button
-            v-permission="['ADMIN']"
+            v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_EXPORT_ALL']"
             :loading="downloadAllLoading"
             size="mini"
             class="filter-item"
@@ -68,7 +68,7 @@
     <el-table    v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="pno" label="项目编号"/>
       <el-table-column prop="projectName" label="项目名称"/>
-      <el-table-column prop="deptName" label="部门名称"/>
+      <el-table-column prop="deptName" label="公司名称"/>
       <el-table-column prop="supplierName" label="供应商名称"/>
       <el-table-column prop="purchaseDescription" label="采购说明"/>
       <el-table-column prop="contractEndDate" label="合同截止日" width="100">
@@ -99,7 +99,7 @@
       <el-table-column prop="receiptPaymentAccountName" label="收付款账户"/>
       <el-table-column v-if="checkPermission(['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_EDIT','PROCUREMENTINFORMATION_DELETE'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
-          <el-button v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
+          <el-button v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
           <el-popover
             v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_DELETE']"
             :ref="scope.row.id"
@@ -133,9 +133,8 @@ import checkPermission from '@/utils/permission' //权限控制
 import initData from '@/mixins/initData'         //查询表格
 import initDict from '@/mixins/initDict'
 import { del } from '@/api/procurementInformation' //删除
-import { parseTime } from '@/utils/index'         //格式化日期
+import { parseTime,parseDate } from '@/utils/index'         //格式化日期
 import { getProcurementInformationAll } from '@/api/procurementInformation' //查询所有的收付款信息
-import { parseDate } from '@/utils/index'          //格式化日期
 import eForm from './form'                        //表单
 import store from '@/store'
 export default {

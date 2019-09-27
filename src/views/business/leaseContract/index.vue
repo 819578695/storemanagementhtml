@@ -1,11 +1,15 @@
 <template>
   <div class="app-container">
+    <!--表单组件-->
+  <eForm ref="form" :is-add="isAdd"/>
+  <el-row :gutter="24">
+    <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
-    <div>
+    <div class="head-container">
       <!-- 搜索  -->
         <el-date-picker clearable v-model="query.startDate" type="date" placeholder="选择开始日期"></el-date-picker>&nbsp;-
         <el-date-picker clearable v-model="query.endDate" type="date" placeholder="选择截止日期"></el-date-picker>
-      <el-input clearable v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width: 200px;" />
+      <el-input clearable v-model="query.houseNumber"  placeholder="输入档口编号" style="width: 200px;" />
       <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
         <el-option
           v-for="(item, index) in deptList"
@@ -27,8 +31,6 @@
           @click="add">新增</el-button>
       </div>
     </div>
-    <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="contractNo" label="合同编号"/>
@@ -105,6 +107,8 @@
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
       @current-change="pageChange"/>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -112,8 +116,7 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/leaseContract'
-import { parseTime } from '@/utils/index'
-import { parseDate } from '@/utils/index'
+import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
 export default {
@@ -190,6 +193,7 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.imageFrontFile=''
       this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
     },
     edit(data) {
@@ -218,6 +222,7 @@ export default {
         contractAmount: data.contractAmount,
         fileName: data.fileName
       }
+      _this.imageFrontUrl=data.fileName
       _this.dialog = true
     }
   }

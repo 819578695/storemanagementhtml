@@ -1,10 +1,14 @@
 <template>
   <div class="app-container">
+    <!--表单组件-->
+    <eForm ref="form" :is-add="isAdd"/>
+    <el-row :gutter="24">
+      <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
-    <div >
+    <div class="head-container">
       <!-- 搜索 -->
-      <el-input clearable v-model="query.contractNo" clearable placeholder="输入合同编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-      <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
+      <el-input clearable v-model="query.contractNo"  placeholder="输入合同编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
+      <el-select v-permission="['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
         <el-option
           v-for="(item, index) in deptList"
           :key="item.id"
@@ -25,8 +29,6 @@
           @click="add">新增</el-button>
       </div>
     </div>
-    <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <!-- <el-table-column prop="id" label="主键"/> -->
@@ -47,7 +49,7 @@
       <el-table-column prop="deposit" label="保证金"/>
       <el-table-column prop="unpaidExpenses" label="未缴费用">
       <template slot-scope="scope">
-        <span>{{scope.row.contractAmount-scope.row.paymentedExpenses}}</span>
+        <span>{{scope.row.contractAmount-scope.row.paymentedExpenses<0?0:scope.row.contractAmount-scope.row.paymentedExpenses}}</span>
       </template>
       </el-table-column>
       <el-table-column prop="paymentedExpenses" label="已缴费用"/>
@@ -55,11 +57,11 @@
       <el-table-column  prop="fileName" label="合同附件">
       <template slot-scope="scope">
         <el-popover
-          placement="right"
+          placement="left"
           title=""
           trigger="click">
           <i slot="default">
-            <img v-if="scope.row.fileName!=null":src="scope.row.fileName">
+            <img class="img-responsive" v-if="scope.row.fileName!=null":src="scope.row.fileName">
             <span v-else> 无附件 </span>
           </i>
           <span slot="reference" style="cursor: pointer;" :alt="scope.row.fileName">查看</span>
@@ -72,7 +74,7 @@
           <el-popover
             v-permission="['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_DELETE']"
             :ref="scope.row.id"
-            placement="top"
+            placement="right"
             width="180">
             <p>确定删除本条数据吗？</p>
             <div style="text-align: right; margin: 0">
@@ -92,6 +94,8 @@
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
       @current-change="pageChange"/>
+      </el-col>
+     </el-row>
   </div>
 </template>
 
@@ -99,8 +103,7 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/rentContract'
-import { parseTime } from '@/utils/index'
-import { parseDate } from '@/utils/index'          //格式化日期
+import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
 export default {
@@ -162,7 +165,7 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
-      this.$refs.form.imageFrontFile=null
+      this.$refs.form.imageFrontFile=''
     },
     edit(data) {
       this.isAdd = false

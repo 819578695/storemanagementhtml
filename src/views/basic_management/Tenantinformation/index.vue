@@ -59,7 +59,20 @@
       <el-table-column prop="linkman" label="联系人"/>
       <el-table-column prop="phone" label="联系电话"/>
       <el-table-column prop="amountinarear" label="欠款金额"/>
-      <el-table-column prop="thecontractdetails" label="合同详情"/>
+    <el-table-column  prop="thecontractdetails" label="合同详情">
+    <template slot-scope="scope">
+      <el-popover
+        placement="right"
+        title=""
+        trigger="click">
+        <i slot="default">
+          <img v-if="scope.row.thecontractdetails!=null":src="scope.row.thecontractdetails">
+          <span v-else> 无附件 </span>
+        </i>
+        <span slot="reference" style="cursor: pointer;" :alt="scope.row.thecontractdetails">查看</span>
+      </el-popover>
+     </template>
+    </el-table-column>
       <el-table-column :show-overflow-tooltip="true" prop="tenementdate" label="创建日期">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.tenementdate) }}</span>
