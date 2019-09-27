@@ -3,7 +3,7 @@
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
     <el-row :gutter="24">
-   <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
+      <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
     <div class="head-container">
       <!-- 搜索  -->

@@ -52,8 +52,8 @@
         <el-col :span="12">
           <el-form-item label="文件名" >
           <el-upload
-          class="upload-demo"
-          v-show="imageFrontUrl == null"
+          class="avatar-uploader"
+          v-show="imageFrontUrl == ''"
             name="upfile"
             drag
             :headers="headers"
@@ -62,11 +62,11 @@
             :before-upload="beforeUpload"
             multiple>
             <i class="el-icon-upload"></i>
-            <div class="el-upload__text"><p v-if="imageFrontFile !== null">文件名称: {{ imageFrontFile.name }}</p>
+            <div class="el-upload__text"><p v-if="imageFrontFile != ''">文件名称: {{ imageFrontFile.name }}</p>
             <p v-else>点击或拖拽文件上传</p></div>
           </el-upload>
-           <div class="text-xs-center" v-show="imageFrontUrl != null">
-              <img :src="imageFrontUrl" />
+           <div class="text-xs-center" v-show="imageFrontUrl != ''">
+              <img class="avatar" :src="imageFrontUrl" />
               <el-button outline  @click="clearFile">清除</el-button>
            </div>
           </el-form-item>
@@ -91,10 +91,12 @@ export default {
       required: true
     }
   },
+  created() {
+  },
   data() {
     return {
-      imageFrontUrl:null, //文件上传路径
-      imageFrontFile: null,//接受文件上传的参数
+      imageFrontUrl:'', //文件上传路径
+      imageFrontFile: '',//接受文件上传的参数
       isShowUploading: false,//文件上传加载中
       headers: {//设置请求头
                'Authorization': 'Bearer '+ getToken()
@@ -203,6 +205,7 @@ export default {
         fileName: '',
         contractNo: ''
       }
+      this.clearFile()
     },
     //文件上传
     beforeUpload(file){
@@ -225,7 +228,7 @@ export default {
             let fileSize = file.size;
             if (fileSize > 1024 * 1024) {
                 //文件太大
-                this.imageFrontUrl = null;
+                this.imageFrontUrl = '';
                 this.$notify.error({
                     title: '文件太大',
                     duration:5,
@@ -250,7 +253,7 @@ export default {
                 })
             }
         } else {
-            this.imageFrontUrl = null;
+            this.imageFrontUrl = '';
             //格式错误
             this.$notify.error({
                 title: '文件格式错误',
@@ -261,14 +264,36 @@ export default {
     },
     //清除文件
     clearFile(){
-        this.imageFrontUrl = null;
-        this.form.fileName = null;
-        this.imageFrontFile = null;
+        this.imageFrontUrl = '';
+        this.form.fileName = '';
+        this.imageFrontFile = '';
     },
   }
 }
 </script>
 
 <style scoped>
-
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>
