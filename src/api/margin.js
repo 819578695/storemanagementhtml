@@ -31,9 +31,10 @@ export function getMarginCost(params) {
   })
 }
 
-export function getMarginTree() {
+export function getMarginTree(params) {
   return request({
     url: 'api/marginTree',
     method: 'get',
+    params
   })
 }

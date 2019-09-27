@@ -166,9 +166,9 @@ export default {
       },
       getStall(){
   	  let user = JSON.parse(sessionStorage.getItem("user"))
-  	  let deptId =user.deptId
+  	  let params = {deptId: user.deptId}
         //查询部门
-        getMarginTree().then(res => {
+        getMarginTree(params).then(res => {
         	this.stalls = res
         })
       },

@@ -105,7 +105,8 @@ export default {
     },
     doAdd() {
     	store.dispatch('GetInfo').then(res => {
-    		this.form.deptId = res.deptPid
+    		debugger
+    		this.form.deptId = res.deptId
     		add(this.form).then(res => {
         this.resetForm()
         this.$notify({
