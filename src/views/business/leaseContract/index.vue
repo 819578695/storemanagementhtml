@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!--表单组件-->
-  <eForm ref="form" :is-add="isAdd"/>
+  <eForm ref="form" :is-add="isAdd" :dictMap="dictMap"/>
   <el-row :gutter="24">
     <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
@@ -66,19 +66,24 @@
       </template>
       </el-table-column>
       <el-table-column prop="paymentedExpenses" label="已缴费用"/>
-      <el-table-column prop="contractAmount" label="合同总金额"/>
+      <el-table-column prop="contractAmount" label="年租金"/>
+      <el-table-column prop="payCycleName" label="付款周期"/>
+      <el-table-column prop="payPrice" label="付款金额"/>
       <el-table-column  prop="fileName" label="合同附件">
       <template slot-scope="scope">
-        <el-popover
+        <span slot="reference" :alt="scope.row.fileName" >
+          <a v-if="scope.row.fileName!=''" :href="scope.row.fileName" target="_blank">查看</a>
+        </span>
+        <!-- <el-popover
           placement="right"
           title=""
           trigger="click">
           <i slot="default">
-            <img v-if="scope.row.fileName!=null":src="scope.row.fileName">
+            <img v-if="scope.row.fileName!=''":src="scope.row.fileName">
             <span v-else> 无附件 </span>
           </i>
           <span slot="reference" style="cursor: pointer;" :alt="scope.row.fileName">查看</span>
-        </el-popover>
+        </el-popover> -->
        </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','LEASECONTRACT_ALL','LEASECONTRACT_EDIT','LEASECONTRACT_DELETE'])" label="操作" width="150px" align="center">
@@ -115,13 +120,14 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
+import initDict from '@/mixins/initDict'
 import { del } from '@/api/leaseContract'
 import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
 export default {
   components: { eForm },
-  mixins: [initData],
+  mixins: [initData,initDict],
   data() {
     return {
       deptList:[],
@@ -137,6 +143,7 @@ export default {
        this.init()
      })
      this.deptList=JSON.parse(sessionStorage.getItem("depts"))
+     this.getDictMap('pay_cycle')
     })
   },
   methods: {
@@ -220,7 +227,11 @@ export default {
         rentFreePeriod: data.rentFreePeriod,
         deposit: data.deposit,
         contractAmount: data.contractAmount,
-        fileName: data.fileName
+        fileName: data.fileName,
+        payPrice:data.payPrice,
+        payCycle:{
+          id:data.payCycleId
+        }
       }
       _this.imageFrontUrl=data.fileName
       _this.dialog = true

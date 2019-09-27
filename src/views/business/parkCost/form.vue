@@ -3,7 +3,7 @@
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-divider content-position="left">基本信息</el-divider>
       <el-row>
-        <el-col :span="12">
+        <!-- <el-col :span="12">
           <el-form-item label="档口编号"  prop="archivesmouthsmanagement.id">
             <el-select v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" >
               <el-option
@@ -13,7 +13,7 @@
                 :value="item.id"/>
             </el-select>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="12">
           <el-form-item label="合同名称" prop="rentContract.id">
            <el-select v-model="form.rentContract.id"  placeholder="请选择合同名称" style="width: 170px;">
@@ -99,7 +99,6 @@
 <script>
 import { add, edit } from '@/api/parkCost'
 import store from '@/store'
-import { archivesmouthsmanagementByDeptId} from '@/api/archivesmouthsmanagement'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
 import { rentContractByDeptId} from '@/api/rentContract'
 export default {
@@ -116,7 +115,6 @@ export default {
   data() {
     return {
       receiptPaymentAccountList:[],
-      archivesmouthsmanagementList:[],//档口的集合
       rentContractList:[],//合同
       loading: false,
        dialog: false,
@@ -137,9 +135,6 @@ export default {
         dept:{
           id:''
         },
-        archivesmouthsmanagement:{
-          id:''
-        },
         receiptPaymentAccount: {
           id:''
         },
@@ -149,12 +144,6 @@ export default {
         {
          id: [
             { required: true, message: '请选择支付方式', trigger: 'change' }
-          ],
-        },
-        archivesmouthsmanagement:
-        {
-         id: [
-            { required: true, message: '请选择档口编号', trigger: 'change' }
           ],
         },
         rentContract:
@@ -190,7 +179,7 @@ export default {
     },
     doAdd() {
       store.dispatch('GetInfo').then(res => {
-      	  this.form.dept.id = res.deptId
+      	this.form.dept.id = res.deptId
       	add(this.form).then(res => {
         this.resetForm()
         this.$notify({
@@ -248,9 +237,6 @@ export default {
         receiptPaymentAccount: {
           id:''
         },
-        archivesmouthsmanagement:{
-          id:''
-        },
       }
     },
     //查询所有的集合
@@ -261,11 +247,6 @@ export default {
         }).catch(err => {
           console.log(err.response.data.message)
         })
-       archivesmouthsmanagementByDeptId(res.deptId).then(res => {
-         this.archivesmouthsmanagementList = res
-       }).catch(err => {
-         console.log(err.response.data.message)
-       })
         rentContractByDeptId(res.deptId).then(res => {
           this.rentContractList = res
         }).catch(err => {

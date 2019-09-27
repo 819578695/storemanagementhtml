@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd"/>
+    <eForm ref="form" :is-add="isAdd" :dictMap="dictMap"/>
     <el-row :gutter="24">
       <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
@@ -53,19 +53,42 @@
       </template>
       </el-table-column>
       <el-table-column prop="paymentedExpenses" label="已缴费用"/>
-      <el-table-column prop="contractAmount" label="合同总金额"/>
+      <el-table-column prop="contractAmount" label="年租金"/>
+      <el-table-column prop="payCycleName" label="付款周期"/>
+      <el-table-column prop="payPrice" label="付款金额"/>
       <el-table-column  prop="fileName" label="合同附件">
       <template slot-scope="scope">
-        <el-popover
+         <span slot="reference" :alt="scope.row.fileName" >
+           <a v-if="scope.row.fileName!=''" :href="scope.row.fileName" target="_blank">查看</a>
+         </span>
+        <!-- <el-popover
           placement="left"
           title=""
           trigger="click">
           <i slot="default">
-            <img class="img-responsive" v-if="scope.row.fileName!=null":src="scope.row.fileName">
+             <!-- <img class="img-responsive" v-if="scope.row.fileName!=null":src="scope.row.fileName">
+            <pdf v-if="scope.row.fileName!=null"
+                ref="pdf"
+                :src="scope.row.fileName">
+              </pdf>
             <span v-else> 无附件 </span>
           </i>
-          <span slot="reference" style="cursor: pointer;" :alt="scope.row.fileName">查看</span>
         </el-popover>
+        <div class="pdf" v-show="fileType === 'pdf'">
+            <p class="arrow">
+            <span @click="changePdfPage(0)" class="turn" :class="{grey: currentPage==1}">Preview</span>
+            {{currentPage}} / {{pageCount}}
+            <span @click="changePdfPage(1)" class="turn" :class="{grey: currentPage==pageCount}">Next</span>
+            </p>
+            <pdf
+              :src="scope.row.fileName"
+              :page="currentPage"
+              @num-pages="pageCount=$event"
+              @page-loaded="currentPage=$event"
+              @loaded="loadPdfHandler">
+            </pdf>
+          </div>
+          -->
        </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_EDIT','RENTCONTRACT_DELETE'])" label="操作" width="150px" align="center">
@@ -102,13 +125,14 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
+import initDict from '@/mixins/initDict'
 import { del } from '@/api/rentContract'
 import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
 export default {
-  components: { eForm },
-  mixins: [initData],
+  components: { eForm},
+  mixins: [initData,initDict],
   data() {
     return {
       deptId:'',
@@ -123,6 +147,7 @@ export default {
        this.init()
      })
       this.deptList=JSON.parse(sessionStorage.getItem("depts"))
+      this.getDictMap('pay_cycle')
     })
   },
   methods: {
@@ -181,10 +206,30 @@ export default {
         contractAmount: data.contractAmount,
         fileName: data.fileName,
         contractNo: data.contractNo,
+        payPrice:data.payPrice,
+        payCycle:{
+          id:data.payCycleId
+        }
       }
       _this.imageFrontUrl=data.fileName
       _this.dialog = true
-    }
+    },
+      // 改变PDF页码,val传过来区分上一页下一页的值,0上一页,1下一页
+      changePdfPage (val) {
+        // console.log(val)
+        if (val === 0 && this.currentPage > 1) {
+          this.currentPage--
+          // console.log(this.currentPage)
+        }
+        if (val === 1 && this.currentPage < this.pageCount) {
+          this.currentPage++
+          // console.log(this.currentPage)
+        }
+      },
+       // pdf加载时
+      loadPdfHandler (e) {
+        this.currentPage = 1 // 加载的时候先加载第一页
+      }
   }
 }
 </script>
