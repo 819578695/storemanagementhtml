@@ -1,26 +1,15 @@
 <template>
 	<div>
 		<!--表格渲染-->
-	    <el-table
+	    <el-table 
 	    	v-loading="loading"
-	    	:data="costs"
+	    	:data= "pevenueIndexData"
 	    	size="small"
 	    	style="width: 100%;"
 	    	:summary-method="getSummaries"
 	    	show-summary>
-	      <!--<el-table-column prop="createTime" label="时间" width="100">
-	      	<template slot-scope="scope">
-	          <span>{{ parseDate(scope.row.createTime) }}</span>
-	        </template>
-	      </el-table-column>
-	      <el-table-column prop="siteRent" label="场地租金"/>
-	      <el-table-column prop="waterRent" label="水费"/>
-	      <el-table-column prop="electricityRent" label="电费"/>
-	      <el-table-column prop="propertyRent" label="物业费"/>
-	      <el-table-column prop="taxCost" label="税赋成本"/>
-	      <el-table-column prop="otherRent" label="其他费"/>-->
-			<el-table-column prop = "" table = "支出类型"/>
-			<el-table-column prop = "" table = "金额"/>
+			<el-table-column prop = "tallyLabe" label = "支出类型"/>
+			<el-table-column prop = "money" label = "金额"/>
 	    </el-table>
   </div>
 </template>
@@ -29,20 +18,35 @@
 import initData from '@/mixins/initData'
 import { parseDate } from '@/utils/index'
 export default {
-  components: {  },
   mixins: [initData],
+  props: {
+  	pevenueIndexData: {
+  		type: Array,
+	  	required: true
+  	}
+  } ,
   data() {
     return {
       delLoading: false,
       createTime: [],
-      costs: [],
+      data: [],
       costSum:0,
+      look:false,
     }
   },
   created() {
-  	this.$nextTick(() => {
+	this.$nextTick(() => {
   	  this.loading = false
    })
+  },
+  watch: {
+//	pevenueIndexData:{
+//		handler:function(){
+//			debugger
+//		this.pevenueIndexData = this.pevenueIndexData;
+//		deep: true
+//		}
+//	}
   },
   methods: {
   	parseDate,
