@@ -63,8 +63,8 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="周期"  prop="payCycle.id">
-            <el-select v-model="form.payCycle.id"  placeholder="请选择周期" style="width: 170px;">
+          <el-form-item label="付款周期"  prop="payCycle.id">
+            <el-select v-model="form.payCycle.id"  placeholder="请选择付款周期" style="width: 170px;">
               <el-option  v-for="(item, index) in dictMap.pay_cycle"
                 :key="item.index"
                 :label="item.label"
@@ -261,6 +261,7 @@ export default {
             duration: 2500
           })
           this.loading = false
+          this.imageFrontFile=''
           this.$parent.init()
         }).catch(err => {
           this.loading = false
