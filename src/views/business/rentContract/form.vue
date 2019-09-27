@@ -30,7 +30,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="免租期" >
+          <el-form-item label="免租期(月)" >
             <el-input v-model="form.rentFreePeriod" style="width: 170px;"/>
           </el-form-item>
         </el-col>
@@ -42,7 +42,25 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="合同金额" prop="contractAmount">
+          <el-form-item label="周期"  prop="payCycle.id">
+            <el-select v-model="form.payCycle.id"  placeholder="请选择周期" style="width: 170px;">
+              <el-option  v-for="(item, index) in dictMap.pay_cycle"
+                :key="item.index"
+                :label="item.label"
+                :value="item.id"
+                />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="付款金额" >
+            <el-input v-model="form.payPrice" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="年租金" prop="contractAmount">
             <el-input v-model="form.contractAmount" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
           </el-form-item>
         </el-col>
@@ -52,8 +70,8 @@
         <el-col :span="12">
           <el-form-item label="文件名" >
           <el-upload
-          class="avatar-uploader"
-          v-show="imageFrontUrl == ''"
+            class="avatar-uploader"
+            v-show="imageFrontUrl == ''"
             name="upfile"
             drag
             :headers="headers"
@@ -62,11 +80,13 @@
             :before-upload="beforeUpload"
             multiple>
             <i class="el-icon-upload"></i>
-            <div class="el-upload__text"><p v-if="imageFrontFile != ''">文件名称: {{ imageFrontFile.name }}</p>
+            <div class="el-upload__text">
+            <p v-if="imageFrontFile != ''">文件名称: {{ imageFrontFile.name }}</p>
             <p v-else>点击或拖拽文件上传</p></div>
           </el-upload>
-           <div class="text-xs-center" v-show="imageFrontUrl != ''">
-              <img class="avatar" :src="imageFrontUrl" />
+            <div class="text-xs-center" v-show="imageFrontUrl != ''">
+              <p v-if="imageFrontFile != ''"><i class="el-icon-folder"></i> {{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;"></i> </p>
+              <!-- <img class="avatar" :src="imageFrontUrl" /> -->
               <el-button outline  @click="clearFile">清除</el-button>
            </div>
           </el-form-item>
@@ -88,6 +108,10 @@ export default {
   props: {
     isAdd: {
       type: Boolean,
+      required: true
+    },
+    dictMap: {
+      type: Object,
       required: true
     }
   },
@@ -117,6 +141,10 @@ export default {
         dept:{
           id:''
         },
+        payPrice:'',
+        payCycle:{
+          id:''
+        }
       },
       rules: {//表达验证
         contractNo: [
@@ -134,6 +162,12 @@ export default {
         contractAmount: [
           { required: true, message: '请输入总金额', trigger: 'blur' }
         ],
+        payCycle:
+        {
+         id: [
+            { required: true, message: '请选择周期', trigger: 'change' }
+          ],
+        },
       }
     }
   },
@@ -203,7 +237,11 @@ export default {
         deposit: '',
         contractAmount: '',
         fileName: '',
-        contractNo: ''
+        contractNo: '',
+        payPrice:'',
+        payCycle:{
+          id:''
+        }
       }
       this.clearFile()
     },
