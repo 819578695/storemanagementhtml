@@ -69,6 +69,12 @@
       <el-table-column prop="contractAmount" label="年租金"/>
       <el-table-column prop="payCycleName" label="付款周期"/>
       <el-table-column prop="payPrice" label="付款金额"/>
+      <el-table-column prop="isEnable" label="是否启用">
+        <template slot-scope="scope">
+          <span>{{scope.row.isEnable==1?'启用':'作废'}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="remarks" label="备注"/>
       <el-table-column  prop="fileName" label="合同附件">
       <template slot-scope="scope">
         <span slot="reference" :alt="scope.row.fileName" >
@@ -231,7 +237,9 @@ export default {
         payPrice:data.payPrice,
         payCycle:{
           id:data.payCycleId
-        }
+        },
+        isEnable:data.isEnable,
+        remarks:data.remarks
       }
       _this.imageFrontUrl=data.fileName
       _this.dialog = true

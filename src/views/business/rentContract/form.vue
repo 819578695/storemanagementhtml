@@ -4,11 +4,6 @@
       <el-divider content-position="left">合同信息</el-divider>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="合同编号" prop="contractNo">
-            <el-input v-model="form.contractNo" style="width: 170px;"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="合同名称" prop="contractName">
             <el-input v-model="form.contractName" style="width: 170px;"/>
           </el-form-item>
@@ -16,14 +11,14 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="起止日期" prop="startDate">
-            <el-date-picker v-model="form.startDate" type="date" placeholder="选择日期" style="width: 170px;">
+          <el-form-item label="起始日期" prop="startDate">
+            <el-date-picker :picker-options="pickerOptions0" v-model="form.startDate" type="date" placeholder="选择日期" style="width: 170px;">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="截止日期" prop="endDate">
-            <el-date-picker v-model="form.endDate" type="date" placeholder="选择日期" style="width: 170px;">
+            <el-date-picker :picker-options="pickerOptions1" v-model="form.endDate" type="date" placeholder="选择日期" style="width: 170px;">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -62,6 +57,19 @@
         <el-col :span="12">
           <el-form-item label="年租金" prop="contractAmount">
             <el-input v-model="form.contractAmount" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="是否启用" prop="isEnable">
+            <el-radio v-model="form.isEnable" label="1">启用</el-radio>
+            <el-radio v-model="form.isEnable" label="2">作废</el-radio>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="备注" >
+            <el-input type="textarea" v-model="form.remarks"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -119,6 +127,18 @@ export default {
   },
   data() {
     return {
+      pickerOptions0: {
+          disabledDate: (time) => {
+              if (this.form.endDate != "") {
+                  return time.getTime() >  new Date(this.form.endDate).getTime();
+          }
+         }
+      },
+      pickerOptions1: {
+          disabledDate: (time) => {
+              return time.getTime() < new Date(this.form.startDate).getTime();//减去一天的时间代表可以选择同一天;
+          }
+      },
       imageFrontUrl:'', //文件上传路径
       imageFrontFile:'',//接受文件上传的参数
       isShowUploading: false,//文件上传加载中
@@ -137,19 +157,17 @@ export default {
         deposit: '',
         contractAmount: '',
         fileName: '',
-        contractNo: '',
+        remarks: '',
         dept:{
           id:''
         },
         payPrice:'',
         payCycle:{
           id:''
-        }
+        },
+        isEnable:'1'
       },
       rules: {//表达验证
-        contractNo: [
-          { required: true, message: '请输入合同编号', trigger: 'blur' }
-        ],
         contractName: [
           { required: true, message: '请输入合同名称', trigger: 'blur' }
         ],
@@ -237,11 +255,12 @@ export default {
         deposit: '',
         contractAmount: '',
         fileName: '',
-        contractNo: '',
+        remarks: '',
         payPrice:'',
         payCycle:{
           id:''
-        }
+        },
+        isEnable:''
       }
       this.clearFile()
     },

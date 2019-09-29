@@ -35,7 +35,7 @@
       <el-table-column prop="contractNo" label="合同编号"/>
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="contractName" label="合同名称"/>
-      <el-table-column prop="startDate" label="起止日期">
+      <el-table-column prop="startDate" label="起始日期">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.startDate) }}</span>
         </template>
@@ -56,6 +56,12 @@
       <el-table-column prop="contractAmount" label="年租金"/>
       <el-table-column prop="payCycleName" label="付款周期"/>
       <el-table-column prop="payPrice" label="付款金额"/>
+      <el-table-column prop="isEnable" label="是否启用">
+        <template slot-scope="scope">
+          <span>{{scope.row.isEnable==1?'启用':'作废'}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="remarks" label="备注"/>
       <el-table-column  prop="fileName" label="合同附件">
       <template slot-scope="scope">
          <span slot="reference" :alt="scope.row.fileName" >
@@ -204,31 +210,16 @@ export default {
         deposit: data.deposit,
         contractAmount: data.contractAmount,
         fileName: data.fileName,
-        contractNo: data.contractNo,
         payPrice:data.payPrice,
         payCycle:{
           id:data.payCycleId
-        }
+        },
+        isEnable:data.isEnable,
+        remarks:data.remarks
       }
       _this.imageFrontUrl=data.fileName
       _this.dialog = true
     },
-      // 改变PDF页码,val传过来区分上一页下一页的值,0上一页,1下一页
-      changePdfPage (val) {
-        // console.log(val)
-        if (val === 0 && this.currentPage > 1) {
-          this.currentPage--
-          // console.log(this.currentPage)
-        }
-        if (val === 1 && this.currentPage < this.pageCount) {
-          this.currentPage++
-          // console.log(this.currentPage)
-        }
-      },
-       // pdf加载时
-      loadPdfHandler (e) {
-        this.currentPage = 1 // 加载的时候先加载第一页
-      }
   }
 }
 </script>

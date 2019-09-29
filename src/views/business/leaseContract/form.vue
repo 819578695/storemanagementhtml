@@ -16,14 +16,14 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="起止日期" prop="startDate">
-            <el-date-picker v-model="form.startDate" type="date" placeholder="选择日期" style="width: 170px;">
+          <el-form-item label="起止日期" prop="startDate" >
+            <el-date-picker :picker-options="pickerOptions0" v-model="form.startDate" type="date" placeholder="选择日期" style="width: 170px;">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="截止日期" prop="endDate">
-            <el-date-picker v-model="form.endDate" type="date" placeholder="选择日期" style="width: 170px;">
+            <el-date-picker :picker-options="pickerOptions1" v-model="form.endDate" type="date" placeholder="选择日期" style="width: 170px;">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -159,6 +159,18 @@ export default {
   },
   data() {
     return {
+      pickerOptions0: {
+          disabledDate: (time) => {
+              if (this.form.endDate != "") {
+                  return time.getTime() >  new Date(this.form.endDate).getTime();
+          }
+         }
+      },
+      pickerOptions1: {
+          disabledDate: (time) => {
+              return time.getTime() < new Date(this.form.startDate).getTime();//减去一天的时间代表可以选择同一天;
+          }
+      },
       imageFrontUrl:'', //文件上传路径
       imageFrontFile: '',//文件上传
       isShowUploading: false,//文件上传加载中
