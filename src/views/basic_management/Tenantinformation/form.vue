@@ -1,7 +1,7 @@
 <template>
   <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="closeDialog" :title="isAdd ? '新增' : '编辑'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="面积(m²)" >
+      <!-- <el-form-item label="面积(m²)" >
         <el-input v-model="form.area" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="档口/电商楼" prop="dictDetail.id" >
@@ -15,7 +15,7 @@
       </el-form-item>
       <el-form-item label="房号(门牌号)" >
         <el-input v-model="form.roomnumber" style="width: 370px;"/>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="公司名称" >
         <el-input v-model="form.companyname" style="width: 370px;"/>
       </el-form-item>
@@ -87,19 +87,23 @@ export default {
       } else this.doEdit()
     },
     doAdd() {
-      add(this.form).then(res => {
-        this.resetForm()
-        this.$notify({
-          title: '添加成功',
-          type: 'success',
-          duration: 2500
+      store.dispatch('GetInfo').then(res => {
+          this.form.dept.id = res.deptId
+          //所选择的缴费日期在免租期中则提示
+        add(this.form).then(res => {
+          this.resetForm()
+          this.$notify({
+            title: '添加成功',
+            type: 'success',
+            duration: 2500
+          })
+          this.loading = false
+          this.$parent.init()
+        }).catch(err => {
+          this.loading = false
+          console.log(err.response.data.message)
         })
-        this.loading = false
-        this.$parent.init()
-      }).catch(err => {
-        this.loading = false
-        console.log(err.response.data.message)
-      })
+       })
     },
     doEdit() {
       edit(this.form).then(res => {

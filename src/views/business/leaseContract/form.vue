@@ -4,11 +4,6 @@
       <el-divider content-position="left">合同信息</el-divider>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="合同编号" prop="contractNo">
-            <el-input v-model="form.contractNo" style="width: 170px;"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="合同名称" prop="contractName">
             <el-input v-model="form.contractName" style="width: 170px;"/>
           </el-form-item>
@@ -30,34 +25,27 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="免租期" >
-            <el-input v-model="form.rentFreePeriod" style="width: 170px;"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="保证金" >
-            <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.deposit" style="width: 170px;"/>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
           <el-form-item label="免租开始日期" prop="rentFreeStartTime">
-            <el-date-picker v-model="form.rentFreeStartTime" type="date" placeholder="选择日期" style="width: 170px;">
+            <el-date-picker :picker-options="pickerOptionsStartFree" v-model="form.rentFreeStartTime" type="date" placeholder="选择日期" style="width: 170px;">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="免租截止日期" prop="rentFreeEndTime">
-            <el-date-picker v-model="form.rentFreeEndTime" type="date" placeholder="选择日期" style="width: 170px;">
+            <el-date-picker :picker-options="pickerOptionsEndFree" v-model="form.rentFreeEndTime" type="date" placeholder="选择日期" style="width: 170px;">
             </el-date-picker>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="年租金" prop="contractAmount">
-            <el-input v-model="form.contractAmount" style="width: 170px;"/>
+         <el-form-item label="年租金" prop="contractAmount">
+           <el-input v-model="form.contractAmount" style="width: 170px;"/>
+         </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="保证金" >
+            <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.deposit" style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -76,6 +64,21 @@
         <el-col :span="12">
           <el-form-item label="付款金额" >
             <el-input v-model="form.payPrice" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="是否启用" prop="isEnable">
+            <el-radio v-model="form.isEnable" label="1">启用</el-radio>
+            <el-radio v-model="form.isEnable" label="2">作废</el-radio>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="备注" >
+            <el-input type="textarea" rows="5" v-model="form.remarks"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -171,6 +174,18 @@ export default {
               return time.getTime() < new Date(this.form.startDate).getTime();//减去一天的时间代表可以选择同一天;
           }
       },
+      pickerOptionsStartFree: {
+          disabledDate: (time) => {
+              if (this.form.endDate != "") {
+                  return time.getTime() <  new Date(this.form.startDate).getTime()||time.getTime() > new Date(this.form.endDate).getTime();
+            }
+         }
+      },
+      pickerOptionsEndFree: {
+          disabledDate: (time) => {
+              return time.getTime() < new Date(this.form.rentFreeStartTime).getTime()||time.getTime() > new Date(this.form.endDate).getTime() ;//减去一天的时间代表可以选择同一天;
+          }
+      },
       imageFrontUrl:'', //文件上传路径
       imageFrontFile: '',//文件上传
       isShowUploading: false,//文件上传加载中
@@ -184,7 +199,6 @@ export default {
       dialog: false,
       form: {
         id: '',
-        contractNo: '',
         tenantinformation: {
           id:''
         },
@@ -192,7 +206,8 @@ export default {
           id:''
         },
         archivesmouthsmanagement:{
-          id:''
+          id:'',
+          houseNumber:''
         },
         contractName: '',
         startDate: '',
@@ -206,7 +221,9 @@ export default {
         payPrice:'',
         payCycle:{
           id:''
-        }
+        },
+         isEnable:'1',
+         remarks: '',
       },
       rules: {
         contractNo: [
@@ -301,7 +318,6 @@ export default {
       this.$refs['form'].resetFields()
       this.form = {
         id: '',
-        contractNo: '',
          tenantinformation: {
            id:''
          },
@@ -309,7 +325,8 @@ export default {
            id:''
          },
          archivesmouthsmanagement:{
-           id:''
+           id:'',
+           houseNumber:''
          },
         rentFreeStartTime:'',
         rentFreeEndTime:'',
@@ -323,7 +340,9 @@ export default {
         payPrice:'',
         payCycle:{
           id:''
-        }
+        },
+        isEnable:'1',
+        remarks: '',
       }
       this.clearFile()
     },
@@ -359,7 +378,7 @@ export default {
     },
       //文件上传
       beforeUpload(file){
-         if(this.form.contractNo==''){
+         if(this.form.archivesmouthsmanagement.houseNumber==''){
            //表单判断
            this.$notify.error({
                title: '请先填写合同信息',
@@ -385,7 +404,7 @@ export default {
                         closable: true
                     });
                 } else {
-                    upload(fileData,this.form.contractNo).then(res => {
+                    upload(fileData,this.form.archivesmouthsmanagement.houseNumber).then(res => {
                       this.form.fileName=res
                       this.imageFrontUrl=res
                       this.isShowUploading=false

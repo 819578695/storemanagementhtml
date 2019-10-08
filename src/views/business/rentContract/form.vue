@@ -67,9 +67,9 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="24">
           <el-form-item label="备注" >
-            <el-input type="textarea" v-model="form.remarks"></el-input>
+            <el-input type="textarea" rows="5" v-model="form.remarks"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -255,7 +255,7 @@ export default {
         deposit: '',
         contractAmount: '',
         fileName: '',
-        remarks: '',
+        remarks: '1',
         payPrice:'',
         payCycle:{
           id:''
@@ -266,14 +266,14 @@ export default {
     },
     //文件上传
     beforeUpload(file){
-      if(this.form.contractNo==''){
+      /* if(this.form.contractNo==''){
         //表单判断
         this.$notify.error({
             title: '请先填写合同信息',
             duration:2500,
         });
         return;
-      }
+      } */
       this.isShowUploading = true;
       this.imageFrontFile = file;
         let fileName = file.name;
@@ -292,22 +292,24 @@ export default {
                     closable: true
                 });
             } else {
-                upload(fileData,this.form.contractNo).then(res => {
-                  this.form.fileName=res
-                  this.imageFrontUrl=res
-                  this.isShowUploading=false
-                  this.$notify({
-                   title: '上传成功',
-                   type: 'success',
-                   duration: 2500
+              store.dispatch('GetInfo').then(res => {
+                 upload(fileData,res.deptNo).then(res => {
+                   this.form.fileName=res
+                   this.imageFrontUrl=res
+                   this.isShowUploading=false
+                   this.$notify({
+                    title: '上传成功',
+                    type: 'success',
+                    duration: 2500
+                  })
+                 }).catch(err => {
+                     this.$notify({
+                       title: '上传失败',
+                       type: 'error',
+                       duration: 2500
+                     })
                  })
-                }).catch(err => {
-                    this.$notify({
-                      title: '上传失败',
-                      type: 'error',
-                      duration: 2500
-                    })
-                })
+               })
             }
         } else {
             this.imageFrontUrl = '';

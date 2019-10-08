@@ -223,7 +223,8 @@ export default {
           id:data.deptId
         },
         archivesmouthsmanagement:{
-          id:data.stallId
+          id:data.stallId,
+          houseNumber:data.houseNumber
         },
         contractName: data.contractName,
         startDate: data.startDate,
