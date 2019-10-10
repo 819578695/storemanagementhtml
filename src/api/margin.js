@@ -23,9 +23,18 @@ export function edit(data) {
   })
 }
 
-export function getMarginTree() {
+export function getMarginCost(params) {
+  return request({
+    url: 'api/marginCost',
+    method: 'get',
+    params
+  })
+}
+
+export function getMarginTree(params) {
   return request({
     url: 'api/marginTree',
     method: 'get',
+    params
   })
 }

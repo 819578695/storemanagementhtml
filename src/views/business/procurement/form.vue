@@ -33,9 +33,9 @@
              </el-form-item>
            </el-col>
            <el-col :span="12">
-             <el-form-item label="付款比例" label-width="100px">
-               <el-input v-model="form.paymentRatio" style="width: 150px;"/>
-             </el-form-item>
+              <el-form-item label="申请金额" label-width="100px">
+                <el-input v-model="form.applicationsAmount" style="width: 150px;"/>
+              </el-form-item>
            </el-col>
          </el-row>
          <el-row>
@@ -43,66 +43,6 @@
              <el-form-item label="合同截止日" label-width="100px" prop="contractEndDate">
                 <el-date-picker v-model="form.contractEndDate" type="date" placeholder="选择日期" style="width: 150px;">
                 </el-date-picker>
-             </el-form-item>
-           </el-col>
-           <el-col :span="12">
-             <el-form-item label="应付日期" label-width="100px" prop="dueDate">
-               <el-date-picker
-                    v-model="form.dueDate"
-                    type="date"
-                    placeholder="选择日期"  style="width: 150px;">
-               </el-date-picker>
-             </el-form-item>
-           </el-col>
-         </el-row>
-         <el-row>
-           <el-col :span="12">
-             <el-form-item label="申请金额" label-width="100px">
-               <el-input v-model="form.applicationsAmount" style="width: 150px;"/>
-             </el-form-item>
-           </el-col>
-         </el-row>
-         <!-- 付款信息-->
-         <el-divider content-position="left">付款信息</el-divider>
-         <el-row>
-           <el-col :span="12">
-             <el-form-item label="实际付款金额" label-width="100px">
-               <el-input v-model="form.actualPaymentAmount" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"  style="width: 150px;"/>
-             </el-form-item>
-           </el-col>
-           <el-col :span="12">
-             <el-form-item label="实际付款日期" label-width="100px">
-               <el-date-picker
-                    v-model="form.actualPaymentDate"
-                    type="date"
-                    placeholder="选择日期"
-                    style="width: 150px;"
-                    >
-               </el-date-picker>
-             </el-form-item>
-           </el-col>
-         </el-row>
-         <el-row>
-           <el-col :span="12">
-             <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
-               <el-select v-model="form.dictDetail.id"  placeholder="请选择收付款名称" style="width: 150px;">
-                 <el-option
-                   v-for="(item, index) in dicts"
-                   :key="item.index"
-                   :label="item.label"
-                   :value="item.id"/>
-               </el-select>
-             </el-form-item>
-           </el-col>
-           <el-col :span="12">
-             <el-form-item label="收付款账户" label-width="100px" prop="receiptPaymentAccount.id">
-               <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收付款名称" style="width: 150px;">
-                 <el-option
-                   v-for="(item, index) in receiptPaymentAccountList"
-                   :key="item.index"
-                   :label="item.name"
-                   :value="item.id"/>
-               </el-select>
              </el-form-item>
            </el-col>
          </el-row>
@@ -141,18 +81,8 @@ export default {
         purchaseDescription: '',
         contractEndDate: '',
         contractAmount: '',
-        paymentRatio: '',
         applicationsAmount: '',
-        dueDate: '',
-        actualPaymentAmount: '',
-        actualPaymentDate: '',
         dept:{
-          id:''
-        },
-        dictDetail: {
-          id:''
-        },
-        receiptPaymentAccount: {
           id:''
         },
       },
@@ -169,28 +99,10 @@ export default {
         purchaseDescription: [
           { required: true, message: '请输入采购说明', trigger: 'blur' }
         ],
-        dictDetail:
-        {
-         id: [
-            { required: true, message: '请选择支付方式', trigger: 'change' }
-          ],
-        },
-        receiptPaymentAccount:
-        {
-         id: [
-            { required: true, message: '请选择收付款账户', trigger: 'change' }
-          ],
-        },
         contractEndDate: [
           { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
         ],
-        dueDate: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        ],
         applicationsDate: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        ],
-        actualPaymentDate: [
           { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
         ],
       }
@@ -264,23 +176,7 @@ export default {
         dept:{
           id:''
         },
-        dictDetail: {
-          id:''
-        },
-        receiptPaymentAccount: {
-          id:''
-        }
       }
-    },
-    //查询所有的集合
-    getReceiptPaymentAccountList() {
-      store.dispatch('GetInfo').then(res => {
-      	receiptPaymentAccountByDeptId(res.deptId).then(res => {
-      	  this.receiptPaymentAccountList = res
-      	}).catch(err => {
-      	  console.log(err.response.data.message)
-      	})
-      })
     },
   }
 }

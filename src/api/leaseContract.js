@@ -8,6 +8,15 @@ export function leaseContractByDeptId(id) {
   })
 }
 
+// 根据id查询
+export function leaseContractById(id) {
+  return request({
+    url: 'api/leaseContractById/'+id,
+    method: 'get'
+  })
+}
+
+
 export function add(data) {
   return request({
     url: 'api/leaseContract',

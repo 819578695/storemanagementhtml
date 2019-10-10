@@ -130,12 +130,12 @@ export default {
             this.loading = false
             this.$router.push({ path: this.redirect || '/' })
           	return new Promise((resolve, reject) => {
-						getInfo().then(res => {
-			        sessionStorage.setItem("user",JSON.stringify(res))
-			        resolve(res)
-			        }).catch(error => {
-			          reject(error)
-			        })
+							getInfo().then(res => {
+				        sessionStorage.setItem("user",JSON.stringify(res))
+				        resolve(res)
+				        }).catch(error => {
+				          reject(error)
+				        })
 			      })
           }).catch(() => {
             this.loading = false

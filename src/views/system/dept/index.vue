@@ -81,6 +81,10 @@ export default {
         {
           text: '名称',
           value: 'name'
+        },
+        {
+          text: '编号',
+          value: 'deptNo'
         }
       ],
       enabledTypeOptions: [
@@ -145,6 +149,7 @@ export default {
       _this.form = {
         id: data.id,
         name: data.name,
+        deptNo: data.deptNo,
         pid: data.pid,
         createTime: data.createTime,
         enabled: data.enabled.toString()

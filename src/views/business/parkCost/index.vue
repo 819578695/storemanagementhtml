@@ -11,7 +11,6 @@
       <!-- 搜索 -->
       <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期" class="filter-item"></el-date-picker>&nbsp;-&nbsp;
       <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期" class="filter-item"></el-date-picker>
-      <el-input  v-model="query.houseNumber" clearable placeholder="输入档口编号" style="width:130px;" class="filter-item"/>
       <el-select v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width: 130px">
         <el-option
           v-for="(item, index) in deptList"
@@ -67,7 +66,6 @@
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="rentContractName" label="合同名称"/>
-      <el-table-column prop="houseNumber" label="档口名称"/>
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="siteRent" label="场地租金"/>
       <el-table-column prop="waterRent" label="水费"/>
@@ -211,9 +209,6 @@ export default {
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
-       archivesmouthsmanagement:{
-         id:data.archivesMouthsId
-       },
         rentContract:{
           id:data.rentContractId
         },
@@ -240,7 +235,6 @@ export default {
     reset(){
       this.query.createDateStart=null
       this.query.createDateEnd=null
-      this.query.houseNumber=''
       this.query.deptId=''
       this.init()
     },
@@ -248,8 +242,8 @@ export default {
     download() {
        this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
-        const tHeader = ['合同名称', '档口编号', '公司名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型', '创建时间', '收付款账户名称']
-        const filterVal = ['rentContractName', 'houseNumber', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent','paymentTypeName', 'createTime', 'receiptPaymentAccountName']
+        const tHeader = ['合同名称',  '公司名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型', '创建时间', '收付款账户名称']
+        const filterVal = ['rentContractName', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent','paymentTypeName', 'createTime', 'receiptPaymentAccountName']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader,  //表头
@@ -267,8 +261,8 @@ export default {
            this.downloadAllLoading = true
            this.dataALL = res.content
            import('@/utils/export2Excel').then(excel => {
-             const tHeader = ['合同名称', '档口编号', '部门名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型', '创建时间', '收付款账户名称']
-             const filterVal = ['rentContractName', 'houseNumber', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent','paymentTypeName', 'createTime', 'receiptPaymentAccountName']
+             const tHeader = ['合同名称', '部门名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型', '创建时间', '收付款账户名称']
+             const filterVal = ['rentContractName', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent','paymentTypeName', 'createTime', 'receiptPaymentAccountName']
              const data = this.formatJson(filterVal, this.dataALL)
              excel.export_json_to_excel({
                header: tHeader,

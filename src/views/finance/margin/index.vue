@@ -45,9 +45,9 @@
 			<el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
         <el-card class="box-card">
         	<div slot="header" class="clearfix">
-        		<span>园区支出</span>
+        		<span>园区成本</span>
         	</div>
-			    <pevenueIndex ref="pevenueIndex"  v-on:costSum="getCostSum"/>
+			    <pevenueIndex ref="pevenueIndex" :pevenueIndexData="pevenueIndexData" v-on:costSum="getCostSum"/>
 			  </el-card>
 			</el-col>
 		</el-row>
@@ -59,9 +59,10 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import pevenueIndex from './pevenueIndex'
 import { parseDate } from '@/utils/index'
-import { getMarginTree } from '@/api/margin'
+import { getMarginTree , getMarginCost } from '@/api/margin'
+import { getDictMap } from '@/api/dictDetail'
 export default {
-  components: {pevenueIndex },
+  components: {pevenueIndex},
   mixins: [initData],
   data() {
     return {
@@ -79,11 +80,12 @@ export default {
       },
       //获取部门-档口
       stalls: [],
+      pevenueIndexData: []
     }
   },
   created() {
-    this.getStall()
-    this.$nextTick(() => {
+  	this.getStall()
+  	this.$nextTick(() => {
       this.marginInit()
     })
   },
@@ -104,14 +106,15 @@ export default {
     checkPermission,
     beforeInit() {
 			this.url = 'api/margin'
-      const sort = 'createTime,desc'
-      const query = this.query
-			const houseId = this.houseId
-      const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
-  		this.params = {sort: sort, deptId: deptId, houseId: houseId}
+      let sort = 'createTime,desc'
+      let query = this.query
+			let houseId = this.houseId
+			let incomeId = this.incomeId
+      let deptId = JSON.parse(sessionStorage.getItem("user")).deptId
+  		this.params = {sort: sort, deptId: deptId, houseId: houseId }
   		//查询的值
-      const applicationsDateStart = query.applicationsDateStart
-      const applicationsDateEnd = query.applicationsDateEnd
+      let applicationsDateStart = query.applicationsDateStart
+      let applicationsDateEnd = query.applicationsDateEnd
       //获取部门信息
       this.depts = JSON.parse(sessionStorage.getItem("depts"))
 			//查询部门
@@ -126,20 +129,23 @@ export default {
       if (applicationsDateEnd){
         this.params['createTimeEnd'] = parseDate(applicationsDateEnd)
       }
-	  	return true
+      getMarginCost(this.params).then(data=>{
+	  			this.pevenueIndexData = data;
+	  		})
+      return true
     },
     getSummaries(param){
-    	const { columns, data } = param;
-        const sums = [];
+    	let { columns, data } = param;
+        let sums = [];
         columns.forEach((column, index) => {
           if (index === 0) {
             sums[index] = '总价';
             return;
           }
-          const values = data.map(item => Number(item[column.property]));
+          let values = data.map(item => Number(item[column.property]));
           if (!values.every(value => isNaN(value))) {
             sums[index] = values.reduce((prev, curr) => {
-              const value = Number(curr);
+              let value = Number(curr);
               if (!isNaN(value)) {
                 return prev + curr;
               } else {
@@ -159,10 +165,10 @@ export default {
       	this.gross = this.pevenuesSum - this.costsum
       },
       getStall(){
-  	  const user = JSON.parse(sessionStorage.getItem("user"))
-  	  const deptId =user.deptId
+  	  let user = JSON.parse(sessionStorage.getItem("user"))
+  	  let params = {deptId: user.deptId}
         //查询部门
-        getMarginTree().then(res => {
+        getMarginTree(params).then(res => {
         	this.stalls = res
         })
       },
@@ -174,8 +180,8 @@ export default {
       		this.deptId = data.deptId
           this.houseId = data.id
         }
-        this.marginInit()
-      }
+      	this.marginInit()
+      },
     }
   }
 </script>

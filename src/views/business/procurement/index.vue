@@ -2,8 +2,9 @@
   <div class="app-container">
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
+    <paymentIndex ref="paymentIndex"  />
     <el-row :gutter="24">
-   <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
+      <el-col :xs="17" :sm="18" :md="20" :lg="24" :xl="24">
     <!--工具栏-->
     <div class="head-container">
       <!-- 搜索  -->
@@ -77,26 +78,17 @@
         </template>
       </el-table-column>
       <el-table-column prop="contractAmount" label="合同总金额" width="100"/>
-      <el-table-column prop="paymentRatio" label="付款比例"/>
       <el-table-column prop="applicationsAmount" label="申请金额" width="100"/>
       <el-table-column prop="applicationsDate" label="申请时间" width="100">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.applicationsDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="dueDate" label="应付日期" width="100">
+      <el-table-column label="查看付款信息">
         <template slot-scope="scope">
-          <span>{{ parseDate(scope.row.dueDate) }}</span>
+          <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.id)">查看</span>
         </template>
       </el-table-column>
-      <el-table-column prop="actualPaymentAmount" label="实际付款金额" width="100"/>
-      <el-table-column prop="actualPaymentDate" label="实际付款日期" width="100">
-        <template slot-scope="scope">
-          <span>{{ parseDate(scope.row.actualPaymentDate) }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="paymentTypeName" label="付款方式"/>
-      <el-table-column prop="receiptPaymentAccountName" label="收付款账户"/>
       <el-table-column v-if="checkPermission(['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_EDIT','PROCUREMENTINFORMATION_DELETE'])" label="操作" width="150px" align="center">
         <template slot-scope="scope">
           <el-button v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
@@ -133,12 +125,13 @@ import checkPermission from '@/utils/permission' //权限控制
 import initData from '@/mixins/initData'         //查询表格
 import initDict from '@/mixins/initDict'
 import { del } from '@/api/procurementInformation' //删除
+import { findByProcurementPaymentInfoById } from '@/api/procurementPaymentInfo' //查询收付款信息
 import { parseTime,parseDate } from '@/utils/index'         //格式化日期
-import { getProcurementInformationAll } from '@/api/procurementInformation' //查询所有的收付款信息
 import eForm from './form'                        //表单
+import paymentIndex from './paymentIndex'                        //表单
 import store from '@/store'
 export default {
-  components: { eForm }, //注册表单组件
+  components: { eForm,paymentIndex }, //注册表单组件
   mixins: [initData,initDict],   // 初始化数据
   data() {
     return {
@@ -216,12 +209,10 @@ export default {
     add() {
       this.isAdd = true    //显示标题
       this.$refs.form.dialog = true //显示表单模态窗
-      this.$refs.form.getReceiptPaymentAccountList() //加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
       const _this = this.$refs.form
-      this.$refs.form.getReceiptPaymentAccountList();
       //给表单赋值
       this.$refs.form.form = {
         id: data.id,
@@ -263,8 +254,8 @@ export default {
     download() {
        this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
-        const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '付款比例', '申请金额', '申请日期', '应付日期', '实际付款金额', '实际付款日期', '付款方式','收付款账户']
-        const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
+        const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '申请金额', '申请日期']
+        const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount',  'applicationsAmount', 'applicationsDate']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader,  //表头
@@ -282,8 +273,8 @@ export default {
            this.downloadAllLoading = true
            this.dataALL = res
            import('@/utils/export2Excel').then(excel => {
-             const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '付款比例', '申请金额', '申请日期', '应付日期', '实际付款金额', '实际付款日期', '付款方式','收付款账户']
-             const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount', 'paymentRatio', 'applicationsAmount', 'applicationsDate', 'dueDate', 'actualPaymentAmount', 'actualPaymentDate', 'paymentType', 'receiptPaymentAccountName']
+            const tHeader = ['编号', '项目名称', '供应商名称', '采购说明', '合同截止日', '合同总金额', '申请金额', '申请日期']
+            const filterVal = ['pno', 'projectName', 'supplierName', 'purchaseDescription', 'contractEndDate', 'contractAmount',  'applicationsAmount', 'applicationsDate']
              const data = this.formatJson(filterVal, this.dataALL)
              excel.export_json_to_excel({
                header: tHeader,
@@ -297,12 +288,24 @@ export default {
     // 数据转换
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
-        if (j === 'contractEndDate' || j === 'actualPaymentDate'|| j === 'applicationsDate'|| j === 'dueDate') {
+        if (j === 'contractEndDate' || j === 'actualPaymentDate'|| j === 'applicationsDate') {
           return parseDate(v[j])
         }  else {
           return v[j]
         }
       }))
+    },
+    //查看收付款信息详情
+    findReceiptPaymentAccount(id){
+      if(id!=null||id!=''){
+        const _this = this.$refs.paymentIndex
+        findByProcurementPaymentInfoById(id).then(res => {
+           _this.dialog= true
+          _this.data= res.content
+          _this.procurementId = id
+         }).catch(err => {
+         })
+      }
     },
   }
 }

@@ -4,6 +4,9 @@
       <el-form-item label="名称" prop="name">
         <el-input v-model="form.name" style="width: 370px;"/>
       </el-form-item>
+      <el-form-item label="编号" prop="deptNo">
+        <el-input v-model="form.deptNo" style="width: 370px;"/>
+      </el-form-item>
       <el-form-item v-if="form.pid !== 0" label="状态" prop="enabled">
         <el-radio v-for="item in dicts" :key="item.id" v-model="form.enabled" :label="item.value">{{ item.label }}</el-radio>
       </el-form-item>
@@ -41,11 +44,15 @@ export default {
         id: '',
         name: '',
         pid: 1,
-        enabled: 'true'
+        enabled: 'true',
+        deptNo:''
       },
       rules: {
         name: [
           { required: true, message: '请输入名称', trigger: 'blur' }
+        ],
+        deptNo: [
+          { required: true, message: '请输入编号', trigger: 'blur' }
         ]
       }
     }
@@ -62,7 +69,7 @@ export default {
             if (this.isAdd) {
               this.doAdd()
             } else this.doEdit()
-            
+
           } else {
             this.$message({
               message: '上级部门不能为空',
@@ -109,7 +116,8 @@ export default {
         id: '',
         name: '',
         pid: 1,
-        enabled: 'true'
+        enabled: 'true',
+        deptNo:''
       }
     },
     getDepts() {

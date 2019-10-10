@@ -86,7 +86,8 @@ export default {
     beforeInit() {
       this.url = 'api/receiptPaymentAccount'
       const sort = 'id,desc'
-      this.params = { page: this.page, size: this.size, sort: sort }
+      let deptId = JSON.parse(sessionStorage.getItem("user")).deptId
+      this.params = { page: this.page, size: this.size, sort: sort ,deptId: deptId}
       const query = this.query
       const type = query.type
       const value = query.value
