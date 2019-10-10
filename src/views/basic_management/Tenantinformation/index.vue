@@ -126,6 +126,7 @@ export default {
       dataALL: [], // 保存全部导出的数据
       downloadLoading: false, // 导出加载
       downloadAllLoading: false, // 全部导出加载
+      deptId: '',
       queryTypeOptions: [
         { key: 'roomnumber', display_name: '门牌号' },
         { key: 'linkman', display_name: '联系人' },
@@ -149,16 +150,18 @@ export default {
     beforeInit() {
       this.url = 'api/tenantinformation'
       const sort = 'id,desc'
+      const query = this.query
+      const type = query.type
+      const value = query.value
+      const deptId = query.deptId
       // 最高级别查询所有数据
       if (this.deptId == 0) {
         this.params = { page: this.page, size: this.size, sort: sort }
       } else {
         this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }
       }
-      const query = this.query
-      const type = query.type
-      const value = query.value
       if (type && value) { this.params[type] = value }
+      if (deptId) { this.params['deptId'] = deptId }
       return true
     },
     subDelete(id) {

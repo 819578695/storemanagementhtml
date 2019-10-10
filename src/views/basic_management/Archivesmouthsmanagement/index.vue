@@ -109,6 +109,7 @@ export default {
       downloadLoading: false, // 导出加载
       downloadAllLoading: false, // 全部导出加载
       dialogVisible: false,
+      deptId: '',
       queryTypeOptions: [
         { key: 'housenumber', display_name: '门牌号' },
         { key: 'contacts', display_name: '联系人' },

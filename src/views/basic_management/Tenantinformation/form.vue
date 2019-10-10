@@ -1,7 +1,7 @@
 <template>
   <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="closeDialog" :title="isAdd ? '新增' : '编辑'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-      <!-- <el-form-item label="面积(m²)" >
+      <el-form-item label="面积(m²)" >
         <el-input v-model="form.area" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="档口/电商楼" prop="dictDetail.id" >
@@ -15,7 +15,7 @@
       </el-form-item>
       <el-form-item label="房号(门牌号)" >
         <el-input v-model="form.roomnumber" style="width: 370px;"/>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="公司名称" >
         <el-input v-model="form.companyname" style="width: 370px;"/>
       </el-form-item>
@@ -38,6 +38,7 @@
 
 <script>
 import { add, edit } from '@/api/tenantinformation'
+import store from '@/store'
 
 export default {
   props: {
@@ -62,6 +63,9 @@ export default {
         logisticsline: '',
         linkman: '',
         phone: '',
+        dept: {
+          id: ''
+        },
         dictDetail: {
           id: ''
         }
@@ -88,8 +92,7 @@ export default {
     },
     doAdd() {
       store.dispatch('GetInfo').then(res => {
-          this.form.dept.id = res.deptId
-          //所选择的缴费日期在免租期中则提示
+        this.form.dept.id = res.deptId
         add(this.form).then(res => {
           this.resetForm()
           this.$notify({
@@ -103,7 +106,7 @@ export default {
           this.loading = false
           console.log(err.response.data.message)
         })
-       })
+      })
     },
     doEdit() {
       edit(this.form).then(res => {
@@ -126,12 +129,19 @@ export default {
       this.form = {
         id: '',
         area: '',
-        stall: '',
+        stall: {
+          id : '4'
+        },
         roomnumber: '',
-        companyname: '',
+        companyname: {
+          id : '3'
+        },
         logisticsline: '',
         linkman: '',
         phone: '',
+        dept: {
+          id: ''
+        },
         dictDetail: {
           id: ''
         }
