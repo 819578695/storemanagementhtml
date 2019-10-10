@@ -47,32 +47,33 @@
     <eFormxq ref="formxq"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <el-table-column prop="area" label="面积(m²)"/>
+      <!-- <el-table-column prop="area" label="面积(m²)"/>
       <el-table-column prop="stall" label="档口/电商楼">
-        <template slot-scope="scope">
-          <span style="margin-left: 10px;color: #409EFF;cursor : pointer;" @click="adduser(scope.row.id)">{{ scope.row.stalltypeName }}</span>
-        </template>
       </el-table-column>
-      <el-table-column prop="roomnumber" label="房号(门牌号)"/>
+      <el-table-column prop="roomnumber" label="房号(门牌号)"/> -->
       <el-table-column prop="companyname" label="公司名称"/>
       <el-table-column prop="logisticsline" label="物流专线"/>
-      <el-table-column prop="linkman" label="联系人"/>
+      <el-table-column prop="linkman" label="联系人">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px;color: #409EFF;cursor : pointer;" @click="adduser(scope.row.id)">{{ scope.row.linkman }}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="phone" label="联系电话"/>
       <el-table-column prop="amountinarear" label="欠款金额"/>
-    <el-table-column  prop="thecontractdetails" label="合同详情">
-    <template slot-scope="scope">
-      <el-popover
-        placement="right"
-        title=""
-        trigger="click">
-        <i slot="default">
-          <img v-if="scope.row.thecontractdetails!=null":src="scope.row.thecontractdetails">
-          <span v-else> 无附件 </span>
-        </i>
-        <span slot="reference" style="cursor: pointer;" :alt="scope.row.thecontractdetails">查看</span>
-      </el-popover>
-     </template>
-    </el-table-column>
+      <el-table-column prop="thecontractdetails" label="合同详情">
+        <template slot-scope="scope">
+          <el-popover
+            placement="right"
+            title=""
+            trigger="click">
+            <i slot="default">
+              <img v-if="scope.row.thecontractdetails!=null" :src="scope.row.thecontractdetails">
+              <span v-else> 无附件 </span>
+            </i>
+            <span slot="reference" :alt="scope.row.thecontractdetails" style="cursor: pointer;">查看</span>
+          </el-popover>
+        </template>
+      </el-table-column>
       <el-table-column :show-overflow-tooltip="true" prop="tenementdate" label="创建日期">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.tenementdate) }}</span>
@@ -111,7 +112,7 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del, gettenantinformationAll } from '@/api/tenantinformation'
-import { parseDate } from '@/utils/index'
+import { parseTime, parseDate } from '@/utils/index'
 import initDict from '@/mixins/initDict'
 import store from '@/store'
 import eForm from './form'
@@ -128,7 +129,6 @@ export default {
       downloadAllLoading: false, // 全部导出加载
       deptId: '',
       queryTypeOptions: [
-        { key: 'roomnumber', display_name: '门牌号' },
         { key: 'linkman', display_name: '联系人' },
         { key: 'phone', display_name: '联系电话' }
       ]
@@ -155,7 +155,7 @@ export default {
       const value = query.value
       const deptId = query.deptId
       // 最高级别查询所有数据
-      if (this.deptId == 0) {
+      if (this.deptId === 0) {
         this.params = { page: this.page, size: this.size, sort: sort }
       } else {
         this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }
@@ -191,18 +191,12 @@ export default {
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
-        area: data.area,
-        stall: data.stall,
-        roomnumber: data.roomnumber,
         companyname: data.companyname,
         logisticsline: data.logisticsline,
         linkman: data.linkman,
         phone: data.phone,
         dept: {
           id: data.deptId
-        },
-        dictDetail: {
-          id: data.stalltypeName
         }
       }
       _this.dialog = true
