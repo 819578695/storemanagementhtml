@@ -155,7 +155,7 @@ export default {
           duration: 2500
         })
         this.loading = false
-        this.$parent.$parent.findReceiptPaymentAccount()
+        this.$parent.findbyProcurementId()
       }).catch(err => {
         this.loading = false
         console.log(err.response.data.message)
@@ -170,7 +170,7 @@ export default {
           duration: 2500
         })
         this.loading = false
-        this.$parent.findReceiptPaymentAccount()
+        this.$parent.findbyProcurementId()
       }).catch(err => {
         this.loading = false
         console.log(err.response.data.message)
