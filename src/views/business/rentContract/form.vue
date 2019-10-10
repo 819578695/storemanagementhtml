@@ -255,12 +255,12 @@ export default {
         deposit: '',
         contractAmount: '',
         fileName: '',
-        remarks: '1',
+        remarks: '',
         payPrice:'',
         payCycle:{
           id:''
         },
-        isEnable:''
+        isEnable:'1'
       }
       this.clearFile()
     },

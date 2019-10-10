@@ -79,12 +79,24 @@
       </el-table-column>
       <el-table-column prop="contractAmount" label="合同总金额" width="100"/>
       <el-table-column prop="applicationsAmount" label="申请金额" width="100"/>
+      <el-table-column prop="isEnable" label="是否启用">
+        <template slot-scope="scope">
+          <span>{{scope.row.isEnable==1?'启用':'作废'}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="applicationsDate" label="申请时间" width="100">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.applicationsDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="查看付款信息">
+      <el-table-column  prop="fileName" label="合同附件">
+      <template slot-scope="scope">
+         <span slot="reference" :alt="scope.row.fileName" >
+           <a v-if="scope.row.fileName!=''" :href="scope.row.fileName" target="_blank">查看</a>
+         </span>
+       </template>
+      </el-table-column>
+      <el-table-column label="采购付款信息">
         <template slot-scope="scope">
           <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.id)">查看</span>
         </template>
@@ -216,13 +228,13 @@ export default {
       //给表单赋值
       this.$refs.form.form = {
         id: data.id,
-        pno: data.pno,
         projectName: data.projectName,
         supplierName: data.supplierName,
         purchaseDescription: data.purchaseDescription,
         contractEndDate: data.contractEndDate,
         contractAmount: data.contractAmount,
         paymentRatio: data.paymentRatio,
+        fileName: data.fileName,
         applicationsAmount: data.applicationsAmount,
         applicationsDate: data.applicationsDate,
         dueDate: data.dueDate,
@@ -236,10 +248,12 @@ export default {
         },
         receiptPaymentAccount: {
           id:data.receiptPaymentAccountId
-        }
+        },
+        isEnable:data.isEnable
       }
       //下拉框赋值
       this.$refs.form.dialog = true
+      _this.imageFrontUrl=data.fileName
     },
    //重置
    reset(){
@@ -299,11 +313,15 @@ export default {
     findReceiptPaymentAccount(id){
       if(id!=null||id!=''){
         const _this = this.$refs.paymentIndex
-        findByProcurementPaymentInfoById(id).then(res => {
-           _this.dialog= true
-          _this.data= res.content
-          _this.procurementId = id
+          findByProcurementPaymentInfoById(id).then(res => {
+            _this.data=res.content
+            _this.procurementId = id
+             _this.dialog= true
+           setTimeout(() => {
+             _this.loading = false
+           }, _this.time)
          }).catch(err => {
+           _this.loading = false
          })
       }
     },

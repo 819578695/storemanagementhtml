@@ -15,9 +15,9 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts"/>
+    <eForm ref="form" :is-add="isAdd" :dicts="dicts" :findbyProcurementId="findbyProcurementId"/>
     <!--表格渲染-->
-    <el-table  :data="data" size="small" style="width: 100%;">
+    <el-table  v-loading="loading"  :data="data" size="small" style="width: 100%;">
       <el-table-column prop="actualPaymentAmount" label="实际付款金额" width="100"/>
       <el-table-column prop="actualPaymentDate" label="实际付款日期" width="100">
         <template slot-scope="scope">
@@ -87,6 +87,8 @@ export default {
       dialog:false,
       data:[],
       procurementId:'',
+      loading:true,
+      time: 170
     }
   },
   created() {
@@ -97,10 +99,14 @@ export default {
     parseDate,
     checkPermission,
     findbyProcurementId(){
-      findByProcurementPaymentInfoById(this.procurementId).then(res => {
-        this.data=res.content
+      this.loading = true
+       findByProcurementPaymentInfoById(this.procurementId).then(res => {
+          this.data=res.content
+         setTimeout(() => {
+          this.loading = false
+         }, this.time)
        }).catch(err => {
-
+         this.loading = false
        })
     },
     subDelete(id) {

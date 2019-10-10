@@ -90,7 +90,11 @@ export default {
     dicts: {
       type: Array,
       required: true
-    }
+    },
+    findbyProcurementId:{
+      type: Function,
+      default: null
+      }
   },
   data() {
     return {
@@ -155,7 +159,7 @@ export default {
           duration: 2500
         })
         this.loading = false
-        this.$parent.findbyProcurementId()
+        this.findbyProcurementId()
       }).catch(err => {
         this.loading = false
         console.log(err.response.data.message)
@@ -164,13 +168,13 @@ export default {
     doEdit() {
       edit(this.form).then(res => {
         this.resetForm()
+        this.findbyProcurementId()
         this.$notify({
           title: '修改成功',
           type: 'success',
           duration: 2500
         })
-        this.loading = false
-        this.$parent.findbyProcurementId()
+         this.loading = false
       }).catch(err => {
         this.loading = false
         console.log(err.response.data.message)
