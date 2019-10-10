@@ -8,10 +8,10 @@
         <el-input v-model="form.acreage" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="定金" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.earnest" style="width: 370px;"/>
+        <el-input v-model="form.earnest" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="合同保证金" >
-        <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.contractmoney" style="width: 370px;"/>
+        <el-input v-model="form.contractmoney" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
       </el-form-item>
       <el-form-item label="联系人" >
         <el-input v-model="form.contacts" style="width: 370px;"/>
@@ -49,6 +49,7 @@
 import { add, edit, del } from '@/api/archivesmouthsmanagement'
 import { getToken } from '@/utils/auth'
 import { mapGetters } from 'vuex'
+import store from '@/store'
 export default {
   props: {
     isAdd: {
@@ -77,6 +78,9 @@ export default {
         leasetype: '',
         picturetoview: '',
         dictDetail: {
+          id: ''
+        },
+        dept: {
           id: ''
         }
       },
@@ -108,18 +112,21 @@ export default {
       this.dialogVisible = false
     },
     doAdd() {
-      add(this.form).then(res => {
-        this.resetForm()
-        this.$notify({
-          title: '添加成功',
-          type: 'success',
-          duration: 2500
+      store.dispatch('GetInfo').then(res => {
+        this.form.dept.id = res.deptId
+        add(this.form).then(res => {
+          this.resetForm()
+          this.$notify({
+            title: '添加成功',
+            type: 'success',
+            duration: 2500
+          })
+          this.loading = false
+          this.$parent.init()
+        }).catch(err => {
+          this.loading = false
+          console.log(err.response.data.message)
         })
-        this.loading = false
-        this.$parent.init()
-      }).catch(err => {
-        this.loading = false
-        console.log(err.response.data.message)
       })
     },
     doEdit() {
@@ -151,6 +158,9 @@ export default {
         picturetoview: '',
         dictDetail: {
           id: ''
+        },
+        dept: {
+          id: ''
         }
       }
     },
@@ -162,7 +172,6 @@ export default {
     },
     // 监听上传失败
     handleError(e, file) {
-      alert('111')
       const msg = JSON.parse(e.message)
       this.$notify({
         title: msg.message,

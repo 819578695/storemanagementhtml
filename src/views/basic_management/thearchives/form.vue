@@ -55,6 +55,7 @@
 import { add, edit, del } from '@/api/thearchives'
 import { getToken } from '@/utils/auth'
 import { mapGetters } from 'vuex'
+import store from '@/store'
 export default {
   props: {
     isAdd: {
@@ -82,7 +83,10 @@ export default {
         coveredArea: '',
         usableArea: '',
         theContractInformation: '',
-        imageUpload: ''
+        url: '',
+        dept: {
+          id: ''
+        }
       },
       rules: {
       }
@@ -98,7 +102,7 @@ export default {
       this.resetForm()
     },
     doSubmit() {
-      this.form.imageUpload = this.url
+      this.form.url = this.url
       alert(this.url)
       this.$refs
       this.loading = true
@@ -107,18 +111,21 @@ export default {
       } else this.doEdit()
     },
     doAdd() {
-      add(this.form).then(res => {
-        this.resetForm()
-        this.$notify({
-          title: '添加成功',
-          type: 'success',
-          duration: 2500
+      store.dispatch('GetInfo').then(res => {
+        this.form.dept.id = res.deptId
+        add(this.form).then(res => {
+          this.resetForm()
+          this.$notify({
+            title: '添加成功',
+            type: 'success',
+            duration: 2500
+          })
+          this.loading = false
+          this.$parent.init()
+        }).catch(err => {
+          this.loading = false
+          console.log(err.response.data.message)
         })
-        this.loading = false
-        this.$parent.init()
-      }).catch(err => {
-        this.loading = false
-        console.log(err.response.data.message)
       })
     },
     doEdit() {
@@ -150,7 +157,10 @@ export default {
         coveredArea: '',
         usableArea: '',
         theContractInformation: '',
-        imageUpload: ''
+        url: '',
+        dept: {
+          id: ''
+        }
       }
     },
     handleSuccess(response, file) {
@@ -161,7 +171,6 @@ export default {
     },
     // 监听上传失败
     handleError(e, file) {
-      alert('111')
       const msg = JSON.parse(e.message)
       this.$notify({
         title: msg.message,

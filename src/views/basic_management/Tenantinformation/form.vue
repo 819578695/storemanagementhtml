@@ -38,6 +38,7 @@
 
 <script>
 import { add, edit } from '@/api/tenantinformation'
+import store from '@/store'
 
 export default {
   props: {
@@ -62,6 +63,9 @@ export default {
         logisticsline: '',
         linkman: '',
         phone: '',
+        dept: {
+          id: ''
+        },
         dictDetail: {
           id: ''
         }
@@ -87,18 +91,21 @@ export default {
       } else this.doEdit()
     },
     doAdd() {
-      add(this.form).then(res => {
-        this.resetForm()
-        this.$notify({
-          title: '添加成功',
-          type: 'success',
-          duration: 2500
+      store.dispatch('GetInfo').then(res => {
+        this.form.dept.id = res.deptId
+        add(this.form).then(res => {
+          this.resetForm()
+          this.$notify({
+            title: '添加成功',
+            type: 'success',
+            duration: 2500
+          })
+          this.loading = false
+          this.$parent.init()
+        }).catch(err => {
+          this.loading = false
+          console.log(err.response.data.message)
         })
-        this.loading = false
-        this.$parent.init()
-      }).catch(err => {
-        this.loading = false
-        console.log(err.response.data.message)
       })
     },
     doEdit() {
@@ -122,12 +129,19 @@ export default {
       this.form = {
         id: '',
         area: '',
-        stall: '',
+        stall: {
+          id : '4'
+        },
         roomnumber: '',
-        companyname: '',
+        companyname: {
+          id : '3'
+        },
         logisticsline: '',
         linkman: '',
         phone: '',
+        dept: {
+          id: ''
+        },
         dictDetail: {
           id: ''
         }
