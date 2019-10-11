@@ -424,6 +424,7 @@ export default {
         }).catch(err => {
           console.log(err.response.data.message)
         })
+        
     },
     findByContractName(item){
       this.dateProcessing(item.startDate,item.endDate)

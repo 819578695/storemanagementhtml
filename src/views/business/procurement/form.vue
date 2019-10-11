@@ -239,7 +239,7 @@ export default {
                 });
             } else {
               store.dispatch('GetInfo').then(res => {
-                 upload(fileData,res.deptNo+res.username).then(res => {
+                 upload(fileData,'ZR'+res.deptNo+res.username).then(res => {
                    this.form.fileName=res
                    this.imageFrontUrl=res
                    this.isShowUploading=false
