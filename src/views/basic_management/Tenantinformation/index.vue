@@ -44,13 +44,9 @@
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
     <!--表单组件-->
-    <eFormxq ref="formxq"/>
+    <eFormxq ref="eFormxq"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <!-- <el-table-column prop="area" label="面积(m²)"/>
-      <el-table-column prop="stall" label="档口/电商楼">
-      </el-table-column>
-      <el-table-column prop="roomnumber" label="房号(门牌号)"/> -->
       <el-table-column prop="companyname" label="公司名称"/>
       <el-table-column prop="logisticsline" label="物流专线"/>
       <el-table-column prop="linkman" label="联系人">
@@ -111,7 +107,7 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
-import { del, gettenantinformationAll } from '@/api/tenantinformation'
+import { del, gettenantinformationAll, particulars } from '@/api/tenantinformation'
 import { parseTime, parseDate } from '@/utils/index'
 import initDict from '@/mixins/initDict'
 import store from '@/store'
@@ -202,7 +198,20 @@ export default {
       _this.dialog = true
     },
     adduser(id) {
-      this.$refs.formxq.dialogxq = true
+      if (id != null || id != '') {
+        const _this = this.$refs.eFormxq
+        particulars(id).then(res => {
+          _this.data = res
+          _this.leasecontractId = id
+          _this.dialogxq = true
+          setTimeout(() => {
+            _this.loading = false
+          }, _this.time)
+        }).catch(err => {
+          _this.loading = false
+        })
+      }
+      /* this.$refs.formxq.dialogxq = true */
     },
     // 导出
     download() {
