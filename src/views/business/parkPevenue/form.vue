@@ -4,13 +4,31 @@
       <el-divider content-position="left">基本信息</el-divider>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="档口编号"  prop="archivesmouthsmanagement.id">
-              <el-select @change="findByTenantinformation" v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" >
+            <el-form-item label="合同名称" prop="leaseContract.id">
+             <el-select v-model="form.leaseContract" value-key="id"  placeholder="请选择合同名称" @change="findByContractName">
+               <el-option  style="width: 270px;"
+                 v-for="(item, index) in leaseContractList"
+                 :key="item.index"
+                 :label="item.contractName"
+                 :value="item">
+                <span style="float: left">{{ item.contractName }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">
+                {{ item.houseNumber }}&nbsp;&nbsp;&nbsp;
+                {{ item.tenementName }}
+                </span>
+               </el-option>
+             </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="档口编号"  >
+              <el-select  v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" >
                 <el-option
-                  v-for="(item, index) in archivesmouthsmanagementList"
-                  :key="item.index"
-                  :label="item.housenumber"
-                  :value="item.id"/>
+                  :label="archivesmouthsmanagement.houseNumber"
+                  :value="archivesmouthsmanagement.id"
+                  />
               </el-select>
             </el-form-item>
           </el-col>
@@ -18,23 +36,9 @@
             <el-form-item label="租户信息">
               <el-select v-model="form.tenantinformation.id"  placeholder="请选择租户信息" >
                 <el-option
-                  :label="tenantinformation.linkman"
+                  :label="tenantinformation.tenementName"
                   :value="tenantinformation.id"/>
               </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="合同名称" prop="leaseContract.id">
-             <el-select v-model="form.leaseContract" value-key="id"  placeholder="请选择合同名称" @change="findByContractName">
-               <el-option
-                 v-for="(item, index) in leaseContractList"
-                 :key="item.index"
-                 :label="item.contractName"
-                 :value="item"
-                 />
-             </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -117,7 +121,7 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
-                <el-select v-model="form.dictDetail.id"  placeholder="请选择支付方式">
+                <el-select v-model="form.dictDetail.id" @change="findbyReceiptPaymentAccount" placeholder="请选择支付方式">
                   <el-option
                     v-for="(item, index) in dictMap.transaction_mode"
                     :key="item.index"
@@ -171,9 +175,7 @@
 import { add, edit,payBack } from '@/api/parkPevenue'
 import store from '@/store'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
-import { findByDeptIdAndTenementNameIsNotNull} from '@/api/archivesmouthsmanagement'
 import { leaseContractByDeptId} from '@/api/leaseContract'
-import { tenantinformationByArchivesmouthsmanagementId} from '@/api/tenantinformation'
 export default {
   props: {
     isAdd: {
@@ -195,9 +197,9 @@ export default {
       paybackloading:false,
       dialog: false,
       leaseContractList:[], //合同集合
-      tenantinformation:{}, // 租户信息的集合
+      tenantinformation:{}, // 租户信息
       receiptPaymentAccountList:[],
-      archivesmouthsmanagementList:[],//档口的集合
+      archivesmouthsmanagement:{},//档口
       form: {
         id: '',
         houseRent: '',
@@ -221,7 +223,7 @@ export default {
           id:''
         },
         archivesmouthsmanagement:{
-          id:''
+            id:''
         },
         tenantinformation:{
           id:''
@@ -235,12 +237,6 @@ export default {
         },
       },
       rules: {
-        archivesmouthsmanagement:
-        {
-         id: [
-            { required: true, message: '请选择档口编号', trigger: 'change' }
-          ],
-        },
         leaseContract:
         {
          id: [
@@ -384,7 +380,6 @@ export default {
           id:''
         },
         archivesmouthsmanagement:{
-          id:''
         },
         dictDetail:{
           id:''
@@ -398,16 +393,6 @@ export default {
     //查询所有的集合
     getReceiptPaymentAccountList() {
       store.dispatch('GetInfo').then(res => {
-      	receiptPaymentAccountByDeptId(res.deptId).then(res => {
-      	  this.receiptPaymentAccountList = res
-      	}).catch(err => {
-      	  console.log(err.response.data.message)
-      	})
-        findByDeptIdAndTenementNameIsNotNull(res.deptId).then(res => {
-          this.archivesmouthsmanagementList = res
-        }).catch(err => {
-          console.log(err.response.data.message)
-        })
         leaseContractByDeptId(res.deptId).then(res => {
           this.leaseContractList = res
         }).catch(err => {
@@ -415,18 +400,31 @@ export default {
         })
       })
     },
-    //档口租户联动查询
-    findByTenantinformation(id){
-        tenantinformationByArchivesmouthsmanagementId(id).then(res => {
-          this.tenantinformation = res
-          this.form.tenantinformation.id=res.id
-          console.log(this.tenantinformationList)
+    //支付的方式联动查询收付款信息
+    findbyReceiptPaymentAccount(id) {
+      store.dispatch('GetInfo').then(res => {
+        receiptPaymentAccountByDeptId(id,res.deptId).then(res => {
+          this.form.receiptPaymentAccount.id=''
+          this.receiptPaymentAccountList = res
+          console.log(this.receiptPaymentAccountList)
         }).catch(err => {
           console.log(err.response.data.message)
         })
-        
+      })
     },
+    //合同联动查询
     findByContractName(item){
+      if(item.stallId!=null){
+         this.archivesmouthsmanagement.id = item.stallId
+         this.form.archivesmouthsmanagement.id = item.stallId
+         this.archivesmouthsmanagement.houseNumber = item.houseNumber
+      }
+      if(item.tenementId!=null){
+         this.tenantinformation.id = item.tenementId
+         this.form.tenantinformation.id = item.tenementId
+         this.tenantinformation.tenementName = item.tenementName
+      }
+
       this.dateProcessing(item.startDate,item.endDate)
       if(item.rentFreeStartTime!=''&&item.rentFreeEndTime!=''){
         this.rentFreeStartTime=item.rentFreeStartTime

@@ -24,9 +24,9 @@ export function receiptPaymentAccountById(id) {
 }
 
 
-export function receiptPaymentAccountByDeptId(id) {
+export function receiptPaymentAccountByDeptId(dictailId,deptId) {
   return request({
-    url: 'api/receiptPaymentAccountByDeptId/'+id,
+    url: 'api/receiptPaymentAccountByDeptId/'+dictailId+'/'+deptId,
     method: 'get'
   })
 }
