@@ -126,6 +126,7 @@ export default {
       deptId: '',
       queryTypeOptions: [
         { key: 'linkman', display_name: '联系人' },
+        /* { key: 'roomnumber', display_name: '门牌号' }, */
         { key: 'phone', display_name: '联系电话' }
       ]
     }

@@ -43,13 +43,13 @@
       <el-table-column prop="url" label="图片上传">
         <template slot-scope="scope">
           <!-- <a :href="scope.row.imageUpload" style="color: #42b983" target="_blank"><img :src="scope.row.imageUpload" alt="点击打开" class="el-avatar"></a> -->
-		  <el-popover
-		    placement="right"
-		    title=""
-		    trigger="click">
-		    <i slot="default"><img :src="scope.row.url"></i>
-		    <img slot="reference" :src="scope.row.url" :alt="scope.row.url" class="el-avatar">
-		  </el-popover>
+          <el-popover
+            placement="right"
+            title=""
+            trigger="click">
+            <i slot="default"><img :src="scope.row.url"></i>
+            <img slot="reference" :src="scope.row.url" :alt="scope.row.url" class="el-avatar">
+          </el-popover>
         </template>
       </el-table-column>
       <el-table-column :show-overflow-tooltip="true" prop="parkdate" label="创建日期">
@@ -89,13 +89,14 @@
 <script>
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
+import initDict from '@/mixins/initDict'
 import { del } from '@/api/thearchives'
 import { parseDate } from '@/utils/index'
 import store from '@/store'
 import eForm from './form'
 export default {
   components: { eForm },
-  mixins: [initData],
+  mixins: [initData, initDict],
   data() {
     return {
       delLoading: false,
@@ -108,23 +109,26 @@ export default {
   },
   created() {
     this.$nextTick(() => {
+      // 将用户的上级部门id带入后台查询
       store.dispatch('GetInfo').then(res => {
         this.deptId = res.deptId
         this.init()
       })
-      this.init()
+      this.getDict('stall_type')
     })
   },
   methods: {
     parseDate,
     checkPermission,
     beforeInit() {
+      debugger;
       this.url = 'api/basicsPark'
       const sort = 'id,desc'
       const query = this.query
       const type = query.type
       const value = query.value
       const deptId = query.deptId
+      debugger;
       if (this.deptId == 0) {
         this.params = { page: this.page, size: this.size, sort: sort }
       } else {
@@ -136,7 +140,7 @@ export default {
     },
     subDelete(id) {
       this.delLoading = true
-      del(id).then(res => {
+      del(id).this(res => {
         this.delLoading = false
         this.$refs[id].doClose()
         this.dleChangePage()
