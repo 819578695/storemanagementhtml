@@ -255,12 +255,12 @@ export default {
         deposit: '',
         contractAmount: '',
         fileName: '',
-        remarks: '1',
+        remarks: '',
         payPrice:'',
         payCycle:{
           id:''
         },
-        isEnable:''
+        isEnable:'1'
       }
       this.clearFile()
     },
@@ -293,7 +293,7 @@ export default {
                 });
             } else {
               store.dispatch('GetInfo').then(res => {
-                 upload(fileData,res.deptNo).then(res => {
+                 upload(fileData,'CG'+res.deptNo+res.username).then(res => {
                    this.form.fileName=res
                    this.imageFrontUrl=res
                    this.isShowUploading=false

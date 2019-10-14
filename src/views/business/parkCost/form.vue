@@ -66,6 +66,20 @@
       <el-divider content-position="left">付款信息</el-divider>
       <el-row>
         <el-col :span="12">
+          <el-form-item label="开始日期" prop="startTime">
+            <el-date-picker  :picker-options="pickerOptionsStart" v-model="form.startTime" type="date" placeholder="选择日期" style="width: 170px;" >
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="截止日期" prop="endTime">
+            <el-date-picker @change="findByContractRentFreeDate" :picker-options="pickerOptionsEnd" v-model="form.endTime" type="date" placeholder="选择日期" style="width: 170px;">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
           <el-form-item label="付款方式" prop="dictDetail.id">
             <el-select v-model="form.dictDetail.id"  placeholder="请选择付款方式" style="width: 170px;">
               <el-option
@@ -138,6 +152,8 @@ export default {
         receiptPaymentAccount: {
           id:''
         },
+        startTime:'',
+        endTime:'',
       },
       rules: {
         dictDetail:
@@ -221,6 +237,8 @@ export default {
          rentContract:{
            id:''
          },
+        startTime:'',
+        endTime:'',
         siteRent: '',
         waterRent: '',
         electricityRent: '',

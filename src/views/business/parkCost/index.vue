@@ -219,6 +219,8 @@ export default {
         taxCost: data.taxCost,
         otherRent: data.otherRent,
         createTime: data.createTime,
+        startTime:data.startTime,
+        endTime:data.endTime,
         dictDetail: {
           id:data.paymentType
         },

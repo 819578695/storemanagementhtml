@@ -44,3 +44,10 @@ export function edit(data) {
     data
   })
 }
+
+export function particulars(id) {
+  return request({
+    url: 'api/particulars/' + id,
+    method: 'get'
+  })
+}

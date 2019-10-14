@@ -126,7 +126,11 @@
             <p v-else>点击或拖拽文件上传</p></div>
           </el-upload>
            <div class="text-xs-center" v-show="imageFrontUrl != ''">
-             <p v-if="imageFrontFile != ''"><i class="el-icon-folder"></i> {{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;"></i> </p>
+             <p v-if="imageFrontUrl != ''">
+               <i class="el-icon-folder"></i>
+               {{ $store.state.business.oldFileName }}&nbsp;&nbsp;
+               <i class="el-icon-circle-check" style="color: green;"></i>
+             </p>
               <!-- <img class="avatar" :src="imageFrontUrl" /> -->
               <el-button outline  @click="clearFile">清除</el-button>
            </div>
@@ -159,6 +163,8 @@ export default {
       type: Object,
       required: true
     }
+  },
+  computed: {
   },
   data() {
     return {
@@ -290,7 +296,7 @@ export default {
             duration: 2500
           })
           this.loading = false
-          this.imageFrontFile=''
+		  this.imageFrontFile=''
           this.$parent.init()
         }).catch(err => {
           this.loading = false
@@ -378,36 +384,33 @@ export default {
     },
       //文件上传
       beforeUpload(file){
-         if(this.form.archivesmouthsmanagement.houseNumber==''){
-           //表单判断
-           this.$notify.error({
-               title: '请先填写合同信息',
-               duration:2500,
-           });
-           return;
-         }
-        this.isShowUploading = true;
-        this.imageFrontFile = file;
-          let fileName = file.name;
-          var fileData = new FormData();
-          fileData.append('upfile', file);
-          let suffix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length).toLowerCase();
+        this.isShowUploading = true
+        this.loading=true
+        this.imageFrontFile = file
+         let fileName = file.name
+          this.$store.dispatch('addOldFileName', file.name)//赋值
+          var fileData = new FormData()
+          fileData.append('upfile', file)
+          let suffix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length).toLowerCase()
             if (suffix == "jpg" || suffix == "jpeg" || suffix == "png" || suffix == "pdf") {
                 //格式正确,判断大小在1M以内
-                let fileSize = file.size;
+                let fileSize = file.size
                 if (fileSize > 1024 * 1024) {
                     //文件太大
-                    this.imageFrontUrl = '';
+                    this.imageFrontUrl = ''
                     this.$notify.error({
                         title: '文件太大',
                         duration:2500,
                         closable: true
                     });
+                    this.loading= false
                 } else {
-                    upload(fileData,this.form.archivesmouthsmanagement.houseNumber).then(res => {
+                  store.dispatch('GetInfo').then(res => {
+                    upload(fileData,'CZ'+res.deptNo+res.username).then(res => {
                       this.form.fileName=res
                       this.imageFrontUrl=res
                       this.isShowUploading=false
+                      this.loading= false
                       this.$notify({
                        title: '上传成功',
                        type: 'success',
@@ -419,10 +422,13 @@ export default {
                           type: 'error',
                           duration: 2500
                         })
+                        this.loading= false
                     })
+                  })
                 }
             } else {
-                this.imageFrontUrl = '';
+                this.imageFrontUrl = ''
+                this.loading= false
                 //格式错误
                 this.$notify.error({
                     title: '文件格式错误',
@@ -433,9 +439,9 @@ export default {
       },
       //清除文件
       clearFile(){
-          this.imageFrontUrl = '';
-          this.form.fileName = '';
-          this.imageFrontFile = '';
+          this.imageFrontUrl = ''
+          this.form.fileName = ''
+          this.imageFrontFile = ''
       },
   }
 }

@@ -243,6 +243,9 @@ export default {
         remarks:data.remarks
       }
       _this.imageFrontUrl=data.fileName
+      /* if(data.fileName!=''){
+        _this.imageFrontFile = this.$store.state.business.oldFileName
+      } */
       _this.dialog = true
     }
   }
