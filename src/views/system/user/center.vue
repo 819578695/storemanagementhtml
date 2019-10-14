@@ -32,14 +32,14 @@
                   <a @click="$refs.email.dialog = true">修改邮箱</a>
                 </div>
               </li>
-              <li>
+              <!--<li>
                 <svg-icon icon-class="anq" /> 收付款账户信息
                 <div class="user-right">
                 <router-link to="../receiptPaymentAccount/index">
                   <a>设置</a>
                 </router-link>
                 </div>
-              </li>
+              </li>-->
             </ul>
           </div>
         </el-card>
