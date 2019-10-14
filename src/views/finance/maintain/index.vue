@@ -2,7 +2,7 @@
   <div class="app-container">
   	<eForm ref="form" :is-add="isAdd"/>
   	<el-row :gutter="10">
-  		<el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10">
+  		<el-col :xs="24" :sm="24" :md="4" :lg="4" :xl="4">
         <el-card class="box-card">
         	<div slot="header" class="clearfix">
         		<span>账户维护</span>
@@ -16,36 +16,12 @@
 			      </el-select>
 			      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
 			      <div style="display: inline-block;margin: 0px 2px;">
-		        <el-button
-		          v-permission="['ADMIN','FINANCEMAINTAIN_ALL','FINANCEMAINTAIN_CREATE']"
-		          class="filter-item"
-		          size="mini"
-		          type="primary"
-		          icon="el-icon-plus"
-		          @click="add">新增</el-button>
 		      </div>
 			    </div>
 			    <!--表格渲染-->
 			    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;" @current-change="handleCurrentChange">
 			      <el-table-column prop="deptName" label="园区名称"/>
 			      <el-table-column prop="remaining" label="余额"/>
-			      <el-table-column v-if="checkPermission(['ADMIN','FINANCEMAINTAIN_ALL','FINANCEMAINTAIN_EDIT','FINANCEMAINTAIN_DELETE'])" label="操作" width="150px" align="center">
-			        <template slot-scope="scope">
-			          <el-button v-permission="['ADMIN','FINANCEMAINTAIN_ALL','FINANCEMAINTAIN_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
-			          <el-popover
-			            v-permission="['ADMIN','FINANCEMAINTAIN_ALL','FINANCEMAINTAIN_DELETE']"
-			            :ref="scope.row.id"
-			            placement="top"
-			            width="180">
-			            <p>确定删除本条数据吗？</p>
-			            <div style="text-align: right; margin: 0">
-			              <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
-			              <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定</el-button>
-			            </div>
-			            <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini"/>
-			          </el-popover>
-			        </template>
-			      </el-table-column>
 			    </el-table>
 			    <!--分页组件-->
 			    <el-pagination
@@ -57,21 +33,8 @@
 			      @current-change="pageChange"/>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>账户详情</span>
-            <el-button
-              v-if="checkPermission(['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT','FINANCEMAINTARINDETAIL_DELETE']) && this.$refs.financeMaintarinDetail && this.$refs.financeMaintarinDetail.deptId"
-              class="filter-item"
-              size="mini"
-              style="float: right;padding: 4px 10px"
-              type="primary"
-              icon="el-icon-plus"
-              @click="$refs.maintainDetail.$refs.form.dialog = true;$refs.maintainDetail.isAdd = true">新增</el-button>
-          </div>
-          <maintainDetail ref="maintainDetail"/>
-        </el-card>
+      <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="20">
+      	<maintainDetail ref="maintainDetail"/>
       </el-col>
   	</el-row>
   </div>
@@ -135,10 +98,10 @@ export default {
         console.log(err.response.data.message)
       })
     },
-    add() {
-      this.isAdd = true
-      this.$refs.form.dialog = true
-    },
+//  add() {
+//    this.isAdd = true
+//    this.$refs.form.dialog = true
+//  },
     handleCurrentChange(val) {
     	if(val){
     		this.$refs.maintainDetail.deptId = val.deptId

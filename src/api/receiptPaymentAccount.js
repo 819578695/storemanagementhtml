@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 // 获取所有的收付款信息
-export function getAll() {
+export function findByDetail() {
   return request({
     url: 'api/receiptPaymentAccount/all',
     method: 'get'

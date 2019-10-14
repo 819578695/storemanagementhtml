@@ -1,25 +1,18 @@
 <template>
 	<div>
-		<div v-if=" deptId === '' ">
-			<div class="my-code">点击资金账户查看详情</div>
+		<el-row :gutter="10">
+  		<el-col :xs="24" :sm="24" :md="4" :lg="12" >
+		<el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>交易类型详情</span>
+          </div>
+          <div v-if=" deptId === '' ">
+			<div class="my-code">点击查看详情</div>
 		</div>
 		<div v-else>
-			<!--工具栏-->
-	    <div class="head-container">
-	      <!-- 新增 -->
-	      <div style="display: inline-block;margin: 0px 2px;">
-	        <el-button
-	          v-permission="['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_CREATE']"
-	          class="filter-item"
-	          size="mini"
-	          type="primary"
-	          icon="el-icon-plus"
-	          @click="add">新增</el-button>
-	      </div>
-	    </div>
-			<eForm ref="form" :is-add="isAdd"/>
-			<!--表格渲染-->
-	    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
+		<eForm ref="form" :is-add="isAdd"/>
+		<!--表格渲染-->
+	    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;" @current-change="handleCurrentChange">
 	      <el-table-column prop="deptName" label="所属园区"/>
 	      <el-table-column prop="tradTypeLabel" label="交易账户类型"/>
 	      <el-table-column prop="remaining" label="金额"/>
@@ -28,33 +21,15 @@
 	          <span>{{ parseTime(scope.row.transactionDate) }}</span>
 	        </template>
 	      </el-table-column>
-	      <el-table-column v-if="checkPermission(['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT','FINANCEMAINTARINDETAIL_DELETE'])" label="修改" width="150px" align="center">
-	        <template slot-scope="scope">
-	          <el-button v-permission="['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
-	          <!--<el-popover
-	            v-permission="['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_DELETE']"
-	            :ref="scope.row.id"
-	            placement="top"
-	            width="180">
-	            <p>确定删除本条数据吗？</p>
-	            <div style="text-align: right; margin: 0">
-	              <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
-	              <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定</el-button>
-	            </div>
-	            <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini"/>
-	          </el-popover>-->
-	        </template>
-	      </el-table-column>
 	    </el-table>
-	    <!--分页组件-->
-	    <el-pagination
-	      :total="total"
-	      style="margin-top: 8px;"
-	      :current-page="page + 1"
-	      layout="total, prev, pager, next, sizes"
-	      @size-change="sizeChange"
-	      @current-change="pageChange"/>
 		</div>
+        </el-card>
+        </el-col>
+        
+        <el-col :xs="24" :sm="24" :md="12" :lg="12" >
+			<accountDetail ref="accountDetail"/>
+        </el-col>
+  	</el-row>
 	</div>
 </template>
 
@@ -64,9 +39,10 @@ import initData from '@/mixins/initData'
 import { del } from '@/api/maintarinDetail'
 import { parseTime } from '@/utils/index'
 import { getDictMap } from '@/api/dictDetail'
+import accountDetail from '../accountDetail/index'
 import eForm from './form'
 export default {
-  components: { eForm },
+  components: { eForm , accountDetail },
   mixins: [initData],
   data() {
     return {
@@ -75,6 +51,7 @@ export default {
       deptId:'',
       maintainId:'',
       deptName:'',
+      datas:[],
     }
   },
   created() {
@@ -131,6 +108,13 @@ export default {
 	  }).catch(err => {
 	    console.log(err.response.data.message)
 	  })
+   },
+   handleCurrentChange(val) {
+   	this.$refs.accountDetail
+		if(val){
+			this.$refs.accountDetail.detailId = val.id
+    		this.$refs.accountDetail.init()
+    	}
     }
   }
 }

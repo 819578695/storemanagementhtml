@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<!--表格渲染-->
-	    <el-table 
+	    <el-table
 	    	v-loading="loading"
 	    	:data= "pevenueIndexData"
 	    	size="small"
@@ -38,15 +38,6 @@ export default {
 	this.$nextTick(() => {
   	  this.loading = false
    })
-  },
-  watch: {
-//	pevenueIndexData:{
-//		handler:function(){
-//			debugger
-//		this.pevenueIndexData = this.pevenueIndexData;
-//		deep: true
-//		}
-//	}
   },
   methods: {
   	parseDate,

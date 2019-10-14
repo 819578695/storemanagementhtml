@@ -52,7 +52,7 @@ export default {
       this.page = 0
       this.init()
     },
-    
+
     async marginInit() {
       if (!await this.beforeInit()) {
         return
