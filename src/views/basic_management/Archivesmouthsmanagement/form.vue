@@ -26,17 +26,28 @@
         </el-select>
       </el-form-item>
       <!--上传图片-->
-      <el-upload
-        :before-remove="handleBeforeRemove"
-        :on-success="handleSuccess"
-        :on-error="handleError"
-        :headers="headers"
-        :action="basicsParksc"
-        class="upload-demo"
-        list-type="picture">
-        <el-button size="small" type="primary">点击上传</el-button>
-        <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-      </el-upload>
+      <el-form-item label="文件名" label-width="100px">
+        <el-upload
+          v-show="imageFrontUrl == ''"
+          :headers="headers"
+          :with-credentials="true"
+          :action="uploadUrl"
+          :before-upload="beforeUpload"
+          class="avatar-uploader"
+          name="upfile"
+          drag
+          multiple>
+          <i class="el-icon-upload"/>
+          <div class="el-upload__text">
+            <p v-if="imageFrontFile != ''">图片名称: {{ imageFrontFile.name }}</p>
+          <p v-else>点击或拖拽图片上传</p></div>
+        </el-upload>
+        <div v-show="imageFrontUrl != ''" class="text-xs-center">
+          <p v-if="imageFrontFile != ''"><i class="el-icon-folder"/> {{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;"/> </p>
+          <!-- <img class="avatar" :src="imageFrontUrl" /> -->
+          <el-button outline @click="clearFile">清除</el-button>
+        </div>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
@@ -46,7 +57,7 @@
 </template>
 
 <script>
-import { add, edit, del } from '@/api/archivesmouthsmanagement'
+import { add, edit, uploadPictureExamine } from '@/api/archivesmouthsmanagement'
 import { getToken } from '@/utils/auth'
 import { mapGetters } from 'vuex'
 import store from '@/store'
@@ -65,9 +76,13 @@ export default {
     return {
       url: '',
       loading: false, dialog: false,
+      imageFrontUrl: '', // 文件上传路径
+      imageFrontFile: '', // 接受文件上传的参数
+      isShowUploading: false, // 文件上传加载中
       headers: {
         'Authorization': 'Bearer ' + getToken()
       },
+      uploadUrl: '', // 文件上传路径
       form: {
         id: '',
         housenumber: '',
@@ -104,12 +119,12 @@ export default {
       this.resetForm()
     },
     doSubmit() {
-      this.form.picturetoview = this.url
+      this.$refs
       this.loading = true
       if (this.isAdd) {
         this.doAdd()
       } else this.doEdit()
-      this.dialogVisible = false
+      /* this.dialogVisible = false */
     },
     doAdd() {
       store.dispatch('GetInfo').then(res => {
@@ -122,6 +137,7 @@ export default {
             duration: 2500
           })
           this.loading = false
+          this.imageFrontFile = ''
           this.$parent.init()
         }).catch(err => {
           this.loading = false
@@ -155,7 +171,6 @@ export default {
         contractmoney: '',
         contacts: '',
         leasetype: '',
-        picturetoview: '',
         dictDetail: {
           id: ''
         },
@@ -164,28 +179,59 @@ export default {
         }
       }
     },
-    handleSuccess(response, file) {
-      this.url = file.response.data[0]
-      const uid = file.uid
-      const id = response.id
-      this.pictures.push({ uid, id })
-    },
-    // 监听上传失败
-    handleError(e, file) {
-      const msg = JSON.parse(e.message)
-      this.$notify({
-        title: msg.message,
-        type: 'error',
-        duration: 2500
-      })
-    },
-    handleBeforeRemove(file) {
-      for (let i = 0; i < this.pictures.length; i++) {
-        if (this.pictures[i].uid === file.uid) {
-          del(this.pictures[i].id).then(res => {})
-          return true
+    beforeUpload(file) {
+      this.isShowUploading = true
+      this.imageFrontFile = file
+      const fileName = file.name
+      var fileData = new FormData()
+      fileData.append('upfile', file)
+      const suffix = fileName.substring(fileName.lastIndexOf('.') + 1, fileName.length).toLowerCase()
+      if (suffix == 'jpg' || suffix == 'jpeg' || suffix == 'png' || suffix == 'pdf') {
+        // 格式正确,判断大小在1M以内
+        const fileSize = file.size
+        if (fileSize > 1024 * 1024) {
+          // 文件太大
+          this.imageFrontUrl = ''
+          this.$notify.error({
+            title: '文件太大',
+            duration: 5,
+            closable: true
+          })
+        } else {
+          store.dispatch('GetInfo').then(res => {
+            uploadPictureExamine(fileData, 'ZR' + res.deptNo + res.username).then(res => {
+              this.form.picturetoview = res
+              this.imageFrontUrl = res
+              this.isShowUploading = false
+              this.$notify({
+                title: '上传成功',
+                type: 'success',
+                duration: 2500
+              })
+            }).catch(err => {
+              this.$notify({
+                title: '上传失败',
+                type: 'error',
+                duration: 2500
+              })
+            })
+          })
         }
+      } else {
+        this.imageFrontUrl = ''
+        // 格式错误
+        this.$notify.error({
+          title: '文件格式错误',
+          duration: 5,
+          closable: true
+        })
       }
+    },
+    // 清除文件
+    clearFile() {
+      this.imageFrontUrl = ''
+      this.form.picturetoview = ''
+      this.imageFrontFile = ''
     }
   }
 }

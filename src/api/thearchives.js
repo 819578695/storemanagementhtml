@@ -31,3 +31,11 @@ export function edit(data) {
     data
   })
 }
+
+export function uploadPicture(data,contractNo) {
+  return request({
+    url: 'api/uploadPicture/'+contractNo,
+    method: 'post',
+    data
+  })
+}

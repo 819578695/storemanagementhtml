@@ -40,15 +40,15 @@
       <el-table-column prop="coveredArea" label="建筑面积"/>
       <el-table-column prop="usableArea" label="可使用面积"/>
       <el-table-column prop="theContractInformation" label="合同信息"/>
-      <el-table-column prop="url" label="图片上传">
+      <el-table-column prop="fileName" label="图片上传">
         <template slot-scope="scope">
           <!-- <a :href="scope.row.imageUpload" style="color: #42b983" target="_blank"><img :src="scope.row.imageUpload" alt="点击打开" class="el-avatar"></a> -->
           <el-popover
             placement="right"
             title=""
             trigger="click">
-            <i slot="default"><img :src="scope.row.url"></i>
-            <img slot="reference" :src="scope.row.url" :alt="scope.row.url" class="el-avatar">
+            <i slot="default"><img :src="scope.row.fileName"></i>
+            <img slot="reference" :src="scope.row.fileName" :alt="scope.row.fileName" class="el-avatar">
           </el-popover>
         </template>
       </el-table-column>
@@ -121,15 +121,13 @@ export default {
     parseDate,
     checkPermission,
     beforeInit() {
-      debugger;
       this.url = 'api/basicsPark'
       const sort = 'id,desc'
       const query = this.query
       const type = query.type
       const value = query.value
       const deptId = query.deptId
-      debugger;
-      if (this.deptId == 0) {
+      if (this.deptId == 1) {
         this.params = { page: this.page, size: this.size, sort: sort }
       } else {
         this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }
@@ -174,7 +172,7 @@ export default {
         coveredArea: data.coveredArea,
         usableArea: data.usableArea,
         theContractInformation: data.theContractInformation,
-        url: data.url,
+        fileName: data.fileName,
         dept: {
           id: data.deptId
         }
