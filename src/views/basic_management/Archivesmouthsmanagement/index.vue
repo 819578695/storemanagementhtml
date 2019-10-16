@@ -134,7 +134,7 @@ export default {
       this.url = 'api/archivesmouthsmanagement'
       const sort = 'id,desc'
       // 最高级别查询所有数据
-      if (this.deptId == 0) {
+      if (this.deptId == 1) {
         this.params = { page: this.page, size: this.size, sort: sort }
       } else {
         this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }

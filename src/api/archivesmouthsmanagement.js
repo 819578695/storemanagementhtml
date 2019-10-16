@@ -54,3 +54,11 @@ export function edit(data) {
     data
   })
 }
+
+export function uploadPictureExamine(data,contractNo) {
+  return request({
+    url: 'api/uploadPictureExamine/'+contractNo,
+    method: 'post',
+    data
+  })
+}

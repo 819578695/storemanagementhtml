@@ -126,6 +126,7 @@ export default {
       deptId: '',
       queryTypeOptions: [
         { key: 'linkman', display_name: '联系人' },
+        /* { key: 'roomnumber', display_name: '门牌号' }, */
         { key: 'phone', display_name: '联系电话' }
       ]
     }
@@ -151,7 +152,7 @@ export default {
       const value = query.value
       const deptId = query.deptId
       // 最高级别查询所有数据
-      if (this.deptId === 0) {
+      if (this.deptId === 1) {
         this.params = { page: this.page, size: this.size, sort: sort }
       } else {
         this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }

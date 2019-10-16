@@ -5,7 +5,7 @@
         <el-table-column prop="roomnumber" label="房号(门牌号)"/>
         <el-table-column prop="stalltypeName" label="档口/电商楼"/>
         <el-table-column prop="area" label="面积(m²)"/>
-        <el-table-column :show-overflow-tooltip="true" prop="createTime" label="创建日期"/>
+        <el-table-column prop="pastdue" label="是否启用"/>
       </el-table>
     </el-dialog>
   </div>
