@@ -111,7 +111,13 @@ export default {
 			let houseId = this.houseId
 			let incomeId = this.incomeId
       let deptId = JSON.parse(sessionStorage.getItem("user")).deptId
-  		this.params = {sort: sort, deptId: deptId, houseId: houseId }
+      //最高级别查询所有数据
+      if(this.deptId==1){
+        this.params = { sort: sort, houseId: houseId}
+      }
+      else{
+         this.params = { sort: sort, deptId: deptId, houseId: houseId}
+      }
   		//查询的值
       let applicationsDateStart = query.applicationsDateStart
       let applicationsDateEnd = query.applicationsDateEnd

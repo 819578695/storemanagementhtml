@@ -3,7 +3,14 @@
 		<el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>账户详情</span>
-            <el-button
+          </div>
+	    	<!-- 搜索 -->
+	    	<el-input v-model="query.value" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery" :style="{ display: visibleCancel }"/>
+		    <el-select v-model="query.type" clearable placeholder="类型" class="filter-item" style="width: 130px" :style="{ display: visibleCancel }">
+		      <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
+		    </el-select>
+	  		<el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery" :style="{ display: visibleCancel }">搜索</el-button>
+			<el-button
 	          v-permission="['ADMIN','JOURNALACCOUNTOFCAPITAL_ALL','JOURNALACCOUNTOFCAPITAL_CREATE']"
 	          class="filter-item"
 	          size="mini"
@@ -11,10 +18,9 @@
 	          icon="el-icon-plus"
 	          :style="{ display: visibleCancel }"
 	          @click="add">新增</el-button>
-          </div>
           <div v-if=" detailId === '' ">
 			<div class="my-code">点击查看详情</div>
-		</div>
+		  </div>
 		<div v-else>
 		<eForm ref="form" :is-add="isAdd" :init="init"/>
 		
@@ -22,7 +28,7 @@
 	    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
 	      <el-table-column prop="name" label="名称"/>
 	      <el-table-column prop="remaining" label="金额"/>
-	      <el-table-column prop="accountName" label="账户名称"/>
+	      <el-table-column prop="accountName" label="账户名称/开户人"/>
 	      <el-table-column prop="accountNum" label="账号"/>	      
 	      <el-table-column prop="bankName" label="开户行"/>
 	      <el-table-column v-if="checkPermission(['ADMIN','FINANCEMAINTARINDETAIL_ALL','FINANCEMAINTARINDETAIL_EDIT','FINANCEMAINTARINDETAIL_DELETE'])" label="修改" width="150px" align="center">
@@ -73,6 +79,12 @@ export default {
       detailId:'',
       deptName:'',
       visibleCancel: 'none',   //显示
+      //查询类型
+      queryTypeOptions: [
+        { key: 'name', display_name: '名称' },
+        { key: 'bankName', display_name: '开户行' },
+        { key: 'accountName', display_name: '账户名称/开户人' }
+      ]
     }
   },
   created() {
@@ -91,7 +103,11 @@ export default {
     		this.visibleCancel = '';
     	}
       this.url = 'api/receiptPaymentAccount'
+      let query = this.query
+      let type = query.type
+      let value = query.value
       this.params = { page: this.page, size: this.size, detailId: this.detailId }
+      if (type && value) { this.params[type] = value }
       return true
     },
     subDelete(id) {

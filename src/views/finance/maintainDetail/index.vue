@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-row :gutter="10">
-  		<el-col :xs="24" :sm="24" :md="4" :lg="12" >
+  		<el-col :xs="24" :sm="24" :md="8" :lg="8" >
 		<el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>交易类型详情</span>
@@ -15,18 +15,18 @@
 	    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;" @current-change="handleCurrentChange">
 	      <el-table-column prop="deptName" label="所属园区"/>
 	      <el-table-column prop="tradTypeLabel" label="交易账户类型"/>
-	      <el-table-column prop="remaining" label="金额"/>
-	      <el-table-column prop="transactionDate" label="最近交易日期">
+	      <el-table-column prop="remaining" label="账户余额"/>
+	      <!--<el-table-column prop="transactionDate" label="最近交易日期">
 	        <template slot-scope="scope">
 	          <span>{{ parseTime(scope.row.transactionDate) }}</span>
 	        </template>
-	      </el-table-column>
+	      </el-table-column>-->
 	    </el-table>
 		</div>
         </el-card>
         </el-col>
         
-        <el-col :xs="24" :sm="24" :md="12" :lg="12" >
+        <el-col :xs="24" :sm="24" :md="16" :lg="16" >
 			<accountDetail ref="accountDetail"/>
         </el-col>
   	</el-row>
@@ -65,7 +65,7 @@ export default {
     checkPermission,
     beforeInit() {
       this.url = 'api/maintarinDetail'
-      this.params = { page: this.page, size: this.size, deptId: this.deptId }
+      this.params = {deptId: this.deptId }
       return true
     },
     subDelete(id) {
@@ -97,7 +97,6 @@ export default {
       _this.form = {
         id: data.id,
         tradType: {id : data.tradTypeId },
-        remaining: data.remaining,
         transactionDate: data.transactionDate
       }
       _this.dialog = true

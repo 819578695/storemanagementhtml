@@ -34,7 +34,7 @@
       </el-select>
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
-      <div style="display: inline-block;margin: 0px 2px;">
+      <!--<div style="display: inline-block;margin: 0px 2px;">
         <el-button
           v-permission="['ADMIN','JOURNALACCOUNTOFCAPITAL_ALL','JOURNALACCOUNTOFCAPITAL_CREATE']"
           class="filter-item"
@@ -42,7 +42,7 @@
           type="primary"
           icon="el-icon-plus"
           @click="add">新增</el-button>
-      </div>
+      </div>-->
       <!--导出-->
       <div style="display: inline-block;">
         <el-button
@@ -159,7 +159,14 @@ export default {
       const sort = 'id,desc'
       const query = this.query
       const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
-      this.params = { page: this.page, size: this.size, sort: sort,deptId :deptId}
+      //最高级别查询所有数据
+      if(this.deptId==1){
+        this.params = { page: this.page, size: this.size, sort: sort,deptId :deptId}
+      }
+      else{
+        this.params = { page: this.page, size: this.size, sort: sort,deptId :deptId}
+      }
+      
       //查询的值
       const applicationsDateStart = query.applicationsDateStart
       const applicationsDateEnd = query.applicationsDateEnd

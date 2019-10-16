@@ -66,13 +66,20 @@ export default {
     checkPermission,
     beforeInit() {
       this.url = 'api/maintain'
+      
       const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
       const query = this.query
       const type = query.type
       const value = query.value
 
-      
-      this.params = { deptId :deptId, }
+      //最高级别查询所有数据
+      if(this.deptId==1){
+        this.params = { page: this.page, size: this.size}
+      }
+      else{
+         this.params = { page: this.page, size: this.size, deptId: deptId}
+      }
+//    this.params = { deptId :deptId, }
       if (type && value) { this.params[type] = value }
 			if(this.$refs.maintainDetail){
       	this.$refs.maintainDetail.data=[]
@@ -98,10 +105,6 @@ export default {
         console.log(err.response.data.message)
       })
     },
-//  add() {
-//    this.isAdd = true
-//    this.$refs.form.dialog = true
-//  },
     handleCurrentChange(val) {
     	if(val){
     		this.$refs.maintainDetail.deptId = val.deptId

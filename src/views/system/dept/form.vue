@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { add, edit, getDepts } from '@/api/dept'
+import { add, edit, getDepts , getDeptAll } from '@/api/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
@@ -89,6 +89,7 @@ export default {
         })
         this.loading = false
         this.$parent.init()
+        this.setSessionDept()
       }).catch(err => {
         this.loading = false
         console.log(err.response.data.message)
@@ -104,6 +105,7 @@ export default {
         })
         this.loading = false
         this.$parent.init()
+        this.setSessionDept()
       }).catch(err => {
         this.loading = false
         console.log(err.response.data.message)
@@ -124,7 +126,13 @@ export default {
       getDepts({ enabled: true }).then(res => {
         this.depts = res.content
       })
-    }
+    },
+ 		setSessionDept(){
+ 			getDeptAll({ enabled: true }).then(res => {
+	        //数组转json   取出时json.parse(xxx)
+	      	sessionStorage.setItem("depts",JSON.stringify(res))
+  		})
+ 		}
   }
 }
 </script>
