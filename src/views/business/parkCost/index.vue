@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts" />
+    <eForm ref="form" :is-add="isAdd" :dictMap="dictMap" />
     <!--表单组件-->
     <accountForm ref="accountform" />
     <el-row :gutter="20">
@@ -147,7 +147,7 @@ export default {
       })
       // 加载数据字典
       this.deptList=JSON.parse(sessionStorage.getItem("depts"))
-      this.getDict('transaction_mode')
+      this.getDictMap('transaction_mode')
     })
   },
   methods: {
@@ -207,6 +207,9 @@ export default {
       this.isAdd = false
        this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
       const _this = this.$refs.form
+      _this.dictId= data.paymentType//保存支付类型id
+      _this.receiptPaymentAccountId= data.receiptPaymentAccountId//保存收付款信息Id
+      _this.findbyReceiptPaymentAccount(data.paymentType) //根据支付方式查询账户
       _this.form = {
         id: data.id,
         rentContract:{

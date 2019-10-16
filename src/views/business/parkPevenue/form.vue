@@ -120,8 +120,10 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
-                <el-select v-model="form.dictDetail.id" @change="findbyReceiptPaymentAccount" placeholder="请选择支付方式">
+              <!-- 付款方式 组件-->
+<!--              <dictDetail ref="dictDetail"  :is-add="isAdd" :dictMap="dictMap" v-model="form.dictDetail.id"  @findbyAccount="findbyAccount(arguments)" />
+ -->               <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id" >
+                <el-select  v-model="form.dictDetail.id" @change="findbyReceiptPaymentAccount" placeholder="请选择支付方式">
                   <el-option
                     v-for="(item, index) in dictMap.transaction_mode"
                     :key="item.index"
@@ -131,7 +133,9 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="收款账户" label-width="100px" prop="receiptPaymentAccount.id">
+              <!-- 付款账户 组件-->
+<!--              <account ref="account" :is-add="isAdd"  v-model="form.receiptPaymentAccount.id" accountProp="receiptPaymentAccount.id" :receiptPaymentAccountList="receiptPaymentAccountList" @accountValue="accountValue" />
+ -->          <el-form-item label="收款账户" label-width="100px" prop="receiptPaymentAccount.id">
                 <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收款名称">
                   <el-option
                     v-for="(item, index) in receiptPaymentAccountList"
@@ -174,9 +178,12 @@
 <script>
 import { add, edit,payBack } from '@/api/parkPevenue'
 import store from '@/store'
-import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
 import { leaseContractByDeptId} from '@/api/leaseContract'
+import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
+/* import  account  from '@/components/Account'
+import  dictDetail  from '@/components/DictDetail' */
 export default {
+ /* components: { account,dictDetail }, */
   props: {
     isAdd: {
       type: Boolean,
@@ -185,10 +192,14 @@ export default {
     dictMap: {
       type: Object,
       required: true
-    }
+    },
+
   },
   data() {
     return {
+      dictId:'',//用于保存点击修改传过来的支付方式id
+      receiptPaymentAccountId:'',//用于保存点击修改传过来的收付款id
+      receiptPaymentAccountList:[],//保存付款账户的集合
       rentFreeStartTime:'',
       rentFreeEndTime:'',
       pickerOptionsStart: {},//控制开始时间禁用
@@ -198,7 +209,6 @@ export default {
       dialog: false,
       leaseContractList:[], //合同集合
       tenantinformation:{}, // 租户信息
-      receiptPaymentAccountList:[],
       archivesmouthsmanagement:{},//档口
       form: {
         id: '',
@@ -243,12 +253,6 @@ export default {
             { required: true, message: '请选择合同名称', trigger: 'change' }
           ],
         },
-        dictDetail:
-        {
-         id: [
-            { required: true, message: '请选择支付方式', trigger: 'change' }
-          ],
-        },
         receiptPaymentAccount:
         {
          id: [
@@ -259,13 +263,32 @@ export default {
          id: [
              { required: true, message: '请选择类型', trigger: 'change' }
           ],
-        }
+        },
+        dictDetail:{
+          id: [
+              { required: true, message: '请选择支付方式', trigger: 'change' }
+           ]
+        },
+        startTime: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
+        endTime: [
+          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ],
       }
     }
   },
-  created() {
+  mounted(){
   },
   methods: {
+    /* accountValue(value){
+      this.form.receiptPaymentAccount.id = value
+    },
+    findbyAccount(arr){
+      this.receiptPaymentAccountList = arr[0]
+      this.form.dictDetail.id =  arr[1]
+      this.$refs.account.receiptValue = null
+    }, */
     cancel() {
       this.resetForm()
     },
@@ -355,7 +378,8 @@ export default {
     resetForm() {
       this.dialog = false
       this.$refs['form'].resetFields()
-      this.form = {
+/*      this.$refs.dictDetail.selectDictDetail()
+ */      this.form = {
         id: '',
         parkId: '',
         houseRent: '',
@@ -380,6 +404,7 @@ export default {
           id:''
         },
         archivesmouthsmanagement:{
+          id:''
         },
         dictDetail:{
           id:''
@@ -390,23 +415,11 @@ export default {
         },
       }
     },
-    //查询所有的集合
+    //查询合同集合
     getReceiptPaymentAccountList() {
       store.dispatch('GetInfo').then(res => {
         leaseContractByDeptId(res.deptId).then(res => {
           this.leaseContractList = res
-        }).catch(err => {
-          console.log(err.response.data.message)
-        })
-      })
-    },
-    //支付的方式联动查询收付款信息
-    findbyReceiptPaymentAccount(id) {
-      store.dispatch('GetInfo').then(res => {
-        receiptPaymentAccountByDeptId(id,res.deptId).then(res => {
-          this.form.receiptPaymentAccount.id=''
-          this.receiptPaymentAccountList = res
-          console.log(this.receiptPaymentAccountList)
         }).catch(err => {
           console.log(err.response.data.message)
         })
@@ -457,12 +470,37 @@ export default {
           if(this.form.startTime.getTime() + 24 * 3600 >rentFreeStartTime&&this.form.endTime.getTime() + 24 * 3600 <rentFreeEndTime){
             this.$notify({
               title: '警告',
-              message: '您选择的日期为免租期,无需缴纳房租',
+              message: '您选择的日期为免租期',
               type: 'warning'
             });
           }
         }
-      }
+      },
+      //支付的方式联动查询收付款信息
+      findbyReceiptPaymentAccount(id) {
+        store.dispatch('GetInfo').then(res => {
+           receiptPaymentAccountByDeptId(id,res.deptId).then(res => {
+             this.receiptPaymentAccountList=res
+             //判断账户集合是否有值
+             if(this.receiptPaymentAccountList.length>0){
+               //如果交易类型被修改 则默认选中第一个账户
+                if(this.dictId!=id){
+                  this.form.receiptPaymentAccount.id=this.receiptPaymentAccountList[0].id
+               }
+               //否则显示当前默认的账户
+               else{
+               this.form.receiptPaymentAccount.id=  this.receiptPaymentAccountId
+               }
+             }
+             //如果没有账户则提示账户不存在
+             else{
+                this.form.receiptPaymentAccount.id=''
+             }
+           }).catch(err => {
+             console.log(err.response.data.message)
+           })
+         })
+      },
   }
 }
 </script>
