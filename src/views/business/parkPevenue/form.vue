@@ -121,8 +121,8 @@
           <el-row>
             <el-col :span="12">
               <!-- 付款方式 组件-->
-<!--              <dictDetail ref="dictDetail"  :is-add="isAdd" :dictMap="dictMap" v-model="form.dictDetail.id"  @findbyAccount="findbyAccount(arguments)" />
- -->               <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id" >
+             <dictDetail ref="dictDetail"  :is-add="isAdd" :dictMap="dictMap" v-model="form.dictDetail.id"  @findbyAccount="findbyAccount(arguments)" />
+              <!-- <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id" >
                 <el-select  v-model="form.dictDetail.id" @change="findbyReceiptPaymentAccount" placeholder="请选择支付方式">
                   <el-option
                     v-for="(item, index) in dictMap.transaction_mode"
@@ -130,12 +130,12 @@
                     :label="item.label"
                     :value="item.id"/>
                 </el-select>
-              </el-form-item>
+              </el-form-item> -->
             </el-col>
             <el-col :span="12">
               <!-- 付款账户 组件-->
-<!--              <account ref="account" :is-add="isAdd"  v-model="form.receiptPaymentAccount.id" accountProp="receiptPaymentAccount.id" :receiptPaymentAccountList="receiptPaymentAccountList" @accountValue="accountValue" />
- -->          <el-form-item label="收款账户" label-width="100px" prop="receiptPaymentAccount.id">
+             <account ref="account" :is-add="isAdd"  v-model="form.receiptPaymentAccount.id" accountProp="receiptPaymentAccount.id" :receiptPaymentAccountList="receiptPaymentAccountList" @accountValue="accountValue" />
+          <!-- <el-form-item label="收款账户" label-width="100px" prop="receiptPaymentAccount.id">
                 <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收款名称">
                   <el-option
                     v-for="(item, index) in receiptPaymentAccountList"
@@ -143,7 +143,7 @@
                     :label="item.name"
                     :value="item.id"/>
                 </el-select>
-              </el-form-item>
+              </el-form-item> -->
             </el-col>
           </el-row>
           <el-row>
@@ -180,10 +180,10 @@ import { add, edit,payBack } from '@/api/parkPevenue'
 import store from '@/store'
 import { leaseContractByDeptId} from '@/api/leaseContract'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
-/* import  account  from '@/components/Account'
-import  dictDetail  from '@/components/DictDetail' */
+import  account  from '@/components/Account'
+import  dictDetail  from '@/components/DictDetail'
 export default {
- /* components: { account,dictDetail }, */
+ components: { account,dictDetail },
   props: {
     isAdd: {
       type: Boolean,
@@ -281,14 +281,24 @@ export default {
   mounted(){
   },
   methods: {
-    /* accountValue(value){
+    accountValue(value){
       this.form.receiptPaymentAccount.id = value
     },
     findbyAccount(arr){
       this.receiptPaymentAccountList = arr[0]
       this.form.dictDetail.id =  arr[1]
-      this.$refs.account.receiptValue = null
-    }, */
+      if(this.receiptPaymentAccountList.length>0){
+          if(this.dictId==this.form.dictDetail.id){
+              this.$refs.account.receiptValue=this.receiptPaymentAccountId
+          }
+          else{
+            this.$refs.account.receiptValue=this.receiptPaymentAccountList[0].id
+          }
+       }
+       else{
+          this.$refs.account.receiptValue = null
+       }
+      },
     cancel() {
       this.resetForm()
     },
