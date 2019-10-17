@@ -178,6 +178,7 @@ export default {
           id: ''
         }
       }
+      this.clearFile()
     },
     beforeUpload(file) {
       this.isShowUploading = true

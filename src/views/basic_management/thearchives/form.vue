@@ -1,56 +1,78 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="500px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="园区" >
-        <el-input v-model="form.garden" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="成立时间" >
-        <el-date-picker v-model="form.dateOfEstablishment" type="date" placeholder="选择日期" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="物业公司名称" >
-        <el-input v-model="form.companyName" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="开园时间" >
-        <el-date-picker v-model="form.openingTime" type="date" placeholder="选择日期" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="占用面积" >
-        <el-input v-model="form.occupiedArea" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="占地面积" >
-        <el-input v-model="form.floorSpace" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="建筑面积" >
-        <el-input v-model="form.coveredArea" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="可使用面积" >
-        <el-input v-model="form.usableArea" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="合同信息" >
-        <el-input v-model="form.theContractInformation" style="width: 370px;"/>
-      </el-form-item>
-      <!--上传图片-->
-      <el-form-item label="文件名" label-width="100px">
-        <el-upload
-          v-show="imageFrontUrl == ''"
-          :headers="headers"
-          :with-credentials="true"
-          :action="uploadUrl"
-          :before-upload="beforeUpload"
-          class="avatar-uploader"
-          name="upfile"
-          drag
-          multiple>
-          <i class="el-icon-upload"/>
-          <div class="el-upload__text">
-            <p v-if="imageFrontFile != ''">图片名称: {{ imageFrontFile.name }}</p>
-          <p v-else>点击或拖拽图片上传</p></div>
-        </el-upload>
-        <div v-show="imageFrontUrl != ''" class="text-xs-center">
-          <p v-if="imageFrontFile != ''"><i class="el-icon-folder"/> {{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;"/> </p>
-          <!-- <img class="avatar" :src="imageFrontUrl" /> -->
-          <el-button outline @click="clearFile">清除</el-button>
-        </div>
-      </el-form-item>
+      <el-divider content-position="left">基本信息</el-divider>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="成立时间" >
+            <el-date-picker v-model="form.dateOfEstablishment" type="date" placeholder="选择日期" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="物业公司名称" >
+            <el-input v-model="form.companyName" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="开园时间" >
+            <el-date-picker v-model="form.openingTime" type="date" placeholder="选择日期" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="占用面积" >
+            <el-input v-model="form.occupiedArea" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="占地面积" >
+            <el-input v-model="form.floorSpace" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="建筑面积" >
+            <el-input v-model="form.coveredArea" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="可使用面积" >
+            <el-input v-model="form.usableArea" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-divider content-position="left">合同附件</el-divider>
+      <el-row>
+        <el-col :span="12">
+          <!--上传图片-->
+          <el-form-item label="文件名" label-width="100px">
+            <el-upload
+              v-show="imageFrontUrl == ''"
+              :headers="headers"
+              :with-credentials="true"
+              :action="uploadUrl"
+              :before-upload="beforeUpload"
+              class="avatar-uploader"
+              name="upfile"
+              drag
+              multiple>
+              <i class="el-icon-upload"/>
+              <div class="el-upload__text">
+                <p v-if="imageFrontFile != ''">图片名称: {{ imageFrontFile.name }}</p>
+              <p v-else>点击或拖拽图片上传</p></div>
+            </el-upload>
+            <div v-show="imageFrontUrl != ''" class="text-xs-center">
+              <p v-if="imageFrontFile != ''"><i class="el-icon-folder"/> {{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;"/> </p>
+              <!-- <img class="avatar" :src="imageFrontUrl" /> -->
+              <el-button outline @click="clearFile">清除</el-button>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
@@ -86,7 +108,7 @@ export default {
       pictures: [],
       form: {
         id: '',
-        garden: '',
+        /* garden: '', */
         dateOfEstablishment: '',
         companyName: '',
         openingTime: '',
@@ -159,7 +181,7 @@ export default {
       this.$refs['form'].resetFields()
       this.form = {
         id: '',
-        garden: '',
+        /* garden: '', */
         dateOfEstablishment: '',
         companyName: '',
         openingTime: '',

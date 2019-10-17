@@ -21,7 +21,6 @@ export default {
     return {
       loading: false,
       dialogxq: false,
-      leasecontractId: '',
       data: []
     }
   }

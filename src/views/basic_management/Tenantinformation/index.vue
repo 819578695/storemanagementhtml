@@ -203,7 +203,6 @@ export default {
         const _this = this.$refs.eFormxq
         particulars(id).then(res => {
           _this.data = res
-          _this.leasecontractId = id
           _this.dialogxq = true
           setTimeout(() => {
             _this.loading = false

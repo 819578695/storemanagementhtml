@@ -39,3 +39,10 @@ export function uploadPicture(data,contractNo) {
     data
   })
 }
+
+export function basicsParkContract(deptId) {
+  return request({
+    url: 'api/basicsParkContract/' + deptId,
+    method: 'get'
+  })
+}
