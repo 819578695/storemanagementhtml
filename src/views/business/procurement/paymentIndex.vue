@@ -15,7 +15,7 @@
       </div>
     </div>
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dicts="dicts" :findbyProcurementId="findbyProcurementId"/>
+    <eForm ref="form" :is-add="isAdd" :dictMap="dictMap" :findbyProcurementId="findbyProcurementId"/>
     <!--表格渲染-->
     <el-table  v-loading="loading"  :data="data" size="small" style="width: 100%;">
       <el-table-column prop="actualPaymentAmount" label="实际付款金额" width="100"/>
@@ -56,14 +56,14 @@
         </template>
       </el-table-column>
     </el-table>
-    <!--分页组件-->
+    <!-- <!--分页组件
     <el-pagination
       :total="total"
       style="margin-top: 8px;"
       :current-page="page + 1"
       layout="total, prev, pager, next, sizes"
       @size-change="sizeChange"
-      @current-change="pageChange"/>
+      @current-change="pageChange"/> -->
       </el-dialog>
   </div>
 </template>
@@ -92,7 +92,7 @@ export default {
     }
   },
   created() {
-      this.getDict('transaction_mode')
+       this.getDictMap('transaction_mode')
   },
   methods: {
     parseTime,
@@ -132,12 +132,13 @@ export default {
       this.isAdd = true
       this.$refs.form.dialog = true
       this.$refs.form.form.procurementInformation.id  = this.procurementId
-      this.$refs.form.getReceiptPaymentAccountList() //加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
-      this.$refs.form.getReceiptPaymentAccountList();
       const _this = this.$refs.form
+      _this.dictId= data.paymentTypeId//保存支付类型id
+      _this.receiptPaymentAccountId= data.receiptPaymentAccountId//保存收付款信息Id
+      _this.findbyReceiptPaymentAccount(data.paymentTypeId) //根据支付方式查询账户
       _this.form = {
         id: data.id,
         actualPaymentAmount: data.actualPaymentAmount,

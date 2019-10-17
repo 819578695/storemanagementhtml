@@ -40,10 +40,12 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id">
-              <el-select v-model="form.dictDetail.id"  placeholder="请选择收付款名称" style="width: 150px;">
+            <!-- 付款方式 组件-->
+<!--              <dictDetail ref="dictDetail"  :is-add="isAdd" :dictMap="dictMap" v-model="form.dictDetail.id"  @findbyAccount="findbyAccount(arguments)" />
+-->               <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id" >
+              <el-select  v-model="form.dictDetail.id" @change="findbyReceiptPaymentAccount" placeholder="请选择支付方式">
                 <el-option
-                  v-for="(item, index) in dicts"
+                  v-for="(item, index) in dictMap.transaction_mode"
                   :key="item.index"
                   :label="item.label"
                   :value="item.id"/>
@@ -51,11 +53,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="收付款账户" label-width="100px" prop="receiptPaymentAccount.id">
-              <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收付款名称" style="width: 150px;">
+            <!-- 付款账户 组件-->
+<!--              <account ref="account" :is-add="isAdd"  v-model="form.receiptPaymentAccount.id" accountProp="receiptPaymentAccount.id" :receiptPaymentAccountList="receiptPaymentAccountList" @accountValue="accountValue" />
+-->          <el-form-item label="收款账户" label-width="100px" prop="receiptPaymentAccount.id">
+              <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收款名称">
                 <el-option
                   v-for="(item, index) in receiptPaymentAccountList"
-                  :key="item.index"
+                  :key="item.name"
                   :label="item.name"
                   :value="item.id"/>
               </el-select>
@@ -87,8 +91,8 @@ export default {
       type: Boolean,
       required: true
     },
-    dicts: {
-      type: Array,
+    dictMap: {
+      type: Object,
       required: true
     },
     findbyProcurementId:{
@@ -98,6 +102,8 @@ export default {
   },
   data() {
     return {
+      dictId:'',//用于保存点击修改传过来的支付方式id
+      receiptPaymentAccountId:'',//用于保存点击修改传过来的收付款id
       loading: false,
       dialog: false,
       receiptPaymentAccountList:[],//查询下拉框的集合
@@ -145,10 +151,16 @@ export default {
       this.resetForm()
     },
     doSubmit() {
-      this.loading = true
-       if (this.isAdd) {
-        this.doAdd()
-      } else this.doEdit()
+     this.$refs['form'].validate((valid) => {  //校验表单
+       if (valid) {
+           this.loading=true;
+           if (this.isAdd) {
+             this.doAdd()
+           } else this.doEdit()
+       } else {
+         return false
+       }
+     })
     },
     doAdd() {
       add(this.form).then(res => {
@@ -204,15 +216,30 @@ export default {
         },
       }
     },
-    //查询所有的集合
-    getReceiptPaymentAccountList() {
+    //支付的方式联动查询收付款信息
+    findbyReceiptPaymentAccount(id) {
       store.dispatch('GetInfo').then(res => {
-      	receiptPaymentAccountByDeptId(res.deptId).then(res => {
-      	  this.receiptPaymentAccountList = res
-      	}).catch(err => {
-      	  console.log(err.response.data.message)
-      	})
-      })
+         receiptPaymentAccountByDeptId(id,res.deptId).then(res => {
+           this.receiptPaymentAccountList=res
+           //判断账户集合是否有值
+           if(this.receiptPaymentAccountList.length>0){
+             //如果交易类型被修改 则默认选中第一个账户
+              if(this.dictId!=id){
+                this.form.receiptPaymentAccount.id=this.receiptPaymentAccountList[0].id
+             }
+             //否则显示当前默认的账户
+             else{
+             this.form.receiptPaymentAccount.id=  this.receiptPaymentAccountId
+             }
+           }
+           //如果没有账户则提示账户不存在
+           else{
+              this.form.receiptPaymentAccount.id=''
+           }
+         }).catch(err => {
+           console.log(err.response.data.message)
+         })
+       })
     },
   }
 }
