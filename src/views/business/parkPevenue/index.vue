@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!--表单组件-->
-    <eForm ref="form" :is-add="isAdd" :dictMap="dictMap"  />
+    <eForm ref="form" :is-add="isAdd" :dictMap="dictMap" />
     <!--表单组件-->
     <accountForm ref="accountform" />
     <el-row :gutter="20">
@@ -248,13 +248,19 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
-      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
+      this.$refs.form.getReceiptPaymentAccountList()
     },
     edit(data) {
       this.isAdd = false
-      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
-	    this.$refs.form.findByTenantinformation(data) //档口租户联动查询
       const _this = this.$refs.form
+      _this.getReceiptPaymentAccountList() //查询合同
+      _this.dictId= data.paymentType//保存支付类型id
+      _this.receiptPaymentAccountId= data.receiptPaymentAccountId//保存收付款信息Id
+      _this.tenantinformation.id= data.tenementId //租户id
+      _this.tenantinformation.tenementName= data.linkman //租户名称
+      _this.archivesmouthsmanagement.id= data.archivesMouthsId //档口id
+      _this.archivesmouthsmanagement.houseNumber= data.houseNumber //档口名称
+      _this.findbyReceiptPaymentAccount(data.paymentType) //根据支付方式查询账户
       _this.form = {
         id: data.id,
         houseRent: data.houseRent,
@@ -293,6 +299,7 @@ export default {
         },
       }
       _this.dialog = true
+
     },
     //重置
     reset(){
