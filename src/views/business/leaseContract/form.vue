@@ -86,12 +86,12 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="租户信息" prop="tenantinformation.id">
-            <el-select v-model="form.tenantinformation.id"  placeholder="请选择租户信息" style="width: 170px;">
+            <el-select v-model="form.tenantinformation"  value-key="id" placeholder="请选择租户信息" style="width: 170px;">
               <el-option
                 v-for="(item, index) in tenantinformationList"
                 :key="item.index"
                 :label="item.linkman"
-                :value="item.id"/>
+                :value="item"/>
             </el-select>
           </el-form-item>
         </el-col>
@@ -102,7 +102,9 @@
                 v-for="(item, index) in archivesmouthsmanagementList"
                 :key="item.index"
                 :label="item.housenumber"
-                :value="item.id"/>
+                :value="item.id"
+                :disabled="item.tenementName!=null"
+                />
             </el-select>
           </el-form-item>
         </el-col>
@@ -204,7 +206,6 @@ export default {
       form: {
         id: '',
         tenantinformation: {
-          id:''
         },
         dept:{
           id:''
@@ -323,7 +324,6 @@ export default {
       this.form = {
         id: '',
          tenantinformation: {
-           id:''
          },
          dept:{
            id:''

@@ -202,7 +202,7 @@ export default {
       this.isAdd = true
       this.$refs.form.dialog = true
       this.$refs.form.imageFrontFile=''
-      this.$refs.form.getReceiptPaymentAccountList() //初始化加载下拉查询数据
+      this.$refs.form.getByDeptIdAndTenementNameIsNotNullList() //初始化加载下拉查询数据
     },
     edit(data) {
       this.isAdd = false
@@ -212,7 +212,7 @@ export default {
         id: data.id,
         contractNo: data.contractNo,
         tenantinformation: {
-          id:data.tenementId
+          id:data.tenementId,
         },
         dept:{
           id:data.deptId
