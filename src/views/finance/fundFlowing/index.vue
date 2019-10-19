@@ -33,9 +33,9 @@
       	</el-option>
       </el-select>
       <!-- 部门查询 -->
-      <el-select v-model="query.tallyTypeId" clearable placeholder="收入支出项" class="filter-item" style="width: 130px;">
+      <el-select v-model="query.dept" clearable placeholder="部门查询" class="filter-item" style="width: 130px;">
         <el-option
-          v-for="(item, index) in tallyTypeList"
+          v-for="(item, index) in deptList"
           :key="item.id"
           :label="item.label"
           :value="item.id">
@@ -110,6 +110,7 @@ export default {
       tallyTypeList: [],
       typeList: [],
       tradType: [],
+      deptList: [],
       downloadLoading: false,//导出加载
       downloadAllLoading: false,//全部导出加载
       delLoading: false,//删除加载
@@ -127,6 +128,7 @@ export default {
     getType() {
       getDictMap('transaction_type').then(res => {
         this.tallyTypeList = res.transaction_type
+        this.deptList = JSON.parse(sessionStorage.getItem("depts"))
       })
       getDictMap('trade_type').then(res => {
       	this.typeList = res.trade_type
@@ -157,9 +159,11 @@ export default {
       const typeDict = query.typeDict
       //记账类型id
       const tallyTypeId = query.tallyTypeId
+      let dept = query.dept
       if (typeDict) { this.params['typeDict'] = typeDict }
       if (tallyTypeId) { this.params['tallyTypeId'] = tallyTypeId }
       if (tradType) {this.params['tradType'] = tradType }
+      if (dept) {this.params['deptId'] = dept }
       //转化日期格式
       if (applicationsDateStart){
         this.params['tradDateStart'] = parseDate(applicationsDateStart)
