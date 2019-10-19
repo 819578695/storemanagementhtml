@@ -21,9 +21,10 @@
     </div>
     <!--表单组件-->
     <eForm ref="form" :is-add="isAdd"/>
+    <contracttable ref="contracttable" />
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <el-table-column prop="garden" label="园区"/>
+      <el-table-column prop="deptName" label="园区"/>
       <el-table-column prop="dateOfEstablishment" label="成立时间">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.dateOfEstablishment) }}</span>
@@ -39,10 +40,13 @@
       <el-table-column prop="floorSpace" label="占地面积"/>
       <el-table-column prop="coveredArea" label="建筑面积"/>
       <el-table-column prop="usableArea" label="可使用面积"/>
-      <el-table-column prop="theContractInformation" label="合同信息"/>
+      <el-table-column prop="theContractInformation" label="合同信息">
+        <template slot-scope="scope">
+          <span style="margin-left: 10px;color: #409EFF;cursor : pointer;" @click="detailsBargain(scope.row.deptId)">查看</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="fileName" label="图片上传">
         <template slot-scope="scope">
-          <!-- <a :href="scope.row.imageUpload" style="color: #42b983" target="_blank"><img :src="scope.row.imageUpload" alt="点击打开" class="el-avatar"></a> -->
           <el-popover
             placement="right"
             title=""
@@ -90,12 +94,13 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
-import { del } from '@/api/thearchives'
+import { del, basicsParkContract } from '@/api/thearchives'
 import { parseDate } from '@/utils/index'
 import store from '@/store'
 import eForm from './form'
+import contracttable from './contracttable'
 export default {
-  components: { eForm },
+  components: { eForm, contracttable },
   mixins: [initData, initDict],
   data() {
     return {
@@ -138,7 +143,7 @@ export default {
     },
     subDelete(id) {
       this.delLoading = true
-      del(id).this(res => {
+      del(id).then(res => {
         this.delLoading = false
         this.$refs[id].doClose()
         this.dleChangePage()
@@ -163,7 +168,7 @@ export default {
       const _this = this.$refs.form
       _this.form = {
         id: data.id,
-        garden: data.garden,
+        deptId: data.deptId,
         dateOfEstablishment: data.dateOfEstablishment,
         companyName: data.companyName,
         openingTime: data.openingTime,
@@ -173,11 +178,24 @@ export default {
         usableArea: data.usableArea,
         theContractInformation: data.theContractInformation,
         fileName: data.fileName,
-        dept: {
-          id: data.deptId
-        }
       }
       _this.dialog = true
+    },
+    // 查看合同详情
+    detailsBargain(deptId) {
+      if (deptId != null || deptId != '') {
+        const _this = this.$refs.contracttable
+        basicsParkContract(deptId).then(res => {
+          _this.data = res
+          /* _this.procurementId = deptId */
+          _this.dialog = true
+          setTimeout(() => {
+            _this.loading = false
+          }, _this.time)
+        }).catch(err => {
+          _this.loading = false
+        })
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增部门' : '编辑部门'" width="500px">
+  <el-dialog :append-to-body="true" :before-close="closeDialog" :visible.sync="dialog" :title="isAdd ? '新增部门' : '编辑部门'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-form-item label="名称" prop="name">
         <el-input v-model="form.name" style="width: 370px;"/>
@@ -132,7 +132,10 @@ export default {
 	        //数组转json   取出时json.parse(xxx)
 	      	sessionStorage.setItem("depts",JSON.stringify(res))
   		})
- 		}
+ 		},
+    closeDialog(){
+      this.resetForm()
+    }
   }
 }
 </script>

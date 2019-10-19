@@ -8,6 +8,14 @@ export function add(data) {
   })
 }
 
+export function addDetail(data) {
+  return request({
+    url: 'api/maintarinDetailAdd',
+    method: 'post',
+    data
+  })
+}
+
 export function del(id) {
   return request({
     url: 'api/maintarinDetail/' + id,

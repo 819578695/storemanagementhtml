@@ -7,9 +7,9 @@
     <!--工具栏-->
     <div class="head-container">
       <!-- 搜索  -->
-        <el-date-picker clearable v-model="query.startDate" type="date" placeholder="选择开始日期"></el-date-picker>&nbsp;-
-        <el-date-picker clearable v-model="query.endDate" type="date" placeholder="选择截止日期"></el-date-picker>
-      <el-input clearable v-model="query.houseNumber"  placeholder="输入档口编号" style="width: 200px;" />
+        <el-date-picker clearable v-model="query.startDate" type="date" placeholder="选择开始日期" class="filter-item"></el-date-picker>&nbsp;-
+        <el-date-picker clearable v-model="query.endDate" type="date" placeholder="选择截止日期" class="filter-item"></el-date-picker>
+      <el-input clearable v-model="query.houseNumber"  placeholder="输入档口编号" style="width: 200px;" class="filter-item" />
       <el-select clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
         <el-option
           v-for="(item, index) in deptList"
@@ -38,7 +38,7 @@
       <el-table-column prop="houseNumber" label="档口编号"/>
       <el-table-column prop="tenementName" label="租户名称"/>
       <el-table-column prop="deptName" label="部门名称"/>
-      <el-table-column prop="startDate" label="起止日期">
+      <el-table-column prop="startDate" label="起始日期">
         <template slot-scope="scope">
           <span>{{ parseDate(scope.row.startDate) }}</span>
         </template>
@@ -59,12 +59,7 @@
           </template>
       </el-table-column>
       <el-table-column prop="deposit" label="保证金"/>
-      <el-table-column prop="unpaidExpenses" label="未缴费用">
-      <template slot-scope="scope">
-        <span>{{scope.row.contractAmount-scope.row.paymentedExpenses<0?0:scope.row.contractAmount-scope.row.paymentedExpenses}}
-        </span>
-      </template>
-      </el-table-column>
+      <el-table-column prop="unpaidExpenses" label="未缴费用"/>
       <el-table-column prop="paymentedExpenses" label="已缴费用"/>
       <el-table-column prop="contractAmount" label="年租金"/>
       <el-table-column prop="payCycleName" label="付款周期"/>

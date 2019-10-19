@@ -4,23 +4,27 @@
   		<el-col :xs="24" :sm="24" :md="8" :lg="8" >
 		<el-card class="box-card">
           <div slot="header" class="clearfix">
-            <span>交易类型详情</span>
+            <span>交易类型详情</span>   
+            <el-button
+              round
+	          v-permission="['ADMIN','MaintarinDetail_ALL','MaintarinDetail_ALLOT']"
+	          class="filter-item"
+	          size="mini"
+	          type="primary"
+	          icon="el-icon-sort"
+	          :style="{ display: visibleCancel }"
+	          @click="add">资金调拨</el-button>
           </div>
           <div v-if=" deptId === '' ">
 			<div class="my-code">点击查看详情</div>
 		</div>
 		<div v-else>
-		<eForm ref="form" :is-add="isAdd"/>
+		<eForm ref="form" :is-add="isAdd" :init="init"/>
 		<!--表格渲染-->
 	    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;" @current-change="handleCurrentChange">
 	      <el-table-column prop="deptName" label="所属园区"/>
 	      <el-table-column prop="tradTypeLabel" label="交易账户类型"/>
 	      <el-table-column prop="remaining" label="账户余额"/>
-	      <!--<el-table-column prop="transactionDate" label="最近交易日期">
-	        <template slot-scope="scope">
-	          <span>{{ parseTime(scope.row.transactionDate) }}</span>
-	        </template>
-	      </el-table-column>-->
 	    </el-table>
 		</div>
         </el-card>
@@ -52,6 +56,7 @@ export default {
       maintainId:'',
       deptName:'',
       datas:[],
+      visibleCancel: 'none',   //显示
     }
   },
   created() {
@@ -64,11 +69,16 @@ export default {
     parseTime,
     checkPermission,
     beforeInit() {
+      if(this.detailId === ''){
+    		this.visibleCancel = 'none';
+    	}else{
+    		this.visibleCancel = '';
+    	}
       this.url = 'api/maintarinDetail'
       this.params = {deptId: this.deptId }
       return true
     },
-    subDelete(id) {
+    /*subDelete(id) {
       this.delLoading = true
       del(id).then(res => {
         this.delLoading = false
@@ -100,6 +110,11 @@ export default {
         transactionDate: data.transactionDate
       }
       _this.dialog = true
+    },*/
+   	add() {
+   	  this.$refs.form.getFundFlowing(this.deptId)
+      this.isAdd = true
+      this.$refs.form.dialog = true
     },
     getType(){
 	  getDictMap('transaction_mode').then(res => {

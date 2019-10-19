@@ -67,7 +67,7 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="开始日期" prop="startTime">
-            <el-date-picker  :picker-options="pickerOptionsStart" v-model="form.startTime" type="date" placeholder="选择日期" style="width: 170px;" >
+            <el-date-picker   v-model="form.startTime" type="date" placeholder="选择日期" style="width: 170px;" >
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -130,16 +130,11 @@ export default {
   },
   data() {
     return {
-      pickerOptionsStart: {
-          disabledDate: (time) => {
-              if (this.form.endTime != "") {
-                  return time.getTime() >  new Date(this.form.endTime).getTime();
-          }
-         }
-      },
       pickerOptionsEnd: {
           disabledDate: (time) => {
+            if (this.form.startTime != "") {
               return time.getTime() < new Date(this.form.startTime).getTime();//减去一天的时间代表可以选择同一天;
+            }
           }
       },
       dictId:'',//用于保存点击修改传过来的支付方式id

@@ -1,18 +1,30 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="closeDialog" :title="isAdd ? '新增' : '编辑'" width="500px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="closeDialog" :title="isAdd ? '新增' : '编辑'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="公司名称" >
-        <el-input v-model="form.companyname" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="物流专线" >
-        <el-input v-model="form.logisticsline" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="联系人" >
-        <el-input v-model="form.linkman" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="联系电话" >
-        <el-input v-model="form.phone" style="width: 370px;"/>
-      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="公司名称" >
+            <el-input v-model="form.companyname" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="物流专线" >
+            <el-input v-model="form.logisticsline" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="联系人" >
+            <el-input v-model="form.linkman" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="联系电话" >
+            <el-input v-model="form.phone" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
@@ -110,9 +122,7 @@ export default {
       this.$refs['form'].resetFields()
       this.form = {
         id: '',
-        companyname: {
-          id : ''
-        },
+        companyname: '',
         logisticsline: '',
         linkman: '',
         phone: '',

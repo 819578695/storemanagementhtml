@@ -16,6 +16,14 @@ export function add(data) {
   })
 }
 
+export function vertify(data,status) {
+  return request({
+    url: 'api/pevenueVertify?status=' + status,
+    method: 'post',
+    data,status
+  })
+}
+
 export function del(id) {
   return request({
     url: 'api/parkPevenue/' + id,

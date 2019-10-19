@@ -1,66 +1,78 @@
 <template>
   <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
-    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
-      <el-form-item label="交易方式" >
-        <el-select v-model="form.tradType.id"  placeholder="请选择交易方式" style="width: 370px;" >
-          <el-option
-            v-for="(item, index) in tradType"
-	      		:key="item.id"
-	      		:label="item.label"
-	      		:value="item.id"/>
-        </el-select>
-      </el-form-item>
+    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
+    	<el-row>
+    		<el-col :span="12">
+    			<el-form-item label="原账户" >
+		        	<el-cascader
+		        		ref="myOriginId"
+		        		placeholder="请选择账户名称"
+							  :options="options"
+							  v-model="form.originId"
+							  :show-all-levels="false"
+							  filterable
+							/>
+      		</el-form-item>
+    		</el-col>
+    		
+    		<el-col :span="12">
+    			<el-form-item label="目标账户" >
+		          <el-cascader
+		          	ref ="myTargetId"
+		        		placeholder="请选择账户名称"
+							  :options="options"
+							  v-model="form.targetId"
+							  :show-all-levels="false"
+							  filterable
+							/>
+      		</el-form-item>
+    		</el-col>
+    	</el-row>
+      
       <el-form-item label="金额" >
         <el-input v-model="form.remaining" style="width: 370px;"/>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
-      <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
+      <el-button :loading="loading" type="primary" @click="doAdd">确认</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import { add, edit } from '@/api/maintarinDetail'
+import { addDetail } from '@/api/maintarinDetail'
+import { findByDept } from '@/api/receiptPaymentAccount'
 export default {
-	created() {
-		this.getType()
-	},
   props: {
     isAdd: {
       type: Boolean,
       required: true
     },
+    init: {
+    	type: Function
+    }
   },
   data() {
     return {
-    	tradType: [],
       loading: false, dialog: false,
       form: {
-      	id: '',
-      	tradType: {id:''},
-        maintainId: '',
-        remaining: '',
-        transactionDate: new Date()
+      	deptId: '',
+      	originId: '',
+      	targetId: '',
+      	remaining: ''
       },
       rules: {
-      }
+      },
+      options:[],
     }
   },
   methods: {
     cancel() {
       this.resetForm()
     },
-    doSubmit() {
-      this.loading = true
-      if (this.isAdd) {
-        this.doAdd()
-      } else this.doEdit()
-    },
     doAdd() {
-    	this.form.maintainId = this.maintainId
-      add(this.form).then(res => {
+      addDetail(this.form).then(res => {
         this.resetForm()
         this.$notify({
           title: '添加成功',
@@ -68,22 +80,7 @@ export default {
           duration: 2500
         })
         this.loading = false
-        this.$parent.init()
-      }).catch(err => {
-        this.loading = false
-        console.log(err.response.data.message)
-      })
-    },
-    doEdit() {
-      edit(this.form).then(res => {
-        this.resetForm()
-        this.$notify({
-          title: '修改成功',
-          type: 'success',
-          duration: 2500
-        })
-        this.loading = false
-        this.$parent.init()
+        this.init()
       }).catch(err => {
         this.loading = false
         console.log(err.response.data.message)
@@ -93,16 +90,18 @@ export default {
       this.dialog = false
       this.$refs['form'].resetFields()
       this.form = {
-      	id: '',
-        tradType: {id:''},
-        maintainId: '',
-        remaining: '',
-        transactionDate: ''
+      	deptId: '',
+      	originId: '',
+      	targetId: '',
+      	remaining: ''
       }
     },
-    getType(){
-    	this.tradType = this.$parent.tradType
-    }
+    getFundFlowing(deptId){
+    	this.form.deptId = deptId
+    	findByDept(deptId).then(res => {
+    		this.options = res
+    	})
+    },
   }
 }
 </script>

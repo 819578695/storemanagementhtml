@@ -1,21 +1,32 @@
 <template>
   <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
-    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
-      <el-form-item label="金额" >
-        <el-input v-model="form.remaining" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="名称">
+    <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
+    	<el-form-item label="名称">
       	<el-input v-model="form.name" style="width: 370px;"/>
       </el-form-item>
-      <el-form-item label="账户名称">
-      	<el-input v-model="form.accountName" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="账号">
-      	<el-input v-model="form.accountNum" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="开户行">
-      	<el-input v-model="form.bankName" style="width: 370px;"/>
-      </el-form-item>
+    	<el-divider content-position="left">账户信息</el-divider>
+    	<el-row>
+    		<el-col :span="12">
+	    		<el-form-item label="账户名称">
+	      		<el-input v-model="form.accountName" style="width: 160px;"/>
+	      	</el-form-item>
+	      </el-col>
+	      <el-col :span="12">
+	      	<el-form-item label="账号">
+		      	<el-input v-model="form.accountNum" style="width: 160px;"/>
+		      </el-form-item>
+	      </el-col>
+	      <el-col :span="12">
+	      	<el-form-item label="开户行">
+		      	<el-input v-model="form.bankName" style="width: 160px;"/>
+		      </el-form-item>
+	      </el-col>
+      	<el-col :span="12">
+	      	<el-form-item label="金额" >
+		        <el-input v-model="form.remaining" style="width: 160px;"/>
+		      </el-form-item>
+	      </el-col>
+    	</el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>

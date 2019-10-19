@@ -32,21 +32,20 @@
       		:value="item.id">
       	</el-option>
       </el-select>
+      <!-- 部门查询 -->
+      <el-select v-model="query.tallyTypeId" clearable placeholder="收入支出项" class="filter-item" style="width: 130px;">
+        <el-option
+          v-for="(item, index) in tallyTypeList"
+          :key="item.id"
+          :label="item.label"
+          :value="item.id">
+        </el-option>
+      </el-select>
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
-      <!-- 新增 -->
-      <!--<div style="display: inline-block;margin: 0px 2px;">
-        <el-button
-          v-permission="['ADMIN','JOURNALACCOUNTOFCAPITAL_ALL','JOURNALACCOUNTOFCAPITAL_CREATE']"
-          class="filter-item"
-          size="mini"
-          type="primary"
-          icon="el-icon-plus"
-          @click="add">新增</el-button>
-      </div>-->
       <!--导出-->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN']"
+          v-permission="['ADMIN','FUNDFLOWING_ALL','FUNDFLOWING_EXPORT']"
           :loading="downloadLoading"
           size="mini"
           class="filter-item"
@@ -57,7 +56,7 @@
       <!-- 全部导出 -->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN']"
+          v-permission="['ADMIN','FUNDFLOWING_ALL','FUNDFLOWING_ExportALL']"
           :loading="downloadAllLoading"
           size="mini"
           class="filter-item"
@@ -83,23 +82,6 @@
       <el-table-column prop="typeLabel" label="交易类型"/>
       <el-table-column prop="backNum" label="银行账号"/>
       <el-table-column prop="backAccount" label="银行户名"/>
-      <!--<el-table-column v-if="checkPermission(['ADMIN','JOURNALACCOUNTOFCAPITAL_ALL','JOURNALACCOUNTOFCAPITAL_EDIT','JOURNALACCOUNTOFCAPITAL_DELETE'])" label="操作" width="150px" align="center">
-        <template slot-scope="scope">
-          <el-button v-permission="['ADMIN','JOURNALACCOUNTOFCAPITAL_ALL','JOURNALACCOUNTOFCAPITAL_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
-          <el-popover
-            v-permission="['ADMIN','JOURNALACCOUNTOFCAPITAL_ALL','JOURNALACCOUNTOFCAPITAL_DELETE']"
-            :ref="scope.row.id"
-            placement="top"
-            width="180">
-            <p>确定删除本条数据吗？</p>
-            <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
-              <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定</el-button>
-            </div>
-            <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini"/>
-          </el-popover>
-        </template>
-      </el-table-column>-->
     </el-table>
     <!--分页组件-->
     <el-pagination
@@ -166,11 +148,9 @@ export default {
       else{
         this.params = { page: this.page, size: this.size, sort: sort,deptId :deptId}
       }
-      
       //查询的值
       const applicationsDateStart = query.applicationsDateStart
       const applicationsDateEnd = query.applicationsDateEnd
-
      	//交易方式
      	const tradType = query.tradType
       //交易类型id
@@ -191,49 +171,6 @@ export default {
       const value = query.value
       if (type && value) { this.params[type] = value }
       return true
-    },
-    subDelete(id) {
-      this.delLoading = true
-      del(id).then(res => {
-        this.delLoading = false
-        this.$refs[id].doClose()
-        this.dleChangePage()
-        this.init()
-        this.$notify({
-          title: '删除成功',
-          type: 'success',
-          duration: 2500
-        })
-      }).catch(err => {
-        this.delLoading = false
-        this.$refs[id].doClose()
-        console.log(err.response.data.message)
-      })
-    },
-    add() {
-    	this.$refs.ruleform
-      this.isAdd = true
-      this.$refs.form.dialog = true
-      this.$refs.form.getTallyType()
-      this.$refs.form.getMoney()
-    },
-    edit(data) {
-      this.isAdd = false
-      const _this = this.$refs.form
-      _this.form = {
-        id: data.id,
-        tradDate: data.tradDate,
-        deptId: data.deptId,
-        typeDict: data.typeDict,
-        money: data.money,
-        tallyTypeId: data.tallyTypeId,
-        urrentBalance: data.urrentBalance,
-        receiptPaymentName: data.receiptPaymentName,
-        type: data.type,
-        backNum: data.backNum,
-        backAccount: data.backAccount
-      }
-      _this.dialog = true
     },
     // 导出
     download() {
@@ -272,7 +209,7 @@ export default {
 		      data,
 		      filename: '资金流水(全)',
 		      autoWidth: true
-		      
+
 		    })
 		    this.downloadAllLoading = false
        })

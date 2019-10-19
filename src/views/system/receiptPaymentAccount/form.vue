@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="closeDialog" :title="isAdd ? '新增' : '编辑'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px" prop="prop">
       <el-form-item label="名称" prop="name">
         <el-input v-model="form.name" style="width: 370px;"/>
@@ -151,6 +151,9 @@ export default {
         receiptAccountNum: '',
         receiptBank: ''
       }
+    },
+    closeDialog() {
+      this.resetForm()
     }
   }
 }

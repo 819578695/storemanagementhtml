@@ -31,6 +31,14 @@ export function edit(data) {
   })
 }
 
+export function vertify(data,status) {
+  return request({
+    url: 'api/vertify?status=' + status,
+    method: 'post',
+    data,status
+  })
+}
+
 export function findCostsMoney(deptId) {
   return request({
     url: 'api/findCostsMoney/'+deptId,

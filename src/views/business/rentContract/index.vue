@@ -165,6 +165,8 @@ export default {
       const sort = 'id,desc'
       const query = this.query
       const deptId = query.deptId
+	  const contractNo = query.contractNo
+
       //最高级别查询所有数据
       if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
@@ -173,6 +175,7 @@ export default {
          this.params = { page: this.page, size: this.size, sort: sort ,deptId:this.deptId}
       }
       if (deptId) { this.params['deptId'] = deptId }
+	    if (contractNo) { this.params['contractNo'] = contractNo }
       return true
     },
     subDelete(id) {

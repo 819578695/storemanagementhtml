@@ -1,53 +1,76 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="500px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-      <el-form-item label="门牌号" >
-        <el-input v-model="form.housenumber" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="面积(m²)" >
-        <el-input v-model="form.acreage" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="定金" >
-        <el-input v-model="form.earnest" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="合同保证金" >
-        <el-input v-model="form.contractmoney" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="联系人" >
-        <el-input v-model="form.contacts" style="width: 370px;"/>
-      </el-form-item>
-      <el-form-item label="租用类型" prop="dictDetail.id" >
-        <el-select v-model="form.dictDetail.id" style="width: 370px;" placeholder="请选择档口类型">
-          <el-option
-            v-for="(item, index) in dicts"
-            :key="item.index"
-            :label="item.label"
-            :value="item.id"/>
-        </el-select>
-      </el-form-item>
-      <!--上传图片-->
-      <el-form-item label="文件名" label-width="100px">
-        <el-upload
-          v-show="imageFrontUrl == ''"
-          :headers="headers"
-          :with-credentials="true"
-          :action="uploadUrl"
-          :before-upload="beforeUpload"
-          class="avatar-uploader"
-          name="upfile"
-          drag
-          multiple>
-          <i class="el-icon-upload"/>
-          <div class="el-upload__text">
-            <p v-if="imageFrontFile != ''">图片名称: {{ imageFrontFile.name }}</p>
-          <p v-else>点击或拖拽图片上传</p></div>
-        </el-upload>
-        <div v-show="imageFrontUrl != ''" class="text-xs-center">
-          <p v-if="imageFrontFile != ''"><i class="el-icon-folder"/> {{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;"/> </p>
-          <!-- <img class="avatar" :src="imageFrontUrl" /> -->
-          <el-button outline @click="clearFile">清除</el-button>
-        </div>
-      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="门牌号" >
+            <el-input v-model="form.housenumber" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="面积(m²)" >
+            <el-input v-model="form.acreage" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="定金" >
+            <el-input v-model="form.earnest" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="合同保证金" >
+            <el-input v-model="form.contractmoney" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="联系人" >
+            <el-input v-model="form.contacts" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="租用类型" prop="dictDetail.id" >
+            <el-select v-model="form.dictDetail.id" style="width: 170px;" placeholder="请选择档口类型">
+              <el-option
+                v-for="(item, index) in dicts"
+                :key="item.index"
+                :label="item.label"
+                :value="item.id"/>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-divider content-position="left">图片附件</el-divider>
+      <el-row>
+        <el-col :span="12">
+          <!--上传图片-->
+          <el-form-item label="文件名" label-width="100px">
+            <el-upload
+              v-show="imageFrontUrl == ''"
+              :headers="headers"
+              :with-credentials="true"
+              :action="uploadUrl"
+              :before-upload="beforeUpload"
+              class="avatar-uploader"
+              name="upfile"
+              drag
+              multiple>
+              <i class="el-icon-upload"/>
+              <div class="el-upload__text">
+                <p v-if="imageFrontFile != ''">图片名称: {{ imageFrontFile.name }}</p>
+              <p v-else>点击或拖拽图片上传</p></div>
+            </el-upload>
+            <div v-show="imageFrontUrl != ''" class="text-xs-center">
+              <p v-if="imageFrontFile != ''"><i class="el-icon-folder"/> {{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;"/> </p>
+              <!-- <img class="avatar" :src="imageFrontUrl" /> -->
+              <el-button outline @click="clearFile">清除</el-button>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
@@ -178,6 +201,7 @@ export default {
           id: ''
         }
       }
+      this.clearFile()
     },
     beforeUpload(file) {
       this.isShowUploading = true

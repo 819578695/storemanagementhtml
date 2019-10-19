@@ -8,6 +8,13 @@ export function findByDetail() {
   })
 }
 
+export function findByDept(deptId){
+	return request({
+		url: 'api/receiptPaymentAccount/'+deptId,
+    method: 'get',
+  })
+}
+
 export function add(data) {
   return request({
     url: 'api/receiptPaymentAccount',

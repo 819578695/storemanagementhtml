@@ -147,7 +147,7 @@ export default {
     },
     subDelete(id) {
       this.delLoading = true
-      del(id).this(res => {
+      del(id).then(res => {
         this.delLoading = false
         this.$refs[id].doClose()
         this.dleChangePage()

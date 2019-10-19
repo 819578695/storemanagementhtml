@@ -5,7 +5,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同名称" prop="leaseContract.id">
-             <el-select v-model="form.leaseContract" value-key="id"  placeholder="请选择合同名称" @change="findByContractName">
+             <el-select :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" v-model="form.leaseContract" value-key="id"  placeholder="请选择合同名称" @change="findByContractName">
                <el-option  style="width: 270px;"
                  v-for="(item, index) in leaseContractList"
                  :key="item.index"
@@ -24,7 +24,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="档口编号"  >
-              <el-select  v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" >
+              <el-select  :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2"  v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" >
                 <el-option
                   :label="archivesmouthsmanagement.houseNumber"
                   :value="archivesmouthsmanagement.id"
@@ -34,7 +34,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="租户信息">
-              <el-select v-model="form.tenantinformation.id"  placeholder="请选择租户信息" >
+              <el-select :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" v-model="form.tenantinformation.id"  placeholder="请选择租户信息" >
                 <el-option
                   :label="tenantinformation.tenementName"
                   :value="tenantinformation.id"/>
@@ -46,60 +46,60 @@
         <el-row>
           <el-col :span="12">
               <el-form-item label="房租" label-width="100px" >
-                <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.houseRent" style="width: 170px;"/>
+                <el-input  max="22" :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.houseRent==null||form.houseRent==0)"  onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.houseRent" style="width: 170px;"/>
               </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="物业费" label-width="100px" >
-              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.propertyRent" style="width: 170px;"/>
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.propertyRent==null||form.propertyRent==0)"  onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.propertyRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="水费" label-width="100px" >
-              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.waterRent" style="width: 170px;"/>
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.waterRent==null||form.waterRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.waterRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="电费" label-width="100px" >
-              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.electricityRent" style="width: 170px;"/>
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.electricityRent==null||form.electricityRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.electricityRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="卫生费" label-width="100px" >
-              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.sanitationRent" style="width: 170px;"/>
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.sanitationRent==null||form.sanitationRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.sanitationRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="违约金" label-width="100px" >
-              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.liquidatedRent" style="width: 170px;"/>
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.liquidatedRent==null||form.liquidatedRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.liquidatedRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="滞纳金" label-width="100px" >
-              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.lateRent" style="width: 170px;"/>
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.lateRent==null||form.lateRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.lateRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="地磅费" label-width="100px" >
-              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.groundPoundRent" style="width: 170px;"/>
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.groundPoundRent==null||form.groundPoundRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.groundPoundRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
              <el-form-item label="停车费" label-width="100px" >
-               <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.parkingRent" style="width: 170px;"/>
+               <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.parkingRent==null||form.parkingRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.parkingRent" style="width: 170px;"/>
              </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="管理费" label-width="100px" >
-              <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.managementRent" style="width: 170px;"/>
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.managementRent==null||form.managementRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.managementRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -107,13 +107,13 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="开始日期" prop="startTime">
-                <el-date-picker  :picker-options="pickerOptionsStart" v-model="form.startTime" type="date" placeholder="选择日期" style="width: 170px;" >
+                <el-date-picker :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" :picker-options="pickerOptionsStart" v-model="form.startTime" type="date" placeholder="选择日期" style="width: 170px;" >
                 </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="截止日期" prop="endTime">
-                <el-date-picker @change="findByContractRentFreeDate" :picker-options="pickerOptionsEnd" v-model="form.endTime" type="date" placeholder="选择日期" style="width: 170px;">
+                <el-date-picker :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" @change="findByContractRentFreeDate" :picker-options="pickerOptionsEnd" v-model="form.endTime" type="date" placeholder="选择日期" style="width: 170px;">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -121,35 +121,35 @@
           <el-row>
             <el-col :span="12">
               <!-- 付款方式 组件-->
-             <dictDetail ref="dictDetail"  :is-add="isAdd" :dictMap="dictMap" v-model="form.dictDetail.id"  @findbyAccount="findbyAccount(arguments)" />
-              <!-- <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id" >
-                <el-select  v-model="form.dictDetail.id" @change="findbyReceiptPaymentAccount" placeholder="请选择支付方式">
+<!--             <dictDetail ref="dictDetail"  :is-add="isAdd" :dictMap="dictMap" v-model="form.dictDetail.id"  @findbyAccount="findbyAccount(arguments)" />
+ -->              <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id" >
+                <el-select :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2"  v-model="form.dictDetail.id" @change="findbyReceiptPaymentAccount" placeholder="请选择支付方式">
                   <el-option
                     v-for="(item, index) in dictMap.transaction_mode"
                     :key="item.index"
                     :label="item.label"
                     :value="item.id"/>
                 </el-select>
-              </el-form-item> -->
+              </el-form-item>
             </el-col>
             <el-col :span="12">
               <!-- 付款账户 组件-->
-             <account ref="account" :is-add="isAdd"  v-model="form.receiptPaymentAccount.id" accountProp="receiptPaymentAccount.id" :receiptPaymentAccountList="receiptPaymentAccountList" @accountValue="accountValue" />
-          <!-- <el-form-item label="收款账户" label-width="100px" prop="receiptPaymentAccount.id">
-                <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收款名称">
+<!--             <account ref="account" :is-add="isAdd"  v-model="form.receiptPaymentAccount.id" accountProp="receiptPaymentAccount.id" :receiptPaymentAccountList="receiptPaymentAccountList" @accountValue="accountValue" />
+ -->          <el-form-item label="收款账户" label-width="100px" prop="receiptPaymentAccount.id">
+                <el-select :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" v-model="form.receiptPaymentAccount.id"  placeholder="请选择收款名称">
                   <el-option
                     v-for="(item, index) in receiptPaymentAccountList"
                     :key="item.name"
                     :label="item.name"
                     :value="item.id"/>
                 </el-select>
-              </el-form-item> -->
+              </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="类型" label-width="100px" prop="payType.id">
-                <el-select v-model="form.payType.id"  placeholder="请选择类型">
+                <el-select :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" v-model="form.payType.id"  placeholder="请选择类型">
                   <el-option  v-for="(item, index) in dictMap.pevenue_status"
                     :key="item.index"
                     :label="item.label"
@@ -166,7 +166,7 @@
         <el-col :span="4" v-if="!isAdd&&form.payType.value=='PEVENUE_UNDER'" >
           <el-button  style="text-align: left;" :loading="paybackloading" type="success" @click="doPayback">补缴</el-button>
         </el-col>
-        <el-col :span="20" v-if="form.payType.value!='PEVENUE_PAYBACK'">
+        <el-col :span="20" v-if="(form.payType.value!='PEVENUE_PAYBACK'||form.payType.value!='PEVENUE_UNDER')&&form.isVertify!=2">
           <el-button type="text" @click="cancel">取消</el-button>
           <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
         </el-col>
@@ -180,10 +180,10 @@ import { add, edit,payBack } from '@/api/parkPevenue'
 import store from '@/store'
 import { leaseContractByDeptId} from '@/api/leaseContract'
 import { receiptPaymentAccountByDeptId} from '@/api/receiptPaymentAccount'
-import  account  from '@/components/Account'
-import  dictDetail  from '@/components/DictDetail'
+/* import  account  from '@/components/Account'
+import  dictDetail  from '@/components/DictDetail' */
 export default {
- components: { account,dictDetail },
+ /* components: { account,dictDetail }, *///注册组件
   props: {
     isAdd: {
       type: Boolean,
@@ -196,6 +196,7 @@ export default {
 
   },
   data() {
+
     return {
       dictId:'',//用于保存点击修改传过来的支付方式id
       receiptPaymentAccountId:'',//用于保存点击修改传过来的收付款id
@@ -245,6 +246,8 @@ export default {
           id:'',
           value:''
         },
+        isDelete:'0',
+        isVertify:0,
       },
       rules: {
         leaseContract:
@@ -281,7 +284,7 @@ export default {
   mounted(){
   },
   methods: {
-    accountValue(value){
+    /* accountValue(value){
       this.form.receiptPaymentAccount.id = value
     },
     findbyAccount(arr){
@@ -298,7 +301,7 @@ export default {
        else{
           this.$refs.account.receiptValue = null
        }
-      },
+      }, */
     cancel() {
       this.resetForm()
     },
@@ -423,6 +426,10 @@ export default {
           id:'',
           value:''
         },
+        isDelete:'0',
+        isVertify:0,
+        startTime:'',
+        endTime:'',
       }
     },
     //查询合同集合
@@ -447,7 +454,8 @@ export default {
          this.form.tenantinformation.id = item.tenementId
          this.tenantinformation.tenementName = item.tenementName
       }
-
+      this.form.startTime=''
+      this.form.endTime=''
       this.dateProcessing(item.startDate,item.endDate)
       if(item.rentFreeStartTime!=''&&item.rentFreeEndTime!=''){
         this.rentFreeStartTime=item.rentFreeStartTime
@@ -477,7 +485,7 @@ export default {
          const rentFreeStartTime = this.rentFreeStartTime
          const rentFreeEndTime = this.rentFreeEndTime
         if(rentFreeStartTime&&rentFreeEndTime){
-          if(this.form.startTime.getTime() + 24 * 3600 >rentFreeStartTime&&this.form.endTime.getTime() + 24 * 3600 <rentFreeEndTime){
+          if(this.form.startTime.getTime()>=rentFreeStartTime&&this.form.endTime.getTime() <=rentFreeEndTime){
             this.$notify({
               title: '警告',
               message: '您选择的日期为免租期',

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="dialog" :title="isAdd ? '新增菜单' : '编辑菜单'" append-to-body width="600px">
+  <el-dialog :visible.sync="dialog" :before-close="closeDialog" :title="isAdd ? '新增菜单' : '编辑菜单'" append-to-body width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-form-item label="菜单图标">
         <el-popover
@@ -132,6 +132,9 @@ export default {
         menu.children = res
         this.menus.push(menu)
       })
+    },
+    closeDialog() {
+      this.resetForm()
     }
   }
 }

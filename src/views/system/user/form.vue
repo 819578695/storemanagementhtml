@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="dialog" :title="isAdd ? '新增用户' : '编辑用户'" append-to-body width="570px">
+  <el-dialog :visible.sync="dialog" :before-close="closeDialog" :title="isAdd ? '新增用户' : '编辑用户'" append-to-body width="570px">
     <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="66px">
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username"/>
@@ -214,6 +214,9 @@ export default {
       }).catch(err => {
         console.log(err.response.data.message)
       })
+    },
+    closeDialog() {
+      this.resetForm()
     }
   }
 }
