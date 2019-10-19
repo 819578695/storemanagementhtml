@@ -59,7 +59,7 @@
       <!-- 审核 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
-          v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_VERTIFY']"
+          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_VERTIFY']"
           class="filter-item"
           :loading="vertifyLoading"
           size="mini"
@@ -70,7 +70,7 @@
       <!-- 导出 -->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EXPORT',]"
+          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EXPORT']"
           :loading="downloadLoading"
           size="mini"
           class="filter-item"
@@ -81,7 +81,7 @@
       <!-- 全部导出 -->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EXPORT_ALL',]"
+          v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EXPORT_ALL']"
           :loading="downloadAllLoading"
           size="mini"
           class="filter-item"
