@@ -11,7 +11,7 @@
 		    </el-select>
 	  		<el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery" :style="{ display: visibleCancel }">搜索</el-button>
 			<el-button
-	          v-permission="['ADMIN','ACCOUNTDETAIL_ALL','ACCOUNTDETAIL_ADD']"
+	          v-permission="['ADMIN','ACCOUNT_ALL','ACCOUNT_ADD']"
 	          class="filter-item"
 	          size="mini"
 	          type="primary"
@@ -31,11 +31,11 @@
 	      <el-table-column prop="accountName" label="账户名称/开户人"/>
 	      <el-table-column prop="accountNum" label="账号"/>	      
 	      <el-table-column prop="bankName" label="开户行"/>
-	      <el-table-column v-if="checkPermission(['ADMIN','ACCOUNTDETAIL_ALL','ACCOUNTDETAIL_EDIT','ACCOUNTDETAIL_DELETE'])" label="修改" width="150px" align="center">
+	      <el-table-column v-if="checkPermission(['ADMIN','ACCOUNT_ALL','ACCOUNT_EDIT','ACCOUNT_DELETE'])" label="修改" width="150px" align="center">
 	        <template slot-scope="scope">
-	          <el-button v-permission="['ADMIN','ACCOUNTDETAIL_ALL','ACCOUNTDETAIL_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
+	          <el-button v-permission="['ADMIN','ACCOUNT_ALL','ACCOUNT_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
 	          <el-popover
-	            v-permission="['ADMIN','ACCOUNTDETAIL_ALL','ACCOUNTDETAIL_DELETE']"
+	            v-permission="['ADMIN','ACCOUNT_ALL','ACCOUNT_DELETE']"
 	            :ref="scope.row.id"
 	            placement="top"
 	            width="180">

@@ -66,7 +66,6 @@ export default {
     checkPermission,
     beforeInit() {
       this.url = 'api/maintain'
-      
       const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
       const query = this.query
       const type = query.type

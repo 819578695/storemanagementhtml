@@ -33,7 +33,7 @@
       	</el-option>
       </el-select>
       <!-- 部门查询 -->
-      <el-select v-model="query.dept" clearable placeholder="部门查询" class="filter-item" style="width: 130px;">
+      <el-select v-model="query.dept" clearable placeholder="部门查询" class="filter-item" style="width: 130px;" v-if="checkPermission(['ADMIN','FUNDFLOWING_ALL','FUNDFLOWING_DEPTSELECT'])">
         <el-option
           v-for="(item, index) in deptList"
           :key="item.id"

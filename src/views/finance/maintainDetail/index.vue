@@ -7,7 +7,7 @@
             <span>交易类型详情</span>   
             <el-button
               round
-	          v-permission="['ADMIN','MaintarinDetail_ALL','MaintarinDetail_ALLOT']"
+	          v-permission="['ADMIN','ACCOUNT_ALL','ACCOUNT_ALLOT']"
 	          class="filter-item"
 	          size="mini"
 	          type="primary"
