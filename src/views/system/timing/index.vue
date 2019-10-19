@@ -26,7 +26,7 @@
       </div>
     </div>
     <!--Form表单-->
-    <el-dialog :visible.sync="dialog" :title="isAdd ? '新增任务' : '编辑任务'" append-to-body width="600px">
+    <el-dialog :visible.sync="dialog" :before-close="closeDialog" :title="isAdd ? '新增任务' : '编辑任务'" append-to-body width="600px">
       <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
         <el-form-item label="任务名称" prop="jobName">
           <el-input v-model="form.jobName" style="width: 460px;"/>
@@ -257,6 +257,9 @@ export default {
       this.isAdd = false
       this.form = { id: data.id, jobName: data.jobName, beanName: data.beanName, methodName: data.methodName, params: data.params, cronExpression: data.cronExpression, isPause: data.isPause.toString(), remark: data.remark }
       this.dialog = true
+    },
+    closeDialog() {
+      this.resetForm()
     }
   }
 }
