@@ -50,27 +50,29 @@
          <el-divider content-position="left">合同附件</el-divider>
          <el-row>
            <el-col :span="12">
-             <el-form-item label="文件名" label-width="100px">
-             <el-upload
-               class="avatar-uploader"
-               v-show="imageFrontUrl == ''"
-               name="upfile"
-               drag
-               :headers="headers"
-               :with-credentials=true
-               :action="uploadUrl"
-               :before-upload="beforeUpload"
-               multiple>
-               <i class="el-icon-upload"></i>
-               <div class="el-upload__text">
-               <p v-if="imageFrontFile != ''">文件名称: {{ imageFrontFile.name }}</p>
-               <p v-else>点击或拖拽文件上传</p></div>
-             </el-upload>
-               <div class="text-xs-center" v-show="imageFrontUrl != ''">
-                 <p v-if="imageFrontFile != ''"><i class="el-icon-folder"></i> {{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;"></i> </p>
-                 <!-- <img class="avatar" :src="imageFrontUrl" /> -->
-                 <el-button outline  @click="clearFile">清除</el-button>
-              </div>
+             <el-form-item label="文件" >
+               <el-upload
+                 class="avatar-uploader"
+                 v-show="imageFrontUrl == ''"
+                 name="upfile"
+                 drag
+                 :headers="headers"
+                 :with-credentials=true
+                 :action="uploadUrl"
+                 :before-upload="beforeUpload"
+                 multiple>
+                 <i class="el-icon-upload"></i>
+                 <div class="el-upload__text">
+                 <p v-if="imageFrontFile != ''">文件名称: {{ imageFrontFile.name }}</p>
+                 <p v-else>点击或拖拽文件上传</p></div>
+               </el-upload>
+                <div v-if="imageFrontUrl != ''">
+                  <a  :href="imageFrontUrl" target="_blank" style="font-size: 20px;"><i class="el-icon-folder"></i>
+                  </a>{{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;">
+                  </i>
+                  <!-- <img class="avatar" :src="imageFrontUrl" /> -->
+                  <el-button outline  @click="clearFile">清除</el-button>
+                 </div>
              </el-form-item>
            </el-col>
          </el-row>

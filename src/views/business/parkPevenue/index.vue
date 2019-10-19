@@ -9,8 +9,8 @@
       <!--工具栏-->
       <div class="head-container">
       <!-- 搜索  -->
-        <el-date-picker clearable v-model="query.startTime" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>&nbsp;-
-        <el-date-picker clearable v-model="query.endTime" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>
+        <el-date-picker clearable v-model="query.createTimeStart" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>&nbsp;-
+        <el-date-picker clearable v-model="query.createTimeEnd" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>
         <el-select v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
           <el-option
             v-for="(item, index) in deptList"
@@ -19,6 +19,11 @@
             :value="item.id"
             class="filter-item" @keyup.enter.native="toQuery"
             />
+        </el-select>
+        <el-select  clearable v-model="query.isVertify"  placeholder="请选择审核状态" class="filter-item" style="width: 130px">
+          <el-option label="审核中" value="0"/>
+          <el-option label="审核失败" value="1" />
+          <el-option label="审核通过" value="2"/>
         </el-select>
         <el-input clearable v-model="query.linkman"  placeholder="输入租户名称" style="width: 130px;"  class="filter-item" />
         <el-input clearable v-model="query.houseNumber"  placeholder="输入档口编号" style="width: 130px;"  class="filter-item" />
@@ -32,7 +37,7 @@
             />
         </el-select>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
-      <!-- 重置 -->
+     <!-- <!-- 重置
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
           class="filter-item"
@@ -40,7 +45,7 @@
           type="info"
           icon="el-icon-refresh-left"
           @click="reset">重置</el-button>
-      </div>
+      </div> -->
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
@@ -50,6 +55,17 @@
           type="primary"
           icon="el-icon-plus"
           @click="add">新增</el-button>
+      </div>
+      <!-- 审核 -->
+      <div style="display: inline-block;margin: 0px 2px;">
+        <el-button
+          v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_VERTIFY']"
+          class="filter-item"
+          :loading="vertifyLoading"
+          size="mini"
+          type="danger"
+          icon="el-icon-s-check"
+          @click="vertify">审核</el-button>
       </div>
       <!-- 导出 -->
       <div style="display: inline-block;">
@@ -75,8 +91,8 @@
       </div>
     </div>
     <!--表格渲染-->
-    <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
-      <!-- <el-table-column prop="basicsParkName" label="园区id"/> -->
+    <el-table :summary-method="getSummaries" show-summary v-loading="loading" @selection-change="handleSelectionChange" :data="data" size="small" style="width: 100%;">
+      <el-table-column width="55" type="selection"/>
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="linkman" label="租户名称"/>
       <el-table-column prop="houseNumber" label="档口编号"/>
@@ -91,8 +107,13 @@
       <el-table-column prop="parkingRent" label="停车费"/>
       <el-table-column prop="lateRent" label="滞纳金"/>
       <el-table-column prop="groundPoundRent" label="地磅费"/>
-      <el-table-column prop="paymentTypeName" label="交易方式"/>
-      <el-table-column prop="payTypeName" label="交易类型"/>
+      <el-table-column prop="paymentTypeName" sortable label="交易方式" width="100"/>
+      <el-table-column prop="payTypeName" sortable label="交易类型" width="100"/>
+      <el-table-column prop="isVertify"  sortable label="审核状态" width="100" >
+        <template slot-scope="scope">
+          <span>{{ scope.row.isVertify==0?'审核中':scope.row.isVertify==1?'审核失败':'审核通过' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="收款信息">
         <template slot-scope="scope">
           <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
@@ -125,16 +146,17 @@
         </template>
       </el-table-column>
       <el-table-column v-if="checkPermission(['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT','PARKPEVENUE_DELETE'])" label="操作" width="150px" align="center">
-        <template slot-scope="scope" >
-          <el-button v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
-          <el-popover
+        <template slot-scope="scope">
+          <el-button  v-if="scope.row.isVertify!=2" v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
+          <el-button  v-if="scope.row.payTypeValue=='PEVENUE_UNDER'&&scope.row.isVertify==2"  v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)">补缴</el-button>
+          <el-popover  v-if="scope.row.isVertify!=2"
             v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_DELETE']"
             :ref="scope.row.id"
             placement="top"
             width="180">
             <p>确定删除本条数据吗？</p>
             <div style="text-align: right; margin: 0">
-              <el-button size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
+              <el-button  size="mini" type="text" @click="$refs[scope.row.id].doClose()">取消</el-button>
               <el-button :loading="delLoading" type="primary" size="mini" @click="subDelete(scope.row.id)">确定</el-button>
             </div>
             <el-button slot="reference" type="danger" icon="el-icon-delete" size="mini"/>
@@ -160,7 +182,7 @@ import checkPermission from '@/utils/permission'
 import { receiptPaymentAccountById } from '@/api/receiptPaymentAccount'
 import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
-import { del,getParkPevenueAll } from '@/api/parkPevenue'
+import { del,getParkPevenueAll,vertify } from '@/api/parkPevenue'
 import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import accountForm from './accountform'
@@ -170,6 +192,9 @@ export default {
   mixins: [initData,initDict],
   data() {
     return {
+      vertifys:[],//保存审核的集合
+      vertifyLoading:false,//审核加载中
+      multipleSelection: [],
       dataALL:[], //保存全部导出的数据
       downloadLoading: false,//导出加载
       downloadAllLoading: false,//全部导出加载
@@ -201,11 +226,12 @@ export default {
       const query = this.query
       //获取query搜索的值
       const houseNumber = query.houseNumber
-      const startTime = query.startTime
-      const endTime = query.endTime
+      const startTime = query.createTimeStart
+      const endTime = query.createTimeEnd
       const deptId = query.deptId
       const type = query.type
       const linkman = query.linkman
+      const isVertify = query.isVertify
       //最高级别查询所有数据
       if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
@@ -218,12 +244,13 @@ export default {
       if (deptId) { this.params['deptId'] = deptId }
       if (linkman) {this.params['linkman'] = linkman}
       if (type) {this.params['type'] = type}
+      if (isVertify){this.params['isVertify'] = isVertify}
       //转化日期格式
       if (startTime){
-        this.params['startTime'] = parseDate(startTime)
+        this.params['createTimeStart'] = parseDate(startTime)
       }
       if (endTime){
-        this.params['endTime'] = parseDate(endTime)
+        this.params['createTimeEnd'] = parseDate(endTime)
       }
       return true
     },
@@ -297,6 +324,8 @@ export default {
         receiptPaymentAccount: {
           id:data.receiptPaymentAccountId
         },
+        isDelete:data.isDelete,
+        isVertify:data.isVertify
       }
       _this.dialog = true
 
@@ -309,19 +338,20 @@ export default {
       this.query.deptId=''
       this.query.linkman=''
       this.query.type=null
+      this.query.isVertify=null
       this.init()
     },
     // 导出
     download() {
       this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
-        const tHeader = ['公司名称', '档口编号','租户名称', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','修改时间','创建时间','合计']
-        const filterVal = ['deptName', 'houseNumber','linkman', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','updateTime','createTime','total']
+        const tHeader = ['公司名称', '档口编号','租户名称', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','审核状态','修改时间','创建时间','合计']
+        const filterVal = ['deptName', 'houseNumber','linkman', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','isVertify','updateTime','createTime','total']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader,  //表头
           data,             //数据
-          filename: 'table-list' //文件名
+          filename: '园区收入_'+this.parseTime(new Date()) //文件名
         })
       })
        this.downloadLoading = false
@@ -334,13 +364,13 @@ export default {
            this.downloadAllLoading = true
            this.dataALL = res.content
            import('@/utils/export2Excel').then(excel => {
-             const tHeader = ['公司名称', '档口编号','租户名称', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','修改时间','创建时间','合计']
-             const filterVal = ['deptName', 'houseNumber','linkman', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','updateTime','createTime','total']
+             const tHeader = ['公司名称', '档口编号','租户名称', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','审核状态','修改时间','创建时间','合计']
+             const filterVal = ['deptName', 'houseNumber','linkman', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','isVertify','updateTime','createTime','total']
              const data = this.formatJson(filterVal, this.dataALL)
              excel.export_json_to_excel({
                header: tHeader,
                data,
-               filename: 'table-list'
+               filename: '园区收入_'+this.parseTime(new Date())
              })
              this.downloadAllLoading = false
            })
@@ -364,6 +394,9 @@ export default {
         if (j === 'createTime' || j === 'updateTime') {
           return parseDate(v[j])
         }
+        else if(j==='isVertify') {
+          return v[j]==0?'审核中':v[j]==1?'审核失败':'审核通过'
+        }
         else if(j==='total') {
           return parseFloat(v['houseRent']+v['propertyRent']+v['waterRent']+v['electricityRent']+v['sanitationRent']+v['lateRent']+v['groundPoundRent'])
         }
@@ -372,6 +405,93 @@ export default {
         }
       }))
     },
+    //批量操作
+    handleSelectionChange(val) {
+    var isCheckbox=[] //保存已勾选的集合
+        this.multipleSelection = val;
+        for (var i = 0; i < this.multipleSelection.length; i++) {
+          isCheckbox.push(this.multipleSelection[i].id)
+        }
+        this.vertifys = isCheckbox
+      },
+      //审核
+      vertify(){
+        if(this.vertifys==''){
+            this.$notify({
+              title: '请选择要操作的数据',
+              type: 'error',
+              duration: 2500
+            })
+        }
+        else{
+           this.vertifyLoading = true
+          this.$confirm('确认审核, 是否继续?', '提示', {
+             distinguishCancelAndClose: true,
+             confirmButtonText: '审核通过',
+             cancelButtonText: '审核失败',
+             type: 'warning'
+           }).then(() => {
+                this.updateVertify(2)
+                this.vertifyLoading = false
+             //审核通过
+           }).catch(action  => {
+             //点击审核未通过
+              if ( action === 'cancel') {
+                 this.updateVertify(1)
+                 this.vertifyLoading = false
+              }
+              else{
+                this.vertifyLoading = false
+              }
+           });
+        }
+      },
+      //发送审核请求
+      updateVertify(status){
+        vertify(this.vertifys,status).then(res => {
+          this.$notify({
+            title: '操作成功',
+            type: 'success',
+            duration: 2500
+          })
+          this.init()
+          }).catch(err => {
+            this.vertifyLoading = false
+            console.log(err.response.data.message)
+          })
+      },
+      //合计
+      getSummaries(param) {
+          const { columns, data } = param;
+          const sums = [];
+          columns.forEach((column, index) => {
+            if (index === 0) {
+              sums[index] = '合计';
+              return;
+            }
+           else if (index === 20 ||index === 21 ||index === 19 ||index === 22 ||index === 17 ||index === 1 ||index === 2 ||index === 4 ||index === 3) {
+              sums[index] = '';
+              return;
+            }
+
+            const values = data.map(item => Number(item[column.property]));
+            if (!values.every(value => isNaN(value))) {
+              sums[index] = values.reduce((prev, curr) => {
+                const value = Number(curr);
+                if (!isNaN(value)) {
+                  return prev + curr;
+                }
+                else {
+                  return prev;
+                }
+              }, 0);
+              sums[index] += ' 元';
+            } else {
+              sums[index] = '';
+            }
+          });
+          return sums;
+        }
   }
 }
 </script>

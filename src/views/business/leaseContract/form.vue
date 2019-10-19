@@ -11,7 +11,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="起止日期" prop="startDate" >
+          <el-form-item label="起始日期" prop="startDate" >
             <el-date-picker :picker-options="pickerOptions0" v-model="form.startDate" type="date" placeholder="选择日期" style="width: 170px;">
             </el-date-picker>
           </el-form-item>
@@ -125,14 +125,12 @@
             <div class="el-upload__text"><p v-if="imageFrontFile != ''">文件名称: {{ imageFrontFile.name }}</p>
             <p v-else>点击或拖拽文件上传</p></div>
           </el-upload>
-           <div class="text-xs-center" v-show="imageFrontUrl != ''">
-             <p v-if="imageFrontUrl != ''">
-               <i class="el-icon-folder"></i>
-               {{ $store.state.business.oldFileName }}&nbsp;&nbsp;
-               <i class="el-icon-circle-check" style="color: green;"></i>
-             </p>
-              <!-- <img class="avatar" :src="imageFrontUrl" /> -->
-              <el-button outline  @click="clearFile">清除</el-button>
+          <div v-if="imageFrontUrl != ''">
+            <a  :href="imageFrontUrl" target="_blank" style="font-size: 20px;"><i class="el-icon-folder"></i>
+            </a>{{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;">
+            </i>
+            <!-- <img class="avatar" :src="imageFrontUrl" /> -->
+            <el-button outline  @click="clearFile">清除</el-button>
            </div>
           </el-form-item>
         </el-col>

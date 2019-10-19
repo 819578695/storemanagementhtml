@@ -23,7 +23,7 @@
         </el-select>
         <el-input clearable v-model="query.supplierName"  placeholder="输入供应商名称" style="width: 130px;" class="filter-item" @keyup.enter.native="toQuery"/>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
-        <!-- 重置 -->
+        <!-- 重置 
         <div style="display: inline-block;margin: 0px 2px;">
           <el-button
             class="filter-item"
