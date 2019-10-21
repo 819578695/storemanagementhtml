@@ -6,7 +6,6 @@
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
-           v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_CREATE']"
           class="filter-item"
           size="mini"
           type="primary"
@@ -38,11 +37,10 @@
           <span>{{ parseDate(scope.row.dueDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="checkPermission(['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_EDIT','PROCUREMENTINFORMATION_DELETE'])" label="操作" width="150px" align="center">
+      <el-table-column  label="操作" width="150px" align="center">
         <template slot-scope="scope">
-          <el-button v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_EDIT']" size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
+          <el-button  size="mini" type="primary" icon="el-icon-edit" @click="edit(scope.row)"/>
           <el-popover
-            v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_DELETE']"
             :ref="scope.row.id"
             placement="top"
             width="180">

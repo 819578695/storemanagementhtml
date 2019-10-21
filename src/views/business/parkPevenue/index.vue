@@ -37,7 +37,7 @@
             />
         </el-select>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
-     <!-- <!-- 重置
+     <!--  重置
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
           class="filter-item"
@@ -45,7 +45,7 @@
           type="info"
           icon="el-icon-refresh-left"
           @click="reset">重置</el-button>
-      </div> -->
+      </div>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
@@ -330,17 +330,13 @@ export default {
       _this.dialog = true
 
     },
-    //重置
+   /* //重置
     reset(){
-      this.query.startTime=null
-      this.query.endTime=null
-      this.query.houseNumber=''
-      this.query.deptId=''
-      this.query.linkman=''
-      this.query.type=null
-      this.query.isVertify=null
+     this.query= {
+
+     }
       this.init()
-    },
+    }, */
     // 导出
     download() {
       this.downloadLoading = true
