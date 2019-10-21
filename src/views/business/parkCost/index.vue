@@ -90,7 +90,17 @@
       <el-table-column prop="propertyRent" label="物业费"/>
       <el-table-column prop="taxCost" label="税赋成本"/>
       <el-table-column prop="otherRent" label="其他费用"/>
-      <el-table-column prop="paymentTypeName" sortable label="交易类型"/>
+      <el-table-column prop="startTime" label="开始时间">
+        <template slot-scope="scope">
+            <span>{{ parseDate(scope.row.createTime) }}</span>
+          </template>
+      </el-table-column>
+      <el-table-column prop="endTime" label="截止时间">
+       <template slot-scope="scope">
+             <span>{{ parseDate(scope.row.createTime) }}</span>
+           </template>
+      </el-table-column>
+      <el-table-column prop="paymentTypeName" sortable label="交易类型"  width="100" />
       <el-table-column prop="createTime" sortable label="审核状态" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.isVertify==0?'审核中':scope.row.isVertify==1?'审核失败':'审核通过' }}</span>
