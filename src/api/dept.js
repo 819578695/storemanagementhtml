@@ -1,5 +1,12 @@
 import request from '@/utils/request'
 
+export function getDeptAlls() {
+  return request({
+    url: 'api/getDeptAlls',
+    method: 'get'
+  })
+}
+
 export function getDeptAll() {
   return request({
     url: 'api/depts',

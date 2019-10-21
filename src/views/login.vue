@@ -42,7 +42,7 @@ import { encrypt } from '@/utils/rsaEncrypt'
 import Config from '@/config'
 import { getCodeImg } from '@/api/login'
 import Cookies from 'js-cookie'
-import { getDeptAll } from '@/api/dept'
+import { getDeptAlls } from '@/api/dept'
 import { getInfo } from '@/api/login'
 export default {
   name: 'Login',
@@ -123,7 +123,7 @@ export default {
             Cookies.remove('rememberMe')
           }
           this.$store.dispatch('Login', user).then(() => {
-          	getDeptAll({ enabled: true }).then(res => {
+          	getDeptAlls({ enabled: true }).then(res => {
 			        //数组转json   取出时json.parse(xxx)
 			      	sessionStorage.setItem("depts",JSON.stringify(res))
           	})

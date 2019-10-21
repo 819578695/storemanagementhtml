@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-  	<eForm ref="form" :is-add="isAdd"/>
+  	<!--<eForm ref="form" :is-add="isAdd"/>-->
   	<el-row :gutter="10">
   		<el-col :xs="24" :sm="24" :md="4" :lg="4" :xl="4">
         <el-card class="box-card">
@@ -10,8 +10,8 @@
         	<!--工具栏-->
 			    <div class="head-container">
 			      <!-- 搜索 -->
-			      <el-input v-model="query.value" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery" v-permission="['ADMIN','ACCOUNT_ALL','ACCOUNT_SELECTDEPT']"/>
-			      <el-select v-model="query.type" clearable placeholder="类型" class="filter-item" style="width: 130px" v-permission="['ADMIN','ACCOUNT_ALL','ACCOUNT_SELECTDEPT']">
+			      <el-input v-model="query.value" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery" v-permission="['ADMIN','ACCOUNT_SELECTDEPT']"/>
+			      <el-select v-model="query.type" clearable placeholder="类型" class="filter-item" style="width: 130px" v-permission="['ADMIN','ACCOUNT_SELECTDEPT']">
 			        <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
 			      </el-select>
 			      <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
@@ -45,9 +45,9 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/maintain'
 import maintainDetail from '../maintainDetail/index'
-import eForm from './form'
+//import eForm from './form'
 export default {
-  components: { maintainDetail , eForm },
+  components: { maintainDetail  },
   mixins: [initData],
   data() {
     return {
@@ -86,7 +86,7 @@ export default {
       }
       return true
     },
-    subDelete(id) {
+    /*subDelete(id) {
       this.delLoading = true
       del(id).then(res => {
         this.delLoading = false
@@ -103,14 +103,14 @@ export default {
         this.$refs[id].doClose()
         console.log(err.response.data.message)
       })
-    },
+    },*/
     handleCurrentChange(val) {
     	if(val){
     		this.$refs.maintainDetail.deptId = val.deptId
     		this.$refs.maintainDetail.init()
     	}
     },
-    edit(data) {
+/*    edit(data) {
       this.isAdd = false
       const _this = this.$refs.form
       _this.form = {
@@ -120,7 +120,7 @@ export default {
         maintainDetail: data.maintainDetail
       }
       _this.dialog = true
-    }
+    }*/
   }
 }
 </script>

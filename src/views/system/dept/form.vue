@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { add, edit, getDepts , getDeptAll } from '@/api/dept'
+import { add, edit, getDepts , getDeptAll , getDeptAlls } from '@/api/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
@@ -128,7 +128,7 @@ export default {
       })
     },
  		setSessionDept(){
- 			getDeptAll({ enabled: true }).then(res => {
+ 			getDeptAlls({ enabled: true }).then(res => {
 	        //数组转json   取出时json.parse(xxx)
 	      	sessionStorage.setItem("depts",JSON.stringify(res))
   		})
