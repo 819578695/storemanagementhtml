@@ -45,7 +45,6 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/maintain'
 import maintainDetail from '../maintainDetail/index'
-import dept  from '@/components/DeptSelect'
 import store from '@/store'
 //import eForm from './form'
 export default {

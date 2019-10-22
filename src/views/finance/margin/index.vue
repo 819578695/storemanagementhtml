@@ -61,7 +61,7 @@ import pevenueIndex from './pevenueIndex'
 import { parseDate } from '@/utils/index'
 import { getMarginTree , getMarginCost } from '@/api/margin'
 import { getDictMap } from '@/api/dictDetail'
-import dept  from '@/components/DeptSelect'
+import store from '@/store'
 export default {
   components: {pevenueIndex},
   mixins: [initData],
@@ -87,6 +87,10 @@ export default {
   created() {
   	this.getStall()
   	this.$nextTick(() => {
+      store.dispatch('GetInfo').then(res => {
+        this.deptId=res.deptId
+        this.init()
+      })
       this.marginInit()
     })
   },
