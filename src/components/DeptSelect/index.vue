@@ -1,5 +1,5 @@
 <template>
-		<el-select :v-permission="permission" @change="findByDept" clearable v-model="deptValue"  placeholder="请选择园区" class="filter-item" style="width: 130px">
+		<el-select v-permission="permission" @change="findByDept" clearable v-model="deptValue"  placeholder="请选择园区" class="filter-item" style="width: 130px">
 		  <el-option
 		    v-for="(item, index) in deptList"
 		    :key="item.id"
