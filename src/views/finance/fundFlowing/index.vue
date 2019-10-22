@@ -33,14 +33,15 @@
       	</el-option>
       </el-select>
       <!-- 部门查询 -->
-      <el-select v-model="query.dept" clearable placeholder="部门查询" class="filter-item" style="width: 130px;" v-if="checkPermission(['ADMIN','FUNDFLOWING_ALL','FUNDFLOWING_DEPTSELECT'])">
-        <el-option
-          v-for="(item, index) in deptList"
-          :key="item.id"
-          :label="item.label"
-          :value="item.id">
-        </el-option>
-      </el-select>
+      <dept  v-model="query.deptId" :permission="['ADMIN','FUNDFLOWING_ALL','FUNDFLOWING_DEPTSELECT']" @deptValue="deptValue"  />
+      <!--<el-select v-model="query.dept" clearable placeholder="部门查询" class="filter-item" style="width: 130px;" v-if="checkPermission(['ADMIN','FUNDFLOWING_ALL','FUNDFLOWING_DEPTSELECT'])">-->
+        <!--<el-option-->
+          <!--v-for="(item, index) in deptList"-->
+          <!--:key="item.id"-->
+          <!--:label="item.label"-->
+          <!--:value="item.id">-->
+        <!--</el-option>-->
+      <!--</el-select>-->
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!--导出-->
       <div style="display: inline-block;">
@@ -101,8 +102,10 @@ import { getFundFlowing } from '@/api/fundFlowing'
 import { getDictMap } from '@/api/dictDetail'
 import { parseDate } from '@/utils/index'
 import eForm from './form'
+import dept  from '@/components/DeptSelect'
+import store from '@/store'
 export default {
-  components: { eForm },
+  components: { eForm , dept },
   mixins: [initData],
   data() {
     return {
@@ -110,25 +113,30 @@ export default {
       tallyTypeList: [],
       typeList: [],
       tradType: [],
-      deptList: [],
       downloadLoading: false,//导出加载
       downloadAllLoading: false,//全部导出加载
       delLoading: false,//删除加载
+      deptId: ''
     }
   },
   created() {
     this.$nextTick(() => {
-      this.init()
+      store.dispatch('GetInfo').then(res => {
+        this.deptId=res.deptId
+        this.init()
+      })
       this.getType()
     })
   },
   methods: {
+    deptValue(value){
+      this.query.deptId=value
+    },
     parseDate,
     checkPermission,
     getType() {
       getDictMap('transaction_type').then(res => {
         this.tallyTypeList = res.transaction_type
-        this.deptList = JSON.parse(sessionStorage.getItem("depts"))
       })
       getDictMap('trade_type').then(res => {
       	this.typeList = res.trade_type
@@ -142,13 +150,12 @@ export default {
       this.url = 'api/fundFlowing'
       const sort = 'id,desc'
       const query = this.query
-      const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
       //最高级别查询所有数据
       if(this.deptId==1){
-        this.params = { page: this.page, size: this.size, sort: sort,deptId :deptId}
+        this.params = { page: this.page, size: this.size, sort: sort }
       }
       else{
-        this.params = { page: this.page, size: this.size, sort: sort,deptId :deptId}
+        this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }
       }
       //查询的值
       const applicationsDateStart = query.applicationsDateStart
@@ -159,11 +166,11 @@ export default {
       const typeDict = query.typeDict
       //记账类型id
       const tallyTypeId = query.tallyTypeId
-      let dept = query.dept
+      let deptId = query.deptId
       if (typeDict) { this.params['typeDict'] = typeDict }
       if (tallyTypeId) { this.params['tallyTypeId'] = tallyTypeId }
       if (tradType) {this.params['tradType'] = tradType }
-      if (dept) {this.params['deptId'] = dept }
+      if (deptId) {this.params['deptId'] = deptId }
       //转化日期格式
       if (applicationsDateStart){
         this.params['tradDateStart'] = parseDate(applicationsDateStart)
@@ -194,11 +201,10 @@ export default {
     downloadAll() {
      const sort = 'id,desc'
      const query = this.query
-     const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
      //查询的值
       const tradDateStart = parseDate(query.applicationsDateStart)
       const tradDateEnd = parseDate(query.applicationsDateEnd)
-     const params = { sort: sort, deptId: deptId,tradDateStart: tradDateStart,tradDateEnd: tradDateEnd }
+     const params = { sort: sort,tradDateStart: tradDateStart,tradDateEnd: tradDateEnd }
      getFundFlowing(params).then(res => {
        this.downloadAllLoading = true
        this.dataALL = res
