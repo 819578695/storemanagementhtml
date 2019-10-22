@@ -137,7 +137,6 @@ export default {
     return {
       deptId:'',
       delLoading: false,
-      deptList:[],
     }
   },
   created() {
@@ -146,7 +145,6 @@ export default {
        this.deptId=res.deptId
        this.init()
      })
-      this.deptList=JSON.parse(sessionStorage.getItem("depts"))
       this.getDictMap('pay_cycle')
     })
   },

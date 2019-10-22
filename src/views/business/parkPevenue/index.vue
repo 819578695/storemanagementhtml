@@ -192,7 +192,6 @@ export default {
       dataALL:[], //保存全部导出的数据
       downloadLoading: false,//导出加载
       downloadAllLoading: false,//全部导出加载
-      deptList:[],
       deptId:'',
       delLoading: false,
     }
@@ -205,7 +204,6 @@ export default {
        this.init()
      })
       //取值给部门集合
-     this.deptList=JSON.parse(sessionStorage.getItem("depts"))
       this.getDictMap('transaction_mode,pevenue_status')
     })
   },

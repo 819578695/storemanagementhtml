@@ -146,7 +146,6 @@ export default {
       downloadAllLoading: false,//全部导出加载
       delLoading: false,//删除加载
       deptId:'',
-      deptList:[],
     }
   },
   created() {
@@ -156,7 +155,6 @@ export default {
        this.deptId=res.deptId
        this.init()
      })
-     this.deptList=JSON.parse(sessionStorage.getItem("depts"))
       this.getDict('transaction_mode')
     })
   },

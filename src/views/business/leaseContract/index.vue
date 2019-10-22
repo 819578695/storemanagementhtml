@@ -125,7 +125,6 @@ export default {
   mixins: [initData,initDict],
   data() {
     return {
-      deptList:[],
       deptId:'',
       delLoading: false,
     }
@@ -137,7 +136,6 @@ export default {
        this.deptId=res.deptId
        this.init()
      })
-     this.deptList=JSON.parse(sessionStorage.getItem("depts"))
      this.getDictMap('pay_cycle')
     })
   },

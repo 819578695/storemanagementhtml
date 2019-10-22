@@ -172,7 +172,6 @@ export default {
       delLoading: false,
       vertifyLoading:false,//审核加载中
       deptId:'',
-      deptList:[],
     }
   },
   created() {
@@ -183,7 +182,6 @@ export default {
         this.init()
       })
       // 加载数据字典
-      this.deptList=JSON.parse(sessionStorage.getItem("depts"))
       this.getDictMap('transaction_mode')
     })
   },
