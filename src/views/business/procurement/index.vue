@@ -13,17 +13,10 @@
         <el-date-picker clearable v-model="query.applicationsDateEnd" type="date" placeholder="选择日期" style="width:150px;" class="filter-item"></el-date-picker>
 <!--        <el-input v-model="query.pno" clearable placeholder="输入编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
  -->
-        <el-select v-permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
-         <el-option
-           v-for="(item, index) in deptList"
-           :key="item.id"
-           :label="item.name"
-           :value="item.id"
-           />
-        </el-select>
+        <dept  v-model="query.deptId" :permission="['ADMIN','PROCUREMENTINFORMATION_ALL','PROCUREMENTINFORMATION_DEPT']" @deptValue="deptValue"  />
         <el-input clearable v-model="query.supplierName"  placeholder="输入供应商名称" style="width: 130px;" class="filter-item" @keyup.enter.native="toQuery"/>
         <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
-        <!-- 重置 
+        <!-- 重置
         <div style="display: inline-block;margin: 0px 2px;">
           <el-button
             class="filter-item"
@@ -141,9 +134,10 @@ import { findByProcurementPaymentInfoById } from '@/api/procurementPaymentInfo' 
 import { parseTime,parseDate } from '@/utils/index'         //格式化日期
 import eForm from './form'                        //表单
 import paymentIndex from './paymentIndex'                        //表单
+import dept  from '@/components/DeptSelect'     //注册部门组建
 import store from '@/store'
 export default {
-  components: { eForm,paymentIndex }, //注册表单组件
+  components: { eForm,paymentIndex,dept }, //注册表单组件
   mixins: [initData,initDict],   // 初始化数据
   data() {
     return {
@@ -167,6 +161,9 @@ export default {
     })
   },
   methods: {
+    deptValue(value){
+      this.query.deptId=value
+    },
     parseTime,
     parseDate,
     checkPermission,

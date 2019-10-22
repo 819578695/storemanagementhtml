@@ -15,7 +15,7 @@
           <i class="el-icon-caret-bottom"/>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <a target="_blank" href="https://docs.auauz.net/">
+          <!-- <a target="_blank" href="https://docs.auauz.net/">
             <el-dropdown-item>
               项目文档
             </el-dropdown-item>
@@ -24,7 +24,7 @@
             <el-dropdown-item>
               布局设置
             </el-dropdown-item>
-          </span>
+          </span> -->
           <router-link to="/user/center">
             <el-dropdown-item>
               个人中心

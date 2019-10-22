@@ -123,10 +123,10 @@ export default {
             Cookies.remove('rememberMe')
           }
           this.$store.dispatch('Login', user).then(() => {
-          	getDeptAlls({ enabled: true }).then(res => {
+          	/* getDeptAlls({ enabled: true }).then(res => {
 			        //数组转json   取出时json.parse(xxx)
 			      	sessionStorage.setItem("depts",JSON.stringify(res))
-          	})
+          	}) */
             this.loading = false
             this.$router.push({ path: this.redirect || '/' })
           	return new Promise((resolve, reject) => {

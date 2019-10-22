@@ -11,15 +11,7 @@
       <!-- 搜索  -->
         <el-date-picker clearable v-model="query.createTimeStart" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>&nbsp;-
         <el-date-picker clearable v-model="query.createTimeEnd" type="date" placeholder="选择日期" style="width:150px;"  class="filter-item"></el-date-picker>
-        <el-select v-permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width:130px;">
-          <el-option
-            v-for="(item, index) in deptList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-            class="filter-item" @keyup.enter.native="toQuery"
-            />
-        </el-select>
+        <dept  v-model="query.deptId" :permission="['ADMIN','PARKPEVENUE_ALL','PARKPEVENUE_DEPT']" @deptValue="deptValue"  />
         <el-select  clearable v-model="query.isVertify"  placeholder="请选择审核状态" class="filter-item" style="width: 130px">
           <el-option label="审核中" value="0"/>
           <el-option label="审核失败" value="1" />
@@ -187,8 +179,10 @@ import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import accountForm from './accountform'
 import store from '@/store'
+import dept  from '@/components/DeptSelect'
+
 export default {
-  components: { eForm,accountForm },
+  components: { eForm,accountForm,dept },
   mixins: [initData,initDict],
   data() {
     return {
@@ -216,6 +210,9 @@ export default {
     })
   },
   methods: {
+    deptValue(value){
+      this.query.deptId=value
+    },
     parseTime,
     parseDate,
     checkPermission,

@@ -8,15 +8,7 @@
     <div class="head-container">
       <!-- 搜索 -->
       <el-input clearable v-model="query.contractNo"  placeholder="输入合同编号" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-      <el-select v-permission="['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
-        <el-option
-          v-for="(item, index) in deptList"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-          class="filter-item" @keyup.enter.native="toQuery"
-          />
-      </el-select>
+      <dept  v-model="query.deptId" :permission="['ADMIN','RENTCONTRACT_ALL','RENTCONTRACT_DEPT']" @deptValue="deptValue"  />
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -136,8 +128,10 @@ import { del } from '@/api/rentContract'
 import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
+import dept  from '@/components/DeptSelect'
+
 export default {
-  components: { eForm},
+  components: { eForm,dept},
   mixins: [initData,initDict],
   data() {
     return {
@@ -157,6 +151,9 @@ export default {
     })
   },
   methods: {
+    deptValue(value){
+      this.query.deptId=value
+    },
     parseTime,
     parseDate,
     checkPermission,

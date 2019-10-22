@@ -11,7 +11,7 @@
       <!-- 搜索 -->
       <el-date-picker clearable v-model="query.createDateStart" type="date" placeholder="选择日期" class="filter-item"></el-date-picker>&nbsp;-&nbsp;
       <el-date-picker clearable v-model="query.createDateEnd" type="date" placeholder="选择日期" class="filter-item"></el-date-picker>
-      <el-select v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width: 130px">
+      <!-- <el-select v-permission="['ADMIN','PARKCOST_ALL','PARKCOST_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item" style="width: 130px">
         <el-option
           v-for="(item, index) in deptList"
           :key="item.id"
@@ -19,7 +19,8 @@
           :value="item.id"
           class="filter-item" @keyup.enter.native="toQuery"
           />
-      </el-select>
+      </el-select> -->
+      <dept  v-model="query.deptId" :permission="['ADMIN','PARKCOST_ALL','PARKCOST_DEPT']" @deptValue="deptValue"  />
       <el-select  clearable v-model="query.isVertify"  placeholder="请选择审核状态" class="filter-item" style="width: 130px">
         <el-option label="审核中" value="0"/>
         <el-option label="审核失败" value="1" />
@@ -92,16 +93,16 @@
       <el-table-column prop="otherRent" label="其他费用"/>
       <el-table-column prop="startTime" label="开始时间">
         <template slot-scope="scope">
-            <span>{{ parseDate(scope.row.createTime) }}</span>
+            <span>{{ parseDate(scope.row.startTime) }}</span>
           </template>
       </el-table-column>
       <el-table-column prop="endTime" label="截止时间">
        <template slot-scope="scope">
-             <span>{{ parseDate(scope.row.createTime) }}</span>
+             <span>{{ parseDate(scope.row.endTime) }}</span>
            </template>
       </el-table-column>
       <el-table-column prop="paymentTypeName" sortable label="交易类型"  width="100" />
-      <el-table-column prop="createTime" sortable label="审核状态" width="100">
+      <el-table-column prop="isVertify" sortable label="审核状态" width="100">
         <template slot-scope="scope">
           <span>{{ scope.row.isVertify==0?'审核中':scope.row.isVertify==1?'审核失败':'审核通过' }}</span>
         </template>
@@ -157,8 +158,9 @@ import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import accountForm from './accountform'
 import store from '@/store'
+import dept  from '@/components/DeptSelect'
 export default {
-  components: { eForm,accountForm},
+  components: { eForm,accountForm,dept},
   mixins: [initData,initDict],
   data() {
     return {
@@ -186,6 +188,9 @@ export default {
     })
   },
   methods: {
+    deptValue(value){
+      this.query.deptId=value
+    },
     parseTime,
     parseDate,
     checkPermission,

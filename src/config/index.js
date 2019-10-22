@@ -56,10 +56,10 @@ export default {
   /**
    * 底部文字，支持html语法
    */
-  footerTxt: '© 2019 Zheng Jie <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License 2.0</a>',
+  footerTxt: 'Copyright © 2019 正广通云仓管理系统. All rights reserved.',
 
   /**
    * 备案号
    */
-  caseNumber: '浙ICP备18005431号-3'
+  caseNumber: 'Version @1.0.0'
 }

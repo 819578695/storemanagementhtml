@@ -10,15 +10,7 @@
         <el-date-picker clearable v-model="query.startDate" type="date" placeholder="选择开始日期" class="filter-item"></el-date-picker>&nbsp;-
         <el-date-picker clearable v-model="query.endDate" type="date" placeholder="选择截止日期" class="filter-item"></el-date-picker>
       <el-input clearable v-model="query.houseNumber"  placeholder="输入档口编号" style="width: 200px;" class="filter-item" />
-      <el-select  v-permission="['ADMIN','LEASECONTRACT_ALL','LEASECONTRACT_DEPT']" clearable v-model="query.deptId"  placeholder="请选择园区" class="filter-item">
-        <el-option
-          v-for="(item, index) in deptList"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-          class="filter-item" @keyup.enter.native="toQuery"
-          />
-      </el-select>
+      <dept  v-model="query.deptId" :permission="['ADMIN','LEASECONTRACT_ALL','LEASECONTRACT_DEPT']" @deptValue="deptValue"  />
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -126,8 +118,10 @@ import { del } from '@/api/leaseContract'
 import { parseTime,parseDate } from '@/utils/index'
 import eForm from './form'
 import store from '@/store'
+import dept  from '@/components/DeptSelect'
+
 export default {
-  components: { eForm },
+  components: { eForm ,dept},
   mixins: [initData,initDict],
   data() {
     return {
@@ -148,6 +142,9 @@ export default {
     })
   },
   methods: {
+    deptValue(value){
+      this.query.deptId=value
+    },
     parseTime,
     parseDate,
     checkPermission,
