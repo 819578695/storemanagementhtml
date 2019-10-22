@@ -3,11 +3,11 @@
   	<!--表单组件-->
     <el-row :gutter="10">
       <!--档口数据-->
-      <el-col :xs="5" :sm="4" :md="3" :lg="3" :xl="3">
-        <el-tree 
-        	:data="stalls" 
-        	:props="defaultProps" 
-        	:expand-on-click-node="false" 
+      <el-col :xs="12" :sm="12" :md="4" :lg="4" :xl="4">
+        <el-tree
+        	:data="stalls"
+        	:props="defaultProps"
+        	:expand-on-click-node="false"
         	default-expand-all @node-click="handleNodeClick"/>
       </el-col>
     	<!--工具栏-->
@@ -23,7 +23,7 @@
             <span style="font-size: 20px;">支出:{{this.costsum}}</span>&emsp;&emsp;
             <span style="color: red;font-size: 20px;">毛利:{{gross}}</span>
 			</div>
-      <el-col :xs="12" :sm="12" :md="6" :lg="6" :xl="6">
+      <el-col :xs="12" :sm="12" :md="10" :lg="10" :xl="10">
         <el-card class="box-card">
         	<div slot="header" class="clearfix">
         		<span>收入</span>
@@ -42,7 +42,7 @@
 			  </el-card>
 			</el-col>
 			<!-- 右侧 -->
-			<el-col :xs="12" :sm="12" :md="12" :lg="6" :xl="6">
+			<el-col :xs="12" :sm="12" :md="10" :lg="10" :xl="10">
         <el-card class="box-card">
         	<div slot="header" class="clearfix">
         		<span>园区成本</span>
@@ -61,13 +61,13 @@ import pevenueIndex from './pevenueIndex'
 import { parseDate } from '@/utils/index'
 import { getMarginTree , getMarginCost } from '@/api/margin'
 import { getDictMap } from '@/api/dictDetail'
+import dept  from '@/components/DeptSelect'
 export default {
   components: {pevenueIndex},
   mixins: [initData],
   data() {
     return {
       delLoading: false,
-      depts: [],
       sum : [],
       costsum:0,
       pevenuesSum:0,
@@ -80,7 +80,8 @@ export default {
       },
       //获取部门-档口
       stalls: [],
-      pevenueIndexData: []
+      pevenueIndexData: [],
+      deptId: '',
     }
   },
   created() {
@@ -110,24 +111,16 @@ export default {
       let query = this.query
 			let houseId = this.houseId
 			let incomeId = this.incomeId
-      let deptId = JSON.parse(sessionStorage.getItem("user")).deptId
+      let deptId = this.deptId
       //最高级别查询所有数据
       if(this.deptId==1){
         this.params = { sort: sort, houseId: houseId}
-      }
-      else{
+      }else{
          this.params = { sort: sort, deptId: deptId, houseId: houseId}
       }
   		//查询的值
       let applicationsDateStart = query.applicationsDateStart
       let applicationsDateEnd = query.applicationsDateEnd
-      //获取部门信息
-      this.depts = JSON.parse(sessionStorage.getItem("depts"))
-			//查询部门
-       if(this.deptId!=''){
-       		query.deptId = this.deptId
-       }
-      if (query.deptId!=null) {this.params['deptId'] = query.deptId }
       //转化日期格式
       if (applicationsDateStart){
         this.params['createTimeStart'] = parseDate(applicationsDateStart)

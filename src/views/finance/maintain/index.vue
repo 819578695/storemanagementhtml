@@ -2,7 +2,7 @@
   <div class="app-container">
   	<!--<eForm ref="form" :is-add="isAdd"/>-->
   	<el-row :gutter="10">
-  		<el-col :xs="24" :sm="24" :md="4" :lg="4" :xl="4">
+  		<el-col :xs="24" :sm="24" :md="6" :lg="6" :xl="6">
         <el-card class="box-card">
         	<div slot="header" class="clearfix">
         		<span>账户维护</span>
@@ -33,7 +33,7 @@
 			      @current-change="pageChange"/>
         </el-card>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="10" :lg="10" :xl="20">
+      <el-col :xs="24" :sm="24" :md="18" :lg="18" :xl="18">
       	<maintainDetail ref="maintainDetail"/>
       </el-col>
   	</el-row>
@@ -45,12 +45,15 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { del } from '@/api/maintain'
 import maintainDetail from '../maintainDetail/index'
+import dept  from '@/components/DeptSelect'
+import store from '@/store'
 //import eForm from './form'
 export default {
   components: { maintainDetail  },
   mixins: [initData],
   data() {
     return {
+      deptId: '',
       delLoading: false,
       queryTypeOptions: [
         { key: 'deptName', display_name: '园区名称' }
@@ -59,14 +62,16 @@ export default {
   },
   created() {
     this.$nextTick(() => {
-      this.init()
+      store.dispatch('GetInfo').then(res => {
+        this.deptId=res.deptId
+        this.init()
+      })
     })
   },
   methods: {
     checkPermission,
     beforeInit() {
       this.url = 'api/maintain'
-      const deptId = JSON.parse(sessionStorage.getItem("user")).deptId
       const query = this.query
       const type = query.type
       const value = query.value
@@ -76,9 +81,8 @@ export default {
         this.params = { page: this.page, size: this.size}
       }
       else{
-         this.params = { page: this.page, size: this.size, deptId: deptId}
+         this.params = { page: this.page, size: this.size, deptId: this.deptId }
       }
-//    this.params = { deptId :deptId, }
       if (type && value) { this.params[type] = value }
 			if(this.$refs.maintainDetail){
       	this.$refs.maintainDetail.data=[]
