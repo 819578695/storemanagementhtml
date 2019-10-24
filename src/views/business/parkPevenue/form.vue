@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm"  :title="isAdd ? '新增' : '编辑'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm"  :title="isAdd ? '新增园区收入' : '编辑园区收入'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
       <el-divider content-position="left">基本信息</el-divider>
         <el-row>
@@ -23,7 +23,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="档口编号"  >
+            <el-form-item label="档口编号">
               <el-select  :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2"  v-model="form.archivesmouthsmanagement.id"  placeholder="请选择档口编号" >
                 <el-option
                   :label="archivesmouthsmanagement.houseNumber"
@@ -106,13 +106,13 @@
       <el-divider content-position="left">收款信息</el-divider>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="开始日期" prop="startTime">
+              <el-form-item label="开始日期" >
                 <el-date-picker :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" :picker-options="pickerOptionsStart" v-model="form.startTime" type="date" placeholder="选择日期" style="width: 170px;" >
                 </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="截止日期" prop="endTime">
+              <el-form-item label="截止日期" >
                 <el-date-picker :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" @change="findByContractRentFreeDate" :picker-options="pickerOptionsEnd" v-model="form.endTime" type="date" placeholder="选择日期" style="width: 170px;">
                 </el-date-picker>
               </el-form-item>
@@ -157,6 +157,13 @@
                     :disabled="item.value=='PEVENUE_PAYBACK'"
                     />
                 </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="备注" >
+                <el-input type="textarea" rows="5" v-model="form.remarks"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -248,6 +255,7 @@ export default {
         },
         isDelete:'0',
         isVertify:0,
+        remark:''
       },
       rules: {
         leaseContract:
@@ -430,6 +438,7 @@ export default {
         isVertify:0,
         startTime:'',
         endTime:'',
+        remark:''
       }
     },
     //查询合同集合

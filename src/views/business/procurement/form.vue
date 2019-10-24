@@ -231,7 +231,7 @@ export default {
         if (suffix == "jpg" || suffix == "jpeg" || suffix == "png" || suffix == "pdf") {
             //格式正确,判断大小在1M以内
             let fileSize = file.size;
-            if (fileSize > 1024 * 1024) {
+            if (fileSize > 10240 * 10240) {
                 //文件太大
                 this.imageFrontUrl = '';
                 this.$notify.error({

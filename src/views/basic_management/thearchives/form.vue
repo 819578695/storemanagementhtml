@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增园区档案' : '编辑园区档案'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-divider content-position="left">基本信息</el-divider>
       <el-row>
@@ -206,7 +206,7 @@ export default {
       if (suffix == 'jpg' || suffix == 'jpeg' || suffix == 'png' || suffix == 'pdf') {
         // 格式正确,判断大小在1M以内
         const fileSize = file.size
-        if (fileSize > 1024 * 1024) {
+        if (fileSize > 10240 * 10240) {
           // 文件太大
           this.imageFrontUrl = ''
           this.$notify.error({

@@ -112,6 +112,7 @@
           <span>{{ parseDate(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="remark" label="备注" width="100"/>
       <el-table-column label="收款信息">
         <template slot-scope="scope">
           <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
@@ -275,6 +276,7 @@ export default {
         dept:{
           id:data.deptId
         },
+        remark:data.remark
       }
       _this.dialog = true
     },
