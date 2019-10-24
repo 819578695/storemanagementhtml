@@ -7,6 +7,15 @@
       <el-select v-model="query.type" clearable placeholder="类型" class="filter-item" style="width: 130px">
         <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
       </el-select>
+      <!--已租/未租-->
+      <el-select v-model="query.ifRent" clearable placeholder="是否租出" class="filter-item" style="width: 130px">
+        <el-option
+		      v-for="(item, index) in ifRent"
+		      :key="item.key"
+		      :label="item.label"
+		      :value="item.key">
+		    </el-option>
+      </el-select>
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增-->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -114,6 +123,10 @@ export default {
         { key: 'housenumber', display_name: '门牌号' },
         { key: 'contacts', display_name: '联系人' },
         { key: 'leasetype', display_name: '租用类型' }
+      ],
+      ifRent: [
+      {key:'Y', label: '已出租'},
+      {key:'N', label: '未出租'},
       ]
     }
   },
@@ -142,6 +155,8 @@ export default {
       const query = this.query
       const type = query.type
       const value = query.value
+      let ifRent = query.ifRent
+      if (ifRent){ this.params['tenementName'] = ifRent }
       if (type && value) { this.params[type] = value }
       return true
     },
