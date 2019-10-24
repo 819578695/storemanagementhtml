@@ -3,7 +3,7 @@
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="门牌号" >
+          <el-form-item label="门牌号" prop="housenumber">
             <el-input v-model="form.housenumber" style="width: 170px;"/>
           </el-form-item>
         </el-col>
@@ -27,7 +27,7 @@
       </el-row> -->
       <el-row>
         <el-col :span="12">
-          <el-form-item label="联系人" >
+          <el-form-item label="联系人" prop="contacts">
             <el-input v-model="form.contacts" style="width: 170px;"/>
           </el-form-item>
         </el-col>
@@ -125,6 +125,12 @@ export default {
         }
       },
       rules: {
+        housenumber:{
+          required: true, message: '请输入门牌号', trigger: 'blur'
+        },
+        contacts:{
+          required: true, message: '请输入联系人', trigger: 'blur'
+        },
         dictDetail:
         {
           id: [
@@ -144,12 +150,16 @@ export default {
       this.resetForm()
     },
     doSubmit() {
-      this.$refs
-      this.loading = true
-      if (this.isAdd) {
-        this.doAdd()
-      } else this.doEdit()
-      /* this.dialogVisible = false */
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+        this.loading=true;
+        if (this.isAdd) {
+          this.doAdd()
+        } else this.doEdit()
+        } else {
+          return false
+        }
+      })
     },
     doAdd() {
       store.dispatch('GetInfo').then(res => {

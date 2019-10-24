@@ -1,46 +1,46 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增园区档案' : '编辑园区档案'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增园区档案' : '编辑园区档案'" width="700px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-divider content-position="left">基本信息</el-divider>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="成立时间" >
+          <el-form-item label="成立时间" label-width="120px">
             <el-date-picker v-model="form.dateOfEstablishment" type="date" placeholder="选择日期" style="width: 170px;"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="物业公司名称" >
+          <el-form-item label="物业公司名称" prop="companyName" label-width="120px">
             <el-input v-model="form.companyName" style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="开园时间" >
+          <el-form-item label="开园时间" label-width="120px">
             <el-date-picker v-model="form.openingTime" type="date" placeholder="选择日期" style="width: 170px;"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="占用面积" >
+          <el-form-item label="占用面积" label-width="120px">
             <el-input v-model="form.occupiedArea" style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="占地面积" >
+          <el-form-item label="占地面积" label-width="120px">
             <el-input v-model="form.floorSpace" style="width: 170px;"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="建筑面积" >
+          <el-form-item label="建筑面积" label-width="120px">
             <el-input v-model="form.coveredArea" style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="可使用面积" >
+          <el-form-item label="可使用面积" label-width="120px">
             <el-input v-model="form.usableArea" style="width: 170px;"/>
           </el-form-item>
         </el-col>
@@ -123,6 +123,9 @@ export default {
         }
       },
       rules: {
+        companyName:{
+            required: true, message: '请输入物业公司名称', trigger: 'blur'
+        }
       }
     }
   },
@@ -136,11 +139,16 @@ export default {
       this.resetForm()
     },
     doSubmit() {
-      this.$refs
-      this.loading = true
-      if (this.isAdd) {
-        this.doAdd()
-      } else this.doEdit()
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+        this.loading=true;
+        if (this.isAdd) {
+          this.doAdd()
+        } else this.doEdit()
+        } else {
+          return false
+        }
+      })
     },
     doAdd() {
       store.dispatch('GetInfo').then(res => {

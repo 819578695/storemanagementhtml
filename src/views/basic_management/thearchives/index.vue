@@ -7,6 +7,8 @@
       <el-select v-model="query.type" clearable placeholder="类型" class="filter-item" style="width: 130px">
         <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
       </el-select>
+      <dept  v-model="query.deptId" :permission="['ADMIN','PARKCOST_ALL','PARKCOST_DEPT']" @deptValue="deptValue"  />
+
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -99,15 +101,15 @@ import { parseDate } from '@/utils/index'
 import store from '@/store'
 import eForm from './form'
 import contracttable from './contracttable'
+import dept  from '@/components/DeptSelect'
 export default {
-  components: { eForm, contracttable },
+  components: { eForm, contracttable,dept },
   mixins: [initData, initDict],
   data() {
     return {
       delLoading: false,
       deptId: '',
       queryTypeOptions: [
-        { key: 'garden', display_name: '园区' },
         { key: 'companyName', display_name: '物业公司名称' }
       ]
     }
@@ -123,6 +125,9 @@ export default {
     })
   },
   methods: {
+    deptValue(value){
+      this.query.deptId=value
+    },
     parseDate,
     checkPermission,
     beforeInit() {
