@@ -85,14 +85,13 @@ export default {
     }
   },
   created() {
-  	this.getStall()
-  	this.$nextTick(() => {
-      store.dispatch('GetInfo').then(res => {
+  	store.dispatch('GetInfo').then(res => {
         this.deptId=res.deptId
-        this.init()
       })
+  	this.$nextTick(() => {
       this.marginInit()
     })
+  	this.getStall()
   },
   computed: {
   	getSum :function() {
@@ -120,7 +119,7 @@ export default {
       if(this.deptId==1){
         this.params = { sort: sort, houseId: houseId}
       }else{
-         this.params = { sort: sort, deptId: deptId, houseId: houseId}
+        this.params = { sort: sort, houseId: houseId, deptId: this.deptId}
       }
   		//查询的值
       let applicationsDateStart = query.applicationsDateStart
