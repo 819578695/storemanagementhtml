@@ -29,8 +29,8 @@
     		</el-col>
     	</el-row>
       
-      <el-form-item label="金额" >
-        <el-input v-model="form.remaining" style="width: 370px;"/>
+      <el-form-item label="金额" prop="remaining" >
+        <el-input v-model="form.remaining" style="width: 370px;" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -54,6 +54,15 @@ export default {
     }
   },
   data() {
+  	const validRemaining = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入金额'))
+      } else if (!this.isvalidRemaining(value)) {
+        callback(new Error('请输入正确的金额'))
+      } else {
+        callback()
+      }
+    }
     return {
       loading: false, dialog: false,
       form: {
@@ -63,11 +72,19 @@ export default {
       	remaining: ''
       },
       rules: {
+      	remaining: [
+          { required: true, trigger: 'blur', validator: validRemaining }
+        ],
+      	
       },
       options:[],
     }
   },
   methods: {
+  	isvalidRemaining(str) {
+      const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+      return reg.test(str)
+    },
     cancel() {
       this.resetForm()
     },

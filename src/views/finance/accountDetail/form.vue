@@ -12,7 +12,7 @@
 	      	</el-form-item>
 	      </el-col>
 	      <el-col :span="12">
-	      	<el-form-item label="账号">
+	      	<el-form-item label="账号" prop="accountNum">
 		      	<el-input v-model="form.accountNum" style="width: 160px;"/>
 		      </el-form-item>
 	      </el-col>
@@ -22,7 +22,7 @@
 		      </el-form-item>
 	      </el-col>
       	<el-col :span="12">
-	      	<el-form-item label="金额" >
+	      	<el-form-item label="金额" prop="remaining">
 		        <el-input v-model="form.remaining" style="width: 160px;"/>
 		      </el-form-item>
 	      </el-col>
@@ -48,6 +48,22 @@ export default {
     }
   },
   data() {
+  	const validAccountNum = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入对应账号'))
+      } else {
+        callback()
+      }
+    }
+  	const validRemaining = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入金额'))
+      } else if (!this.isvalidRemaining(value)) {
+        callback(new Error('请输入正确的金额'))
+      } else {
+        callback()
+      }
+    }
     return {
       loading: false, dialog: false,
       form: {
@@ -59,10 +75,16 @@ export default {
         detailId: '',
       },
       rules: {
+      	remaining: [ { required: true, trigger: 'blur', validator: validRemaining } ],
+      	accountNum: [ {required: true, trigger: 'blur', validator: validAccountNum } ]
       },
     }
   },
   methods: {
+  	isvalidRemaining(str) {
+      const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+      return reg.test(str)
+    },
     cancel() {
       this.resetForm()
     },

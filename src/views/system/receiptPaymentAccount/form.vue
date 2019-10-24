@@ -58,7 +58,7 @@ export default {
       }
     };
     return {
-      loading: false, dialog: false,from: {name:'' ,paymentAccountNum:'' ,receiptAccountNum: '' },
+      loading: false, dialog: false,
       form: {
         name: '',
         deptId: '',
@@ -95,8 +95,8 @@ export default {
     },
     doSubmit() {
     	this.$refs['form'].validate((valid) => {
-		      this.loading = true
     		if(valid){
+    			this.loading = true
 		      if (this.isAdd) {
 		        this.doAdd()
 		      } else this.doEdit()
