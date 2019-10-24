@@ -277,6 +277,7 @@ export default {
         return;
       } */
       this.isShowUploading = true;
+      this.loading=true
       this.imageFrontFile = file;
         let fileName = file.name;
         var fileData = new FormData();
@@ -293,12 +294,14 @@ export default {
                     duration:5,
                     closable: true
                 });
+                this.loading= false
             } else {
               store.dispatch('GetInfo').then(res => {
                  upload(fileData,'CG'+res.deptNo+res.username).then(res => {
                    this.form.fileName=res
                    this.imageFrontUrl=res
                    this.isShowUploading=false
+                   this.loading= false
                    this.$notify({
                     title: '上传成功',
                     type: 'success',
@@ -310,11 +313,13 @@ export default {
                        type: 'error',
                        duration: 2500
                      })
+                      this.loading= false
                  })
                })
             }
         } else {
             this.imageFrontUrl = '';
+            this.loading= false
             //格式错误
             this.$notify.error({
                 title: '文件格式错误',

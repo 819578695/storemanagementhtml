@@ -106,7 +106,7 @@
           <span>{{ scope.row.isVertify==0?'审核中':scope.row.isVertify==1?'审核失败':'审核通过' }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="remark" label="备注" width="100"/>
+      <el-table-column prop="pevenueaRemarks" label="备注" width="100"/>
       <el-table-column label="收款信息">
         <template slot-scope="scope">
           <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
@@ -322,7 +322,7 @@ export default {
         },
         isDelete:data.isDelete,
         isVertify:data.isVertify,
-        remark:data.remark
+        pevenueaRemarks:data.pevenueaRemarks
       }
       _this.dialog = true
 

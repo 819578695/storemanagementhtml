@@ -3,10 +3,18 @@
     <!--工具栏-->
     <div class="head-container">
       <!-- 搜索-->
-      <el-input v-model="query.value" clearable placeholder="输入搜索内容" style="width: 200px;" class="filter-item" @keyup.enter.native="toQuery"/>
-      <el-select v-model="query.type" clearable placeholder="类型" class="filter-item" style="width: 130px">
-        <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
-      </el-select>
+     <el-input clearable v-model="query.contacts"  placeholder="输入联系人" style="width: 130px;"  class="filter-item" />
+     <el-input clearable v-model="query.housenumber"  placeholder="输入档口编号" style="width: 130px;"  class="filter-item" />
+     <dept  v-model="query.deptId" :permission="['ADMIN','ARCHIVESMOUTHSMANAGEMENT_ALL','ARCHIVESMOUTHSMANAGEMENT_DEPT']" @deptValue="deptValue"  />
+     <el-select clearable v-model="query.stallType"  placeholder="请选择类型" class="filter-item" style="width:130px;">
+       <el-option
+        v-for="(item, index) in dicts"
+          :key="item.index"
+          :label="item.label"
+          :value="item.id"
+         class="filter-item" @keyup.enter.native="toQuery"
+         />
+     </el-select>
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增-->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -98,9 +106,10 @@ import { del, getarchivesmouthsmanagementAll } from '@/api/archivesmouthsmanagem
 import { parseDate } from '@/utils/index'
 import store from '@/store'
 import eForm from './form'
+import dept  from '@/components/DeptSelect'
 
 export default {
-  components: { eForm },
+  components: { eForm ,dept},
   mixins: [initData, initDict],
   data() {
     return {
@@ -110,11 +119,6 @@ export default {
       downloadAllLoading: false, // 全部导出加载
       dialogVisible: false,
       deptId: '',
-      queryTypeOptions: [
-        { key: 'housenumber', display_name: '门牌号' },
-        { key: 'contacts', display_name: '联系人' },
-        { key: 'leasetype', display_name: '租用类型' }
-      ]
     }
   },
   created() {
@@ -128,6 +132,9 @@ export default {
     })
   },
   methods: {
+    deptValue(value){
+      this.query.deptId=value
+    },
     parseDate,
     checkPermission,
     beforeInit() {
@@ -140,9 +147,14 @@ export default {
         this.params = { page: this.page, size: this.size, sort: sort, deptId: this.deptId }
       }
       const query = this.query
-      const type = query.type
-      const value = query.value
-      if (type && value) { this.params[type] = value }
+      const contacts = query.contacts
+      const housenumber = query.housenumber
+      const stallType = query.stallType
+      const deptId = query.deptId
+      if (contacts) { this.params['contacts'] = contacts }
+      if (deptId) { this.params['deptId'] = deptId }
+      if (housenumber) {this.params['housenumber'] = housenumber}
+      if (stallType) {this.params['stallType'] = stallType}
       return true
     },
     subDelete(id) {
@@ -166,6 +178,7 @@ export default {
     add() {
       this.isAdd = true
       this.$refs.form.dialog = true
+      this.$refs.form.imageFrontFile=''
     },
     edit(data) {
       this.isAdd = false
@@ -183,9 +196,10 @@ export default {
           id: data.deptId
         },
         dictDetail: {
-          id: data.stalltypeName
-        }
+          id: data.stalltype
+        },
       }
+      _this.imageFrontUrl=data.picturetoview
       _this.dialog = true
     },
     // 导出

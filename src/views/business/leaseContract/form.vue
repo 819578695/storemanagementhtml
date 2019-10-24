@@ -40,7 +40,7 @@
       <el-row>
         <el-col :span="12">
          <el-form-item label="年租金" prop="contractAmount">
-           <el-input v-model="form.contractAmount" style="width: 170px;"/>
+           <el-input onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.contractAmount" style="width: 170px;"/>
          </el-form-item>
         </el-col>
         <el-col :span="12">

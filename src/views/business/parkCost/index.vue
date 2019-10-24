@@ -112,7 +112,7 @@
           <span>{{ parseDate(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="remark" label="备注" width="100"/>
+      <el-table-column prop="costRemarks" label="备注" width="100"/>
       <el-table-column label="收款信息">
         <template slot-scope="scope">
           <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
@@ -276,7 +276,7 @@ export default {
         dept:{
           id:data.deptId
         },
-        remark:data.remark
+        costRemarks:data.costRemarks
       }
       _this.dialog = true
     },
@@ -292,8 +292,8 @@ export default {
     download() {
        this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
-        const tHeader = ['合同名称',  '公司名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型', '审核状态','创建时间', '收付款账户名称']
-        const filterVal = ['rentContractName', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent','paymentTypeName','isVertify', 'createTime', 'receiptPaymentAccountName']
+        const tHeader = ['合同名称',  '公司名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型', '审核状态','备注' ,'创建时间', '收付款账户名称']
+        const filterVal = ['rentContractName', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent','paymentTypeName','isVertify','costRemarks', 'createTime', 'receiptPaymentAccountName']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader,  //表头
@@ -311,8 +311,8 @@ export default {
            this.downloadAllLoading = true
            this.dataALL = res.content
            import('@/utils/export2Excel').then(excel => {
-             const tHeader = ['合同名称', '部门名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型','审核状态' ,'创建时间', '收付款账户名称']
-             const filterVal = ['rentContractName', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent','paymentTypeName','isVertify', 'createTime', 'receiptPaymentAccountName']
+             const tHeader = ['合同名称', '部门名称', '场地租金', '水费', '电费', '物业费', '税赋成本', '其他费用', '交易类型','审核状态','备注' ,'创建时间', '收付款账户名称']
+             const filterVal = ['rentContractName', 'deptName', 'siteRent', 'waterRent', 'electricityRent', 'propertyRent', 'taxCost', 'otherRent','paymentTypeName','isVertify','costRemarks', 'createTime', 'receiptPaymentAccountName']
              const data = this.formatJson(filterVal, this.dataALL)
              excel.export_json_to_excel({
                header: tHeader,

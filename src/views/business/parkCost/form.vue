@@ -107,7 +107,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="备注" >
-            <el-input type="textarea" rows="5" v-model="form.remarks"></el-input>
+            <el-input type="textarea" rows="5" v-model="form.costRemarks"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -172,7 +172,7 @@ export default {
         },
         startTime:'',
         endTime:'',
-        remark:''
+        costRemarks:''
       },
       rules: {
         dictDetail:
@@ -300,7 +300,7 @@ export default {
         receiptPaymentAccount: {
           id:''
         },
-        remark:''
+        costRemarks:''
       }
     },
     //查询所有的集合

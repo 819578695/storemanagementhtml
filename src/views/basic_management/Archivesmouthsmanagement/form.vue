@@ -63,11 +63,13 @@
                 <p v-if="imageFrontFile != ''">图片名称: {{ imageFrontFile.name }}</p>
               <p v-else>点击或拖拽图片上传</p></div>
             </el-upload>
-            <div v-show="imageFrontUrl != ''" class="text-xs-center">
-              <p v-if="imageFrontFile != ''"><i class="el-icon-folder"/> {{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;"/> </p>
+            <div v-if="imageFrontUrl != ''">
+              <a  :href="imageFrontUrl" target="_blank" style="font-size: 20px;"><i class="el-icon-folder"></i>
+              </a>{{ imageFrontFile.name }}&nbsp;&nbsp;<i class="el-icon-circle-check" style="color: green;">
+              </i>
               <!-- <img class="avatar" :src="imageFrontUrl" /> -->
-              <el-button outline @click="clearFile">清除</el-button>
-            </div>
+              <el-button outline  @click="clearFile">清除</el-button>
+             </div>
           </el-form-item>
         </el-col>
       </el-row>
@@ -205,6 +207,7 @@ export default {
     },
     beforeUpload(file) {
       this.isShowUploading = true
+      this.loading=true
       this.imageFrontFile = file
       const fileName = file.name
       var fileData = new FormData()
@@ -221,12 +224,13 @@ export default {
             duration: 5,
             closable: true
           })
+          this.loading= false
         } else {
           store.dispatch('GetInfo').then(res => {
             uploadPictureExamine(fileData, 'ZR' + res.deptNo + res.username).then(res => {
               this.form.picturetoview = res
               this.imageFrontUrl = res
-              this.isShowUploading = false
+              this.loading = false
               this.$notify({
                 title: '上传成功',
                 type: 'success',
@@ -238,11 +242,13 @@ export default {
                 type: 'error',
                 duration: 2500
               })
+              this.loading = false
             })
           })
         }
       } else {
         this.imageFrontUrl = ''
+        this.loading= false
         // 格式错误
         this.$notify.error({
           title: '文件格式错误',

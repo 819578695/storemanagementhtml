@@ -32,11 +32,8 @@ export default {
   },
   methods: {
     back() {
-      debugger
       if (this.$route.query.noGoBack) {
-        debugger
         this.$router.push({ path: '/dashboard' })
-        debugger
       } else {
         this.$router.go(-1)
       }
