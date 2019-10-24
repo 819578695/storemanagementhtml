@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="closeDialog" :title="isAdd ? '新增' : '编辑'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="closeDialog" :title="isAdd ? '新增租户信息' : '编辑租户信息'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-row>
         <el-col :span="12">

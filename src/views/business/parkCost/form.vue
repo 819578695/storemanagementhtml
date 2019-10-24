@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增园区成本' : '编辑园区成本'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-divider content-position="left">基本信息</el-divider>
       <el-row>
@@ -104,7 +104,14 @@
           </el-form-item>
         </el-col>
       </el-row>
-    </el-form>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="备注" >
+            <el-input type="textarea" rows="5" v-model="form.remarks"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="text" @click="cancel">取消</el-button>
       <el-button :loading="loading" type="primary" @click="doSubmit">确认</el-button>
@@ -165,6 +172,7 @@ export default {
         },
         startTime:'',
         endTime:'',
+        remark:''
       },
       rules: {
         dictDetail:
@@ -292,6 +300,7 @@ export default {
         receiptPaymentAccount: {
           id:''
         },
+        remark:''
       }
     },
     //查询所有的集合

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增' : '编辑'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增档口信息' : '编辑档口信息'" width="600px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-row>
         <el-col :span="12">
@@ -13,7 +13,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <!-- <el-row>
         <el-col :span="12">
           <el-form-item label="定金" >
             <el-input v-model="form.earnest" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
@@ -24,7 +24,7 @@
             <el-input v-model="form.contractmoney" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
       <el-row>
         <el-col :span="12">
           <el-form-item label="联系人" >
@@ -213,7 +213,7 @@ export default {
       if (suffix == 'jpg' || suffix == 'jpeg' || suffix == 'png' || suffix == 'pdf') {
         // 格式正确,判断大小在1M以内
         const fileSize = file.size
-        if (fileSize > 1024 * 1024) {
+        if (fileSize > 10240 * 10240) {
           // 文件太大
           this.imageFrontUrl = ''
           this.$notify.error({
