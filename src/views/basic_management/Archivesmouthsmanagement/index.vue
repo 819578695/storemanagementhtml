@@ -15,6 +15,15 @@
          class="filter-item" @keyup.enter.native="toQuery"
          />
      </el-select>
+      <!--已租/未租-->
+      <el-select v-model="query.ifRent" clearable placeholder="是否租出" class="filter-item" style="width: 130px">
+        <el-option
+		      v-for="(item, index) in ifRent"
+		      :key="item.key"
+		      :label="item.label"
+		      :value="item.key">
+		    </el-option>
+      </el-select>
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增-->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -119,6 +128,10 @@ export default {
       downloadAllLoading: false, // 全部导出加载
       dialogVisible: false,
       deptId: '',
+      ifRent: [
+      {key:'Y', label: '已出租'},
+      {key:'N', label: '未出租'},
+      ]
     }
   },
   created() {
@@ -151,10 +164,12 @@ export default {
       const housenumber = query.housenumber
       const stallType = query.stallType
       const deptId = query.deptId
+      const ifRent = query.ifRent
       if (contacts) { this.params['contacts'] = contacts }
       if (deptId) { this.params['deptId'] = deptId }
       if (housenumber) {this.params['housenumber'] = housenumber}
       if (stallType) {this.params['stallType'] = stallType}
+      if (ifRent){ this.params['tenementName'] = ifRent }
       return true
     },
     subDelete(id) {
