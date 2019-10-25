@@ -409,7 +409,7 @@ export default {
               sums[index] = '合计';
               return;
             }
-            else if (index === 1 || index === 2 || index === 9||index === 10||index === 11 ||index === 12 ||index === 13) {
+            else if (index === 1 || index === 2 || index === 9||index === 10||index === 11 ||index === 12 ||index === 13||index === 14) {
                sums[index] = '';
                return;
              }

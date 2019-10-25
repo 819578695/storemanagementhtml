@@ -462,7 +462,7 @@ export default {
               sums[index] = '合计';
               return;
             }
-           else if (index === 20 ||index === 21 ||index === 19 ||index === 22 ||index === 17 ||index === 1 ||index === 2 ||index === 4 ||index === 3) {
+           else if (index === 20 ||index === 21 ||index === 19 ||index === 22 ||index === 17 ||index === 1 ||index === 2 ||index === 4 ||index === 3||index === 18) {
               sums[index] = '';
               return;
             }
