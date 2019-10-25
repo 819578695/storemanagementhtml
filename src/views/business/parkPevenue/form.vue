@@ -120,9 +120,9 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <!-- 付款方式 组件-->
+              <!-- 收款方式 组件-->
 <!--             <dictDetail ref="dictDetail"  :is-add="isAdd" :dictMap="dictMap" v-model="form.dictDetail.id"  @findbyAccount="findbyAccount(arguments)" />
- -->              <el-form-item label="付款方式" label-width="100px" prop="dictDetail.id" >
+ -->              <el-form-item label="收款方式" label-width="100px" prop="dictDetail.id" >
                 <el-select :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2"  v-model="form.dictDetail.id" @change="findbyReceiptPaymentAccount" placeholder="请选择支付方式">
                   <el-option
                     v-for="(item, index) in dictMap.transaction_mode"

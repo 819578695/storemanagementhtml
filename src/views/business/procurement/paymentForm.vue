@@ -55,7 +55,7 @@
           <el-col :span="12">
             <!-- 付款账户 组件-->
 <!--              <account ref="account" :is-add="isAdd"  v-model="form.receiptPaymentAccount.id" accountProp="receiptPaymentAccount.id" :receiptPaymentAccountList="receiptPaymentAccountList" @accountValue="accountValue" />
--->          <el-form-item label="收款账户" label-width="100px" prop="receiptPaymentAccount.id">
+-->          <el-form-item label="付款账户" label-width="100px" prop="receiptPaymentAccount.id">
               <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收款名称">
                 <el-option
                   v-for="(item, index) in receiptPaymentAccountList"

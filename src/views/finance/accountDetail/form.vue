@@ -1,7 +1,7 @@
 <template>
   <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-    	<el-form-item label="名称">
+    	<el-form-item label="名称" prop ="name">
       	<el-input v-model="form.name" style="width: 370px;"/>
       </el-form-item>
     	<el-divider content-position="left">账户信息</el-divider>
@@ -64,6 +64,13 @@ export default {
         callback()
       }
     }
+  	const validName = (rule, value, callback) => {
+      if (!this.isvalidRemaining(value) && value ) {
+        callback(new Error('请输入正确的金额'))
+      } else {
+        callback()
+      }
+    }
     return {
       loading: false, dialog: false,
       form: {
@@ -76,7 +83,8 @@ export default {
       },
       rules: {
       	remaining: [ { required: true, trigger: 'blur', validator: validRemaining } ],
-      	accountNum: [ {required: true, trigger: 'blur', validator: validAccountNum } ]
+      	accountNum: [ { required: true, trigger: 'blur', validator: validAccountNum } ],
+      	name: [ { required: true, trigger: 'blur', message: "请输入名称(在收入支出页面显示)" } ]
       },
     }
   },
@@ -95,19 +103,25 @@ export default {
       } else this.doEdit()
     },
     doAdd() {
-      add(this.form).then(res => {
-        this.resetForm()
-        this.$notify({
-          title: '添加成功',
-          type: 'success',
-          duration: 2500
-        })
-        this.loading = false
-        this.init()
-      }).catch(err => {
-        this.loading = false
-        console.log(err.response.data.message)
-      })
+    	if(this.form.name == ''){
+    		this.cancel()
+    		alert("请填写名称")
+    		this.loading = false
+    	}else{
+	      add(this.form).then(res => {
+	        this.resetForm()
+	        this.$notify({
+	          title: '添加成功',
+	          type: 'success',
+	          duration: 2500
+	        })
+	        this.loading = false
+	        this.init()
+	      }).catch(err => {
+	        this.loading = false
+	        console.log(err.response.data.message)
+	      })
+	    }
     },
     doEdit() {
       edit(this.form).then(res => {

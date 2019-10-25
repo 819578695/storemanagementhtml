@@ -9,7 +9,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="面积(m²)" >
-            <el-input v-model="form.acreage" style="width: 170px;"/>
+            <el-input v-model="form.acreage" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>

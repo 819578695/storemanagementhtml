@@ -21,27 +21,27 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="占用面积" label-width="120px">
-            <el-input v-model="form.occupiedArea" style="width: 170px;"/>
+          <el-form-item label="占用面积" label-width="120px" prop ="occupiedArea">
+            <el-input v-model="form.occupiedArea" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="占地面积" label-width="120px">
-            <el-input v-model="form.floorSpace" style="width: 170px;"/>
+          <el-form-item label="占地面积" label-width="120px" >
+            <el-input v-model="form.floorSpace" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="建筑面积" label-width="120px">
-            <el-input v-model="form.coveredArea" style="width: 170px;"/>
+          <el-form-item label="建筑面积" label-width="120px" >
+            <el-input v-model="form.coveredArea" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="可使用面积" label-width="120px">
-            <el-input v-model="form.usableArea" style="width: 170px;"/>
+          <el-form-item label="可使用面积" label-width="120px" >
+            <el-input v-model="form.usableArea" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -94,6 +94,13 @@ export default {
     }
   },
   data() {
+  	const isnumber = (rule, value, callback) => {
+      if (!this.isvalidNumber(value) && value ) {
+        callback(new Error('请输入正确的面积'))
+      } else {
+        callback()
+      }
+    }
     return {
       url: '',
       loading: false, dialog: false,
@@ -125,7 +132,8 @@ export default {
       rules: {
         companyName:{
             required: true, message: '请输入物业公司名称', trigger: 'blur'
-        }
+        },
+        occupiedArea: [ { trigger: 'blur', validator: isnumber } ]
       }
     }
   },
@@ -135,6 +143,10 @@ export default {
     ])
   },
   methods: {
+  	isvalidNumber(str){
+  		const reg = /^(\d*\.?\d{0,2}).*/
+      return reg.test(str)
+  	},
     cancel() {
       this.resetForm()
     },

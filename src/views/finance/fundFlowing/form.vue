@@ -117,7 +117,7 @@ export default {
     	],
     	tradType: [],//交易方式
     	typeList: [],
-      loading: false, dialog: false,from: {money:'' , tradDate:'', receiptPaymentName:'',},
+      loading: false, dialog: false,
       money: '',
       form: {
       	id:'',

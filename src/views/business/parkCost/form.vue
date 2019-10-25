@@ -93,7 +93,7 @@
         </el-col>
         <el-col :span="12">
           <!-- 付款账户 组件-->
-         <el-form-item label="收款账户"  prop="receiptPaymentAccount.id">
+         <el-form-item label="付款账户"  prop="receiptPaymentAccount.id">
             <el-select v-model="form.receiptPaymentAccount.id"  placeholder="请选择收款名称">
               <el-option
                 v-for="(item, index) in receiptPaymentAccountList"
