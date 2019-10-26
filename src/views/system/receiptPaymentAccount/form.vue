@@ -105,7 +105,6 @@ export default {
     },
     doAdd() {
     	store.dispatch('GetInfo').then(res => {
-    		debugger
     		this.form.deptId = res.deptId
     		add(this.form).then(res => {
         this.resetForm()

@@ -16,7 +16,7 @@
 		    <el-date-picker v-model="query.applicationsDateStart" type="date" placeholder="选择日期" style="width: 200px;" class="filter-item"></el-date-picker>&nbsp;-
 		    <el-date-picker v-model="query.applicationsDateEnd" type="date" placeholder="选择日期" style="width: 200px;" class="filter-item"></el-date-picker>
 	    	<!-- 搜索 -->
-      	<el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
+      	<el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="marginInit">搜索</el-button>
 			</div>
 			<div >
             <span style="font-size: 20px;">收入:{{getSum}}</span>&emsp;&emsp;
@@ -117,9 +117,9 @@ export default {
       let deptId = this.deptId
       //最高级别查询所有数据
       if(this.deptId==1){
-        this.params = { sort: sort, houseId: houseId}
+        this.params = { sort: sort}
       }else{
-        this.params = { sort: sort, houseId: houseId, deptId: this.deptId}
+        this.params = { sort: sort, deptId: this.deptId}
       }
   		//查询的值
       let applicationsDateStart = query.applicationsDateStart
@@ -130,6 +130,9 @@ export default {
       }
       if (applicationsDateEnd){
         this.params['createTimeEnd'] = parseDate(applicationsDateEnd)
+      }
+      if (houseId){
+        this.params['houseId'] = this.houseId
       }
       getMarginCost(this.params).then(data=>{
 	  			this.pevenueIndexData = data;

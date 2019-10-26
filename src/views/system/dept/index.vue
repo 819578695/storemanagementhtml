@@ -131,7 +131,6 @@ export default {
         this.$refs[id].doClose()
         console.log(err.response.data.message)
       })
-      debugger
       this.$refs.form.setSessionDept()
     },
     add() {

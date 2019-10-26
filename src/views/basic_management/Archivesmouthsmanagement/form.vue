@@ -109,11 +109,8 @@ export default {
       },
       uploadUrl: '', // 文件上传路径
       form: {
-        id: '',
         housenumber: '',
         acreage: '',
-        earnest: '',
-        contractmoney: '',
         contacts: '',
         leasetype: '',
         picturetoview: '',
