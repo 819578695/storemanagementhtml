@@ -30,8 +30,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="保证金" >
-            <el-input v-model="form.deposit" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
+          <el-form-item label="保证金" prop="deposit">
+            <el-input v-model="form.deposit" style="width: 170px;" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -48,15 +48,15 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="付款金额" >
-            <el-input v-model="form.payPrice" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
+          <el-form-item label="付款金额" prop="payPrice">
+            <el-input v-model="form.payPrice" style="width: 170px;" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="年租金" prop="contractAmount">
-            <el-input v-model="form.contractAmount" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
+            <el-input v-model="form.contractAmount" style="width: 170px;" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -69,7 +69,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="备注" >
-            <el-input type="textarea" rows="5" v-model="form.remarks"></el-input>
+            <el-input type="textarea" rows="5" v-model="form.remarks" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -128,6 +128,13 @@ export default {
   created() {
   },
   data() {
+  	const isMoney = (rule, value, callback) => {
+      if (!this.isvalidMoney(value) && value ) {
+        callback(new Error('请输入正确的金额'))
+      } else {
+        callback()
+      }
+    }
     return {
       pickerOptions0: {
           disabledDate: (time) => {
@@ -188,10 +195,16 @@ export default {
             { required: true, message: '请选择周期', trigger: 'change' }
           ],
         },
+      	deposit: [ { trigger: 'blur', validator: isMoney } ],
+      	payPrice: [ { trigger: 'blur', validator: isMoney } ],
       }
     }
   },
   methods: {
+  	isvalidMoney(str){
+  		const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+      return reg.test(str)
+  	},
     cancel() {
       this.resetForm()
     },

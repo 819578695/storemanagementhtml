@@ -16,13 +16,13 @@
          </el-row>
          <el-row>
            <el-col :span="12">
-             <el-form-item label="合同总金额" label-width="100px">
-               <el-input v-model="form.contractAmount" style="width: 150px;"  onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
+             <el-form-item label="合同总金额" label-width="100px" prop="contractAmount">
+               <el-input v-model="form.contractAmount" style="width: 150px;" />
              </el-form-item>
            </el-col>
            <el-col :span="12">
-              <el-form-item label="申请金额" label-width="100px">
-                <el-input v-model="form.applicationsAmount"  onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 150px;"/>
+              <el-form-item label="申请金额" label-width="100px" prop="applicationsAmount">
+                <el-input v-model="form.applicationsAmount" style="width: 150px;"/>
               </el-form-item>
            </el-col>
          </el-row>
@@ -102,6 +102,13 @@ export default {
     }
   },
   data() {
+  	const isMoney = (rule, value, callback) => {
+      if (!this.isvalidMoney(value) && value ) {
+        callback(new Error('请输入正确的金额'))
+      } else {
+        callback()
+      }
+    }
     return {
       imageFrontUrl:'', //文件上传路径
       imageFrontFile:'',//接受文件上传的参数
@@ -127,6 +134,8 @@ export default {
         isEnable:'1'
       },
       rules: {//表达验证
+      	contractAmount: [ { trigger: 'blur', validator: isMoney } ],
+      	applicationsAmount: [ { trigger: 'blur', validator: isMoney } ],
         pno: [
           { required: true, message: '请输入项目编号', trigger: 'blur' }
         ],
@@ -149,6 +158,10 @@ export default {
     }
   },
   methods: {
+  	isvalidMoney(str){
+  		const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+      return reg.test(str)
+  	},
     cancel() {
       this.resetForm()
     },

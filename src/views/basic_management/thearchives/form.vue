@@ -28,19 +28,19 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="占地面积" label-width="120px" >
+          <el-form-item label="占地面积" label-width="120px" prop ="floorSpace">
             <el-input v-model="form.floorSpace" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" />
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="建筑面积" label-width="120px" >
+          <el-form-item label="建筑面积" label-width="120px" prop ="coveredArea">
             <el-input v-model="form.coveredArea" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="可使用面积" label-width="120px" >
+          <el-form-item label="可使用面积" label-width="120px" prop ="usableArea">
             <el-input v-model="form.usableArea" style="width: 170px;" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"/>
           </el-form-item>
         </el-col>
@@ -133,7 +133,10 @@ export default {
         companyName:{
             required: true, message: '请输入物业公司名称', trigger: 'blur'
         },
-        occupiedArea: [ { trigger: 'blur', validator: isnumber } ]
+        occupiedArea: [ { trigger: 'blur', validator: isnumber } ],
+        floorSpace: [ {trigger: 'blur', validator: isnumber} ],
+        coveredArea: [ {trigger: 'blur', validator: isnumber} ],
+        usableArea: [ {trigger: 'blur', validator: isnumber} ],
       }
     }
   },

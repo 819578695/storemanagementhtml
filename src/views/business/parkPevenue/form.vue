@@ -45,61 +45,61 @@
         <el-divider content-position="left">费用信息</el-divider>
         <el-row>
           <el-col :span="12">
-              <el-form-item label="房租" label-width="100px" >
-                <el-input  max="22" :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.houseRent==null||form.houseRent==0)"  onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.houseRent" style="width: 170px;"/>
+              <el-form-item label="房租" label-width="100px" prop="houseRent">
+                <el-input  max="22" :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.houseRent==null||form.houseRent==0)" v-model="form.houseRent" style="width: 170px;"/>
               </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="物业费" label-width="100px" >
-              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.propertyRent==null||form.propertyRent==0)"  onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.propertyRent" style="width: 170px;"/>
+            <el-form-item label="物业费" label-width="100px" prop="propertyRent">
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.propertyRent==null||form.propertyRent==0)" v-model="form.propertyRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="水费" label-width="100px" >
-              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.waterRent==null||form.waterRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.waterRent" style="width: 170px;"/>
+            <el-form-item label="水费" label-width="100px" prop="waterRent">
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.waterRent==null||form.waterRent==0)" v-model="form.waterRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="电费" label-width="100px" >
-              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.electricityRent==null||form.electricityRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.electricityRent" style="width: 170px;"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="卫生费" label-width="100px" >
-              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.sanitationRent==null||form.sanitationRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.sanitationRent" style="width: 170px;"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="违约金" label-width="100px" >
-              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.liquidatedRent==null||form.liquidatedRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.liquidatedRent" style="width: 170px;"/>
+            <el-form-item label="电费" label-width="100px" prop="electricityRent" >
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.electricityRent==null||form.electricityRent==0)" v-model="form.electricityRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="滞纳金" label-width="100px" >
-              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.lateRent==null||form.lateRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.lateRent" style="width: 170px;"/>
+            <el-form-item label="卫生费" label-width="100px" prop="sanitationRent">
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.sanitationRent==null||form.sanitationRent==0)" v-model="form.sanitationRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="地磅费" label-width="100px" >
-              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.groundPoundRent==null||form.groundPoundRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.groundPoundRent" style="width: 170px;"/>
+            <el-form-item label="违约金" label-width="100px" prop="liquidatedRent" >
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.liquidatedRent==null||form.liquidatedRent==0)" v-model="form.liquidatedRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-             <el-form-item label="停车费" label-width="100px" >
-               <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.parkingRent==null||form.parkingRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.parkingRent" style="width: 170px;"/>
+            <el-form-item label="滞纳金" label-width="100px" prop="lateRent" >
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.lateRent==null||form.lateRent==0)" v-model="form.lateRent" style="width: 170px;"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="地磅费" label-width="100px" prop="groundPoundRent" >
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.groundPoundRent==null||form.groundPoundRent==0)" v-model="form.groundPoundRent" style="width: 170px;"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+             <el-form-item label="停车费" label-width="100px" prop="parkingRent">
+               <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.parkingRent==null||form.parkingRent==0)" v-model="form.parkingRent" style="width: 170px;"/>
              </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="管理费" label-width="100px" >
-              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.managementRent==null||form.managementRent==0)" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" v-model="form.managementRent" style="width: 170px;"/>
+            <el-form-item label="管理费" label-width="100px" prop="managementRent">
+              <el-input :disabled="(form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2)&&(form.managementRent==null||form.managementRent==0)" v-model="form.managementRent" style="width: 170px;"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -200,10 +200,15 @@ export default {
       type: Object,
       required: true
     },
-
   },
   data() {
-
+		const isMoney = (rule, value, callback) => {
+      if (!this.isvalidMoney(value) && value ) {
+        callback(new Error('请输入正确的金额'))
+      } else {
+        callback()
+      }
+    }
     return {
       dictId:'',//用于保存点击修改传过来的支付方式id
       receiptPaymentAccountId:'',//用于保存点击修改传过来的收付款id
@@ -258,6 +263,16 @@ export default {
         pevenueaRemarks:''
       },
       rules: {
+      	houseRent: [ { trigger: 'blur', validator: isMoney } ],
+      	propertyRent: [ { trigger: 'blur', validator: isMoney } ],
+      	waterRent: [ { trigger: 'blur', validator: isMoney } ],
+      	electricityRent: [ { trigger: 'blur', validator: isMoney } ],
+      	sanitationRent: [ { trigger: 'blur', validator: isMoney } ],
+      	liquidatedRent: [ { trigger: 'blur', validator: isMoney } ],
+      	lateRent: [ { trigger: 'blur', validator: isMoney } ],
+      	groundPoundRent: [ { trigger: 'blur', validator: isMoney } ],
+      	parkingRent: [ { trigger: 'blur', validator: isMoney } ],
+      	managementRent: [ { trigger: 'blur', validator: isMoney } ],
         leaseContract:
         {
          id: [
@@ -292,6 +307,10 @@ export default {
   mounted(){
   },
   methods: {
+  	isvalidMoney(str){
+  		const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+      return reg.test(str)
+  	},
     /* accountValue(value){
       this.form.receiptPaymentAccount.id = value
     },
@@ -399,8 +418,8 @@ export default {
     resetForm() {
       this.dialog = false
       this.$refs['form'].resetFields()
-/*      this.$refs.dictDetail.selectDictDetail()
- */      this.form = {
+//      this.$refs.dictDetail.selectDictDetail()
+      this.form = {
         id: '',
         parkId: '',
         houseRent: '',

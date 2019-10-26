@@ -29,37 +29,37 @@
       <el-divider content-position="left">费用信息</el-divider>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="场地租金">
-            <el-input v-model="form.siteRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
+          <el-form-item label="场地租金" prop="siteRent" >
+            <el-input v-model="form.siteRent" style="width: 170px;"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="水费" >
-            <el-input v-model="form.waterRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12">
-          <el-form-item label="电费" >
-            <el-input v-model="form.electricityRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="物业费" >
-            <el-input v-model="form.propertyRent"  onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
+          <el-form-item label="水费" prop="waterRent" >
+            <el-input v-model="form.waterRent" style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="税赋成本" >
-            <el-input v-model="form.taxCost" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
+          <el-form-item label="电费" prop="electricityRent">
+            <el-input v-model="form.electricityRent" style="width: 170px;"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="其他费用" >
-            <el-input v-model="form.otherRent" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
+          <el-form-item label="物业费" prop="propertyRent">
+            <el-input v-model="form.propertyRent" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="税赋成本" prop="taxCost">
+            <el-input v-model="form.taxCost" style="width: 170px;"/>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="其他费用" prop="otherRent">
+            <el-input v-model="form.otherRent" style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -136,6 +136,13 @@ export default {
     }
   },
   data() {
+  	const isMoney = (rule, value, callback) => {
+      if (!this.isvalidMoney(value) && value ) {
+        callback(new Error('请输入正确的金额'))
+      } else {
+        callback()
+      }
+    }
     return {
       pickerOptionsEnd: {
           disabledDate: (time) => {
@@ -175,6 +182,12 @@ export default {
         costRemarks:''
       },
       rules: {
+      	siteRent: [ { trigger: 'blur', validator: isMoney } ],
+      	waterRent: [ { trigger: 'blur', validator: isMoney } ],
+      	electricityRent: [ { trigger: 'blur', validator: isMoney } ],
+      	propertyRent: [ { trigger: 'blur', validator: isMoney } ],
+      	taxCost: [ { trigger: 'blur', validator: isMoney } ],
+      	otherRent: [ { trigger: 'blur', validator: isMoney } ],
         dictDetail:
         {
          id: [
@@ -197,6 +210,10 @@ export default {
     }
   },
   methods: {
+  	isvalidMoney(str){
+  		const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+      return reg.test(str)
+  	},
     //支付的方式联动查询收付款信息
     findbyReceiptPaymentAccount(id) {
       store.dispatch('GetInfo').then(res => {

@@ -4,8 +4,8 @@
       <el-divider content-position="left">付款信息</el-divider>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="实际付款金额" label-width="100px">
-              <el-input v-model="form.actualPaymentAmount" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')"  style="width: 150px;"/>
+            <el-form-item label="实际付款金额" label-width="100px" prop="actualPaymentAmount">
+              <el-input v-model="form.actualPaymentAmount" style="width: 150px;"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -22,7 +22,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="付款比例" label-width="100px">
+            <el-form-item label="付款比例" label-width="100px" prop="paymentRatio">
               <el-input v-model="form.paymentRatio" style="width: 150px;"/>
             </el-form-item>
           </el-col>
@@ -101,6 +101,20 @@ export default {
       }
   },
   data() {
+  	const isMoney = (rule, value, callback) => {
+      if (!this.isvalidMoney(value) && value ) {
+        callback(new Error('请输入正确的金额'))
+      } else {
+        callback()
+      }
+    }
+  	const isPercentage = (rule, value, callback) => {
+      if (!this.isvalidPercentage(value) && value ) {
+        callback(new Error('请输入正确的百分比'))
+      } else {
+        callback()
+      }
+    }
     return {
       dictId:'',//用于保存点击修改传过来的支付方式id
       receiptPaymentAccountId:'',//用于保存点击修改传过来的收付款id
@@ -125,6 +139,8 @@ export default {
         },
       },
       rules: {
+      	actualPaymentAmount: [ { trigger: 'blur', validator: isMoney } ],
+      	paymentRatio:[ {trigger:'blur' , validator: isPercentage } ],
         dictDetail:
         {
          id: [
@@ -147,6 +163,14 @@ export default {
     }
   },
   methods: {
+  	isvalidMoney(str){
+  		const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
+      return reg.test(str)
+  	},
+  	isvalidPercentage(str){
+  		const reg = /^(([100.00]|[\d\d\.\d\d])\%)$/
+  		return reg.test(str)
+  	},
     cancel() {
       this.resetForm()
     },

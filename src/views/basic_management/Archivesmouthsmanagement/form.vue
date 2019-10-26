@@ -8,7 +8,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="面积(m²)" >
+          <el-form-item label="面积(m²)" prop="acreage">
             <el-input v-model="form.acreage" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
           </el-form-item>
         </el-col>
@@ -98,6 +98,13 @@ export default {
     }
   },
   data() {
+  	const validAcreage = (rule, value, callback) => {
+      if (!this.isvalidAcreage(value) && value) {
+        callback(new Error('请输入正确的面积'))
+      } else {
+        callback()
+      }
+    }
     return {
       url: '',
       loading: false, dialog: false,
@@ -122,6 +129,7 @@ export default {
         }
       },
       rules: {
+      	acreage:[ { trigger: 'blur', validator: validAcreage } ],
         housenumber:{
           required: true, message: '请输入门牌号', trigger: 'blur'
         },
@@ -143,6 +151,10 @@ export default {
     ])
   },
   methods: {
+  	isvalidAcreage(str){
+  		let reg = /^(\d+\.\d{1,4}|\d+)$/
+  		return reg.test(str)
+  	},
     cancel() {
       this.resetForm()
     },
