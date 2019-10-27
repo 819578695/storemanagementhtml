@@ -168,7 +168,7 @@ export default {
       return reg.test(str)
   	},
   	isvalidPercentage(str){
-  		const reg = /^(([100.00]|[\d\d\.\d\d])\%)$/
+  		const reg = /^(100(\.0{1,2})?|\d{1,2}(\.\d{1,2})?)%$/
   		return reg.test(str)
   	},
     cancel() {

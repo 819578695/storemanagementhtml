@@ -25,7 +25,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="免租期(月)" >
+          <el-form-item label="免租期(月)" prop="rentFreePeriod">
             <el-input v-model="form.rentFreePeriod" style="width: 170px;"/>
           </el-form-item>
         </el-col>
@@ -135,6 +135,13 @@ export default {
         callback()
       }
     }
+  	const isRentFreePeriod = (rule, value, callback) => {
+      if (!this.isvalidRentFreePeriod(value) && value ) {
+        callback(new Error('请输入正确的免租期'))
+      } else {
+        callback()
+      }
+    }
     return {
       pickerOptions0: {
           disabledDate: (time) => {
@@ -186,9 +193,6 @@ export default {
         endDate: [
           { type: 'date', required: true, message: '请选择截止日期', trigger: 'change' }
         ],
-        contractAmount: [
-          { required: true, message: '请输入总金额', trigger: 'blur' }
-        ],
         payCycle:
         {
          id: [
@@ -197,6 +201,8 @@ export default {
         },
       	deposit: [ { trigger: 'blur', validator: isMoney } ],
       	payPrice: [ { trigger: 'blur', validator: isMoney } ],
+      	contractAmount:[ {required: true, trigger: 'blur', validator: isMoney} ],
+      	rentFreePeriod: [ { trigger: 'blur', validator: isRentFreePeriod } ],
       }
     }
   },
@@ -204,6 +210,10 @@ export default {
   	isvalidMoney(str){
   		const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
       return reg.test(str)
+  	},
+  	isvalidRentFreePeriod(str){
+  		const reg = /^[1-9]\d*$/
+  		return reg.test(str)
   	},
     cancel() {
       this.resetForm()

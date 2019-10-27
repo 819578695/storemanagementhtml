@@ -113,7 +113,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="costRemarks" label="备注" width="100"/>
-      <el-table-column label="收款信息">
+      <el-table-column label="付款信息">
         <template slot-scope="scope">
           <span style="cursor: pointer;" @click="findReceiptPaymentAccount(scope.row.receiptPaymentAccountId)">查看</span>
         </template>

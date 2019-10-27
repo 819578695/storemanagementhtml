@@ -94,7 +94,7 @@ export default {
               }
             }],
             series: [{
-              name: '成本',
+              name: '收入',
               type: 'bar',
               stack: 'vistors',
               barWidth: '20%',
