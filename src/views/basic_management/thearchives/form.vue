@@ -22,26 +22,26 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="占用面积" label-width="120px" prop ="occupiedArea">
-            <el-input v-model="form.occupiedArea" style="width: 170px;" />
+            <el-input v-model.number="form.occupiedArea" style="width: 170px;" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="占地面积" label-width="120px" prop ="floorSpace">
-            <el-input v-model="form.floorSpace" style="width: 170px;"/>
+            <el-input v-model.number="form.floorSpace" style="width: 170px;"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="建筑面积" label-width="120px" prop ="coveredArea">
-            <el-input v-model="form.coveredArea" style="width: 170px;"/>
+            <el-input v-model.number="form.coveredArea" style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="可使用面积" label-width="120px" prop ="usableArea">
-            <el-input v-model="form.usableArea" style="width: 170px;" />
+            <el-input v-model.number="form.usableArea" style="width: 170px;" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -94,13 +94,6 @@ export default {
     }
   },
   data() {
-  	const isnumber = (rule, value, callback) => {
-      if (!this.isvalidNumber(value) && value ) {
-        callback(new Error('请输入正确的面积'))
-      } else {
-        callback()
-      }
-    }
     return {
       url: '',
       loading: false, dialog: false,
@@ -133,10 +126,10 @@ export default {
         companyName:{
             required: true, message: '请输入物业公司名称', trigger: 'blur'
         },
-        occupiedArea: [ { trigger: 'blur', validator: isnumber } ],
-        floorSpace: [ {trigger: 'blur', validator: isnumber} ],
-        coveredArea: [ {trigger: 'blur', validator: isnumber} ],
-        usableArea: [ {trigger: 'blur', validator: isnumber} ],
+        occupiedArea: {  type: 'number', message: '请输入数字' } ,
+        floorSpace:{  type: 'number', message: '请输入数字' },
+        coveredArea: {  type: 'number', message: '请输入数字' },
+        usableArea: {  type: 'number', message: '请输入数字' },
       }
     }
   },
