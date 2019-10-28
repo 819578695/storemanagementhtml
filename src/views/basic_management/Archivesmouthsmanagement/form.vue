@@ -9,7 +9,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="面积(m²)" prop="acreage">
-            <el-input v-model.number="form.acreage" onkeyup="this.value=this.value.replace(/^(\d*\.?\d{0,2}).*/,'$1')" style="width: 170px;"/>
+            <el-input  v-model.number="form.acreage"  style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -122,7 +122,10 @@ export default {
         }
       },
       rules: {
-      	acreage:{  type: 'number', message: '请输入数字' } ,
+      	acreage:[
+          { required: true, message: '面积不能为空',trigger: 'blur'},
+          { type: 'number', message: '请输入数字',trigger: 'blur' } ,
+        ],
         housenumber:{
           required: true, message: '请输入门牌号', trigger: 'blur'
         },
