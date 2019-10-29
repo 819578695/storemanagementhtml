@@ -184,6 +184,7 @@ export default {
         theContractInformation: data.theContractInformation,
         fileName: data.fileName,
       }
+      _this.imageFrontUrl=data.fileName
       _this.dialog = true
     },
     // 查看合同详情
