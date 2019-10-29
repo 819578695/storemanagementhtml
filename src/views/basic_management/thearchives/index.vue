@@ -42,12 +42,12 @@
       <el-table-column prop="floorSpace" label="占地面积"/>
       <el-table-column prop="coveredArea" label="建筑面积"/>
       <el-table-column prop="usableArea" label="可使用面积"/>
-      <el-table-column prop="theContractInformation" label="合同信息">
-        <template slot-scope="scope">
-          <span style="margin-left: 10px;color: #409EFF;cursor : pointer;" @click="detailsBargain(scope.row.deptId)">查看</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="fileName" label="图片上传">
+      <!--<el-table-column prop="theContractInformation" label="合同信息">-->
+        <!--<template slot-scope="scope">-->
+          <!--<span style="margin-left: 10px;color: #409EFF;cursor : pointer;" @click="detailsBargain(scope.row.deptId)">查看</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+      <el-table-column prop="fileName" label="图片展示">
         <template slot-scope="scope">
           <el-popover
             placement="right"

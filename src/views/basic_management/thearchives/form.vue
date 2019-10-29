@@ -45,11 +45,11 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-divider content-position="left">合同附件</el-divider>
+      <el-divider content-position="left">展示图片</el-divider>
       <el-row>
         <el-col :span="12">
           <!--上传图片-->
-          <el-form-item label="文件名" label-width="100px">
+          <el-form-item label="图片名" label-width="100px">
             <el-upload
               v-show="imageFrontUrl == ''"
               :headers="headers"
