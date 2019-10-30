@@ -1,7 +1,7 @@
 <template>
   <div  :style="{height:height,width:width}">
     <!--表格渲染-->
-    <span>档口出租情况</span>
+    <span>档口出租情况</span>---{{occupancyRate}}
     <el-table height="250" v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="contractName" label="合同名称"/>
       <el-table-column prop="houseNumber" label="档口编号"/>
@@ -29,6 +29,7 @@ import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import { parseDate } from '@/utils/index'
 import store from '@/store'
+import { queryOccupancyRate } from '@/api/archivesmouthsmanagement'
 
 export default {
   mixins: [initData],
@@ -44,7 +45,8 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      occupancyRate: ''
     }
   },
   created() {
@@ -54,7 +56,7 @@ export default {
        this.deptId=res.deptId
        this.init()
      })
-     this.deptList=JSON.parse(sessionStorage.getItem("depts"))
+     this.ccupancyRate()
     })
   },
   methods: {
@@ -73,7 +75,13 @@ export default {
       }
       return true
     },
-
+		ccupancyRate(){
+			store.dispatch('GetInfo').then(res => {
+				queryOccupancyRate(res.deptId).then(res2 => {
+					this.occupancyRate = res2
+				})
+			})
+		}
   }
 }
 </script>

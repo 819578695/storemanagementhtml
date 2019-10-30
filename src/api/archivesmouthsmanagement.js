@@ -62,3 +62,10 @@ export function uploadPictureExamine(data,contractNo) {
     data
   })
 }
+
+export function queryOccupancyRate(deptId){
+	return request({
+		url: 'api/queryOccupancyRate/' + deptId,
+		method: 'get',
+	})
+}

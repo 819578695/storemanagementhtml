@@ -83,7 +83,7 @@ export default {
       },
       rules: {
       	remaining: [ { required: true, trigger: 'blur', validator: validRemaining } ],
-      	accountNum: [ { required: true, trigger: 'blur', validator: validAccountNum } ],
+      	accountNum: [ { trigger: 'blur', validator: validAccountNum } ],
       	name: [ { required: true, trigger: 'blur', message: "请输入名称(在收入支出页面显示)" } ]
       },
     }

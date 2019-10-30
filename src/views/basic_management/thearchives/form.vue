@@ -44,6 +44,11 @@
             <el-input v-model="form.usableArea" style="width: 170px;" />
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+        	<el-form-item label="可租用面积" label-width="120px" prop ="lettableArea">
+            <el-input v-model="form.lettableArea" style="width: 170px;" />
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-divider content-position="left">展示图片</el-divider>
       <el-row>
@@ -118,6 +123,7 @@ export default {
         floorSpace: '',
         coveredArea: '',
         usableArea: '',
+        lettableArea: '',
         theContractInformation: '',
         fileName: '',
         dept: {
@@ -138,6 +144,9 @@ export default {
           { required: true, message: '面积不能为空',trigger: 'blur'},
         ],
         usableArea: [
+          { required: true, message: '面积不能为空',trigger: 'blur'},
+        ],
+        lettableArea: [
           { required: true, message: '面积不能为空',trigger: 'blur'},
         ],
       }
@@ -211,6 +220,7 @@ export default {
         floorSpace: '',
         coveredArea: '',
         usableArea: '',
+        lettableArea: '',
         theContractInformation: '',
         dept: {
           id: ''

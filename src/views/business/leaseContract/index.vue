@@ -61,7 +61,7 @@
           <span>{{scope.row.isEnable==1?'启用':'作废'}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="remarks" label="备注"/>
+      <el-table-column prop="remarks" width="210px" label="备注"/>
       <el-table-column  prop="fileName" label="合同附件">
       <template slot-scope="scope">
         <span slot="reference" :alt="scope.row.fileName" >
