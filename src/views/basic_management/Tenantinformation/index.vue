@@ -48,7 +48,7 @@
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
       <el-table-column prop="companyname" label="公司名称"/>
-      <el-table-column prop="logisticsline" label="物流专线"/>
+      <el-table-column prop="logisticsline" label="租用用途"/>
       <el-table-column prop="linkman" label="联系人">
         <template slot-scope="scope">
           <span style="margin-left: 10px;color: #409EFF;cursor : pointer;" @click="adduser(scope.row.id)">{{ scope.row.linkman }}</span>

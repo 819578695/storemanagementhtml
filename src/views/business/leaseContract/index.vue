@@ -54,8 +54,8 @@
       <el-table-column prop="unpaidExpenses" label="未缴费用"/>
       <el-table-column prop="paymentedExpenses" label="已缴费用"/>
       <el-table-column prop="contractAmount" label="年租金"/>
-      <el-table-column prop="payCycleName" label="付款周期"/>
-      <el-table-column prop="payPrice" label="付款金额"/>
+      <el-table-column prop="payCycleName" label="应付款周期"/>
+      <el-table-column prop="payPrice" label="应付款金额"/>
       <el-table-column prop="isEnable" label="是否启用">
         <template slot-scope="scope">
           <span>{{scope.row.isEnable==1?'启用':'作废'}}</span>

@@ -8,8 +8,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="面积(m²)" prop="acreage">
-            <el-input  v-model.number="form.acreage"  style="width: 170px;"/>
+          <el-form-item label="面积(m²)" >
+            <el-input  v-model="form.acreage"  style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -27,7 +27,7 @@
       </el-row> -->
       <el-row>
         <el-col :span="12">
-          <el-form-item label="联系人" prop="contacts">
+          <el-form-item label="档口联系人" >
             <el-input v-model="form.contacts" style="width: 170px;"/>
           </el-form-item>
         </el-col>

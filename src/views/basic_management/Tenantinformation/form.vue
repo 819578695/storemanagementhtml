@@ -8,7 +8,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="物流专线" >
+          <el-form-item label="租用用途" >
             <el-input v-model="form.logisticsline" style="width: 170px;"/>
           </el-form-item>
         </el-col>

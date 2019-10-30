@@ -51,7 +51,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="付款周期"  prop="payCycle.id">
+          <el-form-item label="应付款周期"  prop="payCycle.id">
             <el-select v-model="form.payCycle.id"  placeholder="请选择付款周期" style="width: 170px;">
               <el-option  v-for="(item, index) in dictMap.pay_cycle"
                 :key="item.index"
@@ -62,7 +62,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="付款金额" prop="payPrice" >
+          <el-form-item label="应付款金额" prop="payPrice" >
             <el-input v-model="form.payPrice" style="width: 170px;" />
           </el-form-item>
         </el-col>

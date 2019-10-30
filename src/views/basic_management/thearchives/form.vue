@@ -22,26 +22,26 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="占用面积" label-width="120px" prop ="occupiedArea">
-            <el-input  v-model.number="form.occupiedArea" style="width: 170px;" />
+            <el-input  v-model="form.occupiedArea" style="width: 170px;" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="占地面积" label-width="120px" prop ="floorSpace">
-            <el-input v-model.number="form.floorSpace" style="width: 170px;"/>
+            <el-input v-model="form.floorSpace" style="width: 170px;"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="建筑面积" label-width="120px" prop ="coveredArea">
-            <el-input v-model.number="form.coveredArea" style="width: 170px;"/>
+            <el-input v-model="form.coveredArea" style="width: 170px;"/>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="可使用面积" label-width="120px" prop ="usableArea">
-            <el-input v-model.number="form.usableArea" style="width: 170px;" />
+            <el-input v-model="form.usableArea" style="width: 170px;" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -130,19 +130,15 @@ export default {
         },
         occupiedArea: [
           { required: true, message: '面积不能为空',trigger: 'blur'},
-          {  type: 'number', message: '请输入数字',trigger: 'blur' } ,
         ],
         floorSpace:[
           { required: true, message: '面积不能为空',trigger: 'blur'},
-          {  type: 'number', message: '请输入数字',trigger: 'blur' } ,
         ],
         coveredArea: [
           { required: true, message: '面积不能为空',trigger: 'blur'},
-          {  type: 'number', message: '请输入数字',trigger: 'blur' } ,
         ],
         usableArea: [
           { required: true, message: '面积不能为空',trigger: 'blur'},
-          {  type: 'number', message: '请输入数字',trigger: 'blur' } ,
         ],
       }
     }
