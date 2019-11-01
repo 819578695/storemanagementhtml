@@ -42,6 +42,7 @@
       <el-table-column prop="floorSpace" label="占地面积"/>
       <el-table-column prop="coveredArea" label="建筑面积"/>
       <el-table-column prop="usableArea" label="可使用面积"/>
+      <el-table-column prop="lettableArea" label="可租用面积"/>
       <!--<el-table-column prop="theContractInformation" label="合同信息">-->
         <!--<template slot-scope="scope">-->
           <!--<span style="margin-left: 10px;color: #409EFF;cursor : pointer;" @click="detailsBargain(scope.row.deptId)">查看</span>-->
@@ -183,6 +184,7 @@ export default {
         usableArea: data.usableArea,
         theContractInformation: data.theContractInformation,
         fileName: data.fileName,
+        lettableArea: data.lettableArea
       }
       _this.imageFrontUrl=data.fileName
       _this.dialog = true

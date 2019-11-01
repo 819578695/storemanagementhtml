@@ -88,7 +88,7 @@
       <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="linkman" label="租户名称"/>
       <el-table-column prop="houseNumber" label="档口编号"/>
-      <el-table-column prop="leaseContractName" label="合同名称"/>
+      <el-table-column prop="leaseContractName" label="合同名称" width="200"/>
       <el-table-column prop="houseRent" label="房租"/>
       <el-table-column prop="propertyRent" label="物业费"/>
       <el-table-column prop="waterRent" label="水费"/>

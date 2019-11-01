@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增园区档案' : '编辑园区档案'" width="700px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增园区档案' : '编辑园区档案'" width="700px":close-on-click-modal="false">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-divider content-position="left">基本信息</el-divider>
       <el-row>

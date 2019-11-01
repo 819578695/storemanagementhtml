@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增出租合同' : '编辑出租合同'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增出租合同' : '编辑出租合同'" width="600px" :close-on-click-modal="false">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
       <el-divider content-position="left">合同信息</el-divider>
       <el-row>

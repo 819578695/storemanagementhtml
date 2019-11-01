@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="600px" :close-on-click-modal="false">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
     	<el-divider content-position="left">费用信息</el-divider>
 	    	<el-row>

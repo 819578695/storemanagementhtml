@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增采购信息' : '编辑采购信息'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm" :title="isAdd ? '新增采购信息' : '编辑采购信息'" width="600px" :close-on-click-modal="false">
     <el-form  ref="form" :model="form" :rules="rules" size="small" label-width="80px">
        <el-divider content-position="left">项目信息</el-divider>
          <el-row>

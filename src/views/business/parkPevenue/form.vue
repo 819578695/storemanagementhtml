@@ -1,12 +1,12 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm"  :title="isAdd ? '新增园区收入' : '编辑园区收入'" width="600px">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :before-close="resetForm"  :title="isAdd ? '新增园区收入' : '编辑园区收入'" width="600px"  :close-on-click-modal="false">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
       <el-divider content-position="left">基本信息</el-divider>
         <el-row>
-          <el-col :span="12">
+            <el-col :span="24">
             <el-form-item label="合同名称" prop="leaseContract.id">
-             <el-select :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" v-model="form.leaseContract" value-key="id"  placeholder="请选择合同名称" @change="findByContractName">
-               <el-option  style="width: 270px;"
+             <el-select :disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" v-model="form.leaseContract" value-key="id" filterable placeholder="请选择合同名称" @change="findByContractName" style="width: 100%;">
+               <el-option  style="width: 600px;"
                  v-for="(item, index) in leaseContractList"
                  :key="item.index"
                  :label="item.contractName"
@@ -19,7 +19,7 @@
                </el-option>
              </el-select>
             </el-form-item>
-          </el-col>
+            </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
