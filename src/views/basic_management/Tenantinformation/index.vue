@@ -7,6 +7,7 @@
       <el-select v-model="query.type" clearable placeholder="类型" class="filter-item" style="width: 130px">
         <el-option v-for="item in queryTypeOptions" :key="item.key" :label="item.display_name" :value="item.key"/>
       </el-select>
+      <dept  v-model="query.deptId" :permission="['ADMIN','LEASECONTRACT_ALL','LEASECONTRACT_DEPT']" @deptValue="deptValue"  />
       <el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery">搜索</el-button>
       <!-- 新增 -->
       <div style="display: inline-block;margin: 0px 2px;">
@@ -47,6 +48,7 @@
     <eFormxq ref="eFormxq"/>
     <!--表格渲染-->
     <el-table v-loading="loading" :data="data" size="small" style="width: 100%;">
+      <el-table-column prop="deptName" label="部门名称"/>
       <el-table-column prop="companyname" label="公司名称"/>
       <el-table-column prop="logisticsline" label="租用用途"/>
       <el-table-column prop="linkman" label="联系人">
@@ -113,9 +115,10 @@ import initDict from '@/mixins/initDict'
 import store from '@/store'
 import eForm from './form'
 import eFormxq from './formxq'
+import dept  from '@/components/DeptSelect'
 
 export default {
-  components: { eForm, eFormxq },
+  components: { eForm, eFormxq , dept },
   mixins: [initData, initDict],
   data() {
     return {
@@ -124,6 +127,7 @@ export default {
       downloadLoading: false, // 导出加载
       downloadAllLoading: false, // 全部导出加载
       deptId: '',
+      deptName: '',
       queryTypeOptions: [
         { key: 'linkman', display_name: '联系人' },
         /* { key: 'roomnumber', display_name: '门牌号' }, */
@@ -142,6 +146,9 @@ export default {
     })
   },
   methods: {
+  	deptValue(value){
+      this.query.deptId=value
+    },
     parseDate,
     checkPermission,
     beforeInit() {

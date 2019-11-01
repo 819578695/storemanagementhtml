@@ -11,7 +11,7 @@
 		    </el-select>
 	  		<el-button class="filter-item" size="mini" type="success" icon="el-icon-search" @click="toQuery" :style="{ display: visibleCancel }">搜索</el-button>
 			<el-button
-	          v-permission="['ADMIN','ACCOUNT_ALL','ACCOUNT_ADD']"
+	          v-permission="['ADMIN','ACCOUNT_ALL','ACCOUNT_CREATE']"
 	          class="filter-item"
 	          size="mini"
 	          type="primary"
