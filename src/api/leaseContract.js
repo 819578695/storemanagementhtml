@@ -16,6 +16,14 @@ export function leaseContractById(id) {
   })
 }
 
+//审核操作
+export function vertify(data,status) {
+  return request({
+    url: 'api/contractVertify?status=' + status,
+    method: 'post',
+    data,status
+  })
+}
 
 export function add(data) {
   return request({

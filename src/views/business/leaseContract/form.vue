@@ -236,6 +236,7 @@ export default {
         },
          isEnable:'1',
          remarks: '',
+         isAudit:0,
       },
       rules: {
       	deposit: [ { trigger: 'blur', validator: isMoney } ],
@@ -358,6 +359,7 @@ export default {
         },
         isEnable:'1',
         remarks: '',
+        isAudit:0,
       }
       this.clearFile()
     },
