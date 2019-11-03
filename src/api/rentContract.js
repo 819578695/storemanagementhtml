@@ -8,6 +8,15 @@ export function rentContractByDeptId(id) {
   })
 }
 
+//审核操作
+export function vertify(data,status) {
+  return request({
+    url: 'api/rentContractVertify?status=' + status,
+    method: 'post',
+    data,status
+  })
+}
+
 export function add(data) {
   return request({
     url: 'api/rentContract',

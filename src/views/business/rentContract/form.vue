@@ -181,7 +181,8 @@ export default {
         payCycle:{
           id:''
         },
-        isEnable:'1'
+        isEnable:'1',
+        isAudit:0,
       },
       rules: {//表达验证
         contractName: [
@@ -285,7 +286,8 @@ export default {
         payCycle:{
           id:''
         },
-        isEnable:'1'
+        isEnable:'1',
+        isAudit:0,
       }
       this.clearFile()
     },

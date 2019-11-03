@@ -155,7 +155,7 @@ export default {
       delLoading: false,
       vertifys:[],//保存审核的集合
       vertifyLoading:false,//审核加载中
-      multipleSelection: [],
+      multipleSelection: [],//表头多选框
     }
   },
   created() {
