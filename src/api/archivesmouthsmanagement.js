@@ -32,6 +32,15 @@ export function findByDeptIdAndTenementNameIsNull(id) {
   })
 }
 
+//批量上传档口信息
+export function batchUpload(data){
+	return request({
+		url: 'api/batchUpload',
+		method: 'post',
+		data
+	})
+}
+
 export function add(data) {
   return request({
     url: 'api/archivesmouthsmanagement',

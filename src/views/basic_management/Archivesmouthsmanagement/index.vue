@@ -57,9 +57,36 @@
           icon="el-icon-download"
           @click="downloadAll">全部导出</el-button>
       </div>
+      <!-- 导入模板下载 -->
+      <div style="display: inline-block;">
+        <el-button
+          v-permission="['ADMIN']"
+          :loading="downloadLoading"
+          size="mini"
+          class="filter-item"
+          type="warning"
+          icon="el-icon-download"
+          @click="template">模板下载</el-button>
+      </div>
       <!-- 导入 -->
-      <input type="file" @change="importf(this)" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
-  		
+      <div style="display: inline-block;">
+        <el-upload
+			    class="upload-demo"
+			    action=""
+			    :on-change="handleChange"
+			    :on-remove="handleRemove"
+			    :on-exceed="handleExceed"
+			    :limit="1"
+			    accept="application/vnd.openxmlformats-    
+			    officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+			    :auto-upload="false">
+			    <el-button size="mini" type="warning">点击上传</el-button>
+				</el-upload>
+      </div>
+      <!--<input 
+      	type="file" 
+      	@change="importf(this)" 
+      	accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>-->
     </div>
     <!-- 表单组件-->
     <eForm ref="form" :is-add="isAdd" :dicts="dicts"/>
@@ -114,7 +141,7 @@
 import checkPermission from '@/utils/permission'
 import initData from '@/mixins/initData'
 import initDict from '@/mixins/initDict'
-import { del, getarchivesmouthsmanagementAll } from '@/api/archivesmouthsmanagement'
+import { del, getarchivesmouthsmanagementAll,batchUpload } from '@/api/archivesmouthsmanagement'
 import { parseDate } from '@/utils/index'
 import store from '@/store'
 import eForm from './form'
@@ -220,17 +247,32 @@ export default {
       _this.imageFrontUrl=data.picturetoview
       _this.dialog = true
     },
+    // 模板导出
+    template() {
+      this.downloadLoading = true
+      import('@/utils/export2Excel').then(excel => {
+        const tHeader = ['门牌号', '面  积', '定  金', '合同保证金', '联系人', '租用类型']
+        const filterVal = ['housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'stalltypeName']
+        const data = this.formatJson(filterVal,[{housenumber:'',acreage:'',earnest:'',contractmoney:'',contacts:'',stalltypeName:''}])
+        excel.export_json_to_excel({
+          header: tHeader, // 表头
+          data, // 数据
+          filename: '档口导入模板' // 文件名
+        })
+        this.downloadLoading = false
+      })
+    },
     // 导出
     download() {
       this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
         const tHeader = ['编号', '门牌号', '面积', '定金', '合同保证金', '联系人', '租用类型']
-        const filterVal = ['id', 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'leasetype']
+        const filterVal = ['id', 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'stalltypeName']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader, // 表头
           data, // 数据
-          filename: 'table-list' // 文件名
+          filename: '档口信息导入' // 文件名
         })
         this.downloadLoading = false
       })
@@ -240,16 +282,17 @@ export default {
       const sort = 'id,desc'
       const params = { sort: sort }
       getarchivesmouthsmanagementAll(params).then(res => {
+      	debugger
         this.dataALL = res
         this.downloaddAllLoading = true
            import('@/utils/export2Excel').then(excel => {
              const tHeader = ['编号', '门牌号', '面积', '定金', '合同保证金', '联系人', '租用类型']
-             const filterVal = ['id', 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'leasetype']
+             const filterVal = ['id', 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'stalltypeName']
              const data = this.formatJson(filterVal, this.dataALL)
              excel.export_json_to_excel({
                header: tHeader,
                data,
-               filename: 'table-list'
+               filename: '档口全部导出'
              })
              this.downloaddAllLoading = false
            })
@@ -266,6 +309,23 @@ export default {
           return v[j]
         }
       }))
+    },
+    //上传文件时处理方法
+    handleChange(file, fileList){
+	    this.fileTemp = file.raw;
+	    this.importf(this.fileTemp); 
+    },
+    //超出最大上传文件数量时的处理方法
+    handleExceed(){
+        this.$message({
+            type:'warning',
+            message:'超出最大上传文件数量的限制！'
+        })
+        return;
+    },
+    //移除文件的操作方法
+    handleRemove(file,fileList){
+        this.fileTemp = null
     },
     handlePictureCardPreview(file) {
       this.dialogVisible = true
@@ -308,19 +368,20 @@ export default {
         let arr = []
         outdata.map(v => {
              let obj = {}
-             obj.account = v.登录账号
-             obj.name = v.姓名
-             obj.department = v.部门
-             obj.secondDepartment = v.二级部门
-             obj.status = v.状态
-             obj.id = v.id
+             obj.housenumber = v.门牌号
+             obj.acreage = v.面积
+             obj.earnest = v.定金
+             obj.contractmoney = v.合同保障金
+						 obj.contacts = v.档口联系人
+             obj.stall = v.租用类型
+						 obj.deptId= _this.deptId
              arr.push(obj)
         })
         _this.accountList = [...arr];
-        console.log( _this.accountList)
-         this.beforeInit()
-         }
-         reader.readAsArrayBuffer(f);
+				batchUpload( _this.accountList )
+				_this.init()
+    }
+        reader.readAsArrayBuffer(f);
      }
      if(rABS) {
           reader.readAsArrayBuffer(f);

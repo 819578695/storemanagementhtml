@@ -72,9 +72,7 @@ export default {
       	remaining: ''
       },
       rules: {
-      	remaining: [
-          { required: true, trigger: 'blur', validator: validRemaining }
-        ],
+      	remaining: [ { required: true, trigger: 'blur', validator: validRemaining } ],
       	
       },
       options:[],
@@ -82,6 +80,7 @@ export default {
   },
   methods: {
   	isvalidRemaining(str) {
+  		debugger
       const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
       return reg.test(str)
     },
