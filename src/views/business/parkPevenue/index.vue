@@ -106,6 +106,11 @@
           <span>{{ scope.row.isVertify==0?'审核中':scope.row.isVertify==1?'审核失败':'审核通过' }}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="paymentTime" label="收款时间" width="100">
+      	<template slot-scope="scope">
+          <span>{{ parseDate(scope.row.paymentTime) }}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="pevenueaRemarks" label="备注" width="100"/>
       <el-table-column label="收款信息">
         <template slot-scope="scope">
@@ -228,6 +233,7 @@ export default {
       const type = query.type
       const linkman = query.linkman
       const isVertify = query.isVertify
+      const paymentTime = query.paymentTime
       //最高级别查询所有数据
       if(this.deptId==1){
         this.params = { page: this.page, size: this.size, sort: sort}
@@ -247,6 +253,9 @@ export default {
       }
       if (endTime){
         this.params['createTimeEnd'] = parseDate(endTime)
+      }
+      if (paymentTime){
+        this.params['paymentTime'] = parseDate(paymentTime)
       }
       return true
     },
@@ -322,7 +331,8 @@ export default {
         },
         isDelete:data.isDelete,
         isVertify:data.isVertify,
-        pevenueaRemarks:data.pevenueaRemarks
+        pevenueaRemarks:data.pevenueaRemarks,
+        paymentTime:data.paymentTime
       }
       _this.dialog = true
 
@@ -338,8 +348,8 @@ export default {
     download() {
       this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
-        const tHeader = ['公司名称', '档口编号','租户名称', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','审核状态','备注','修改时间','创建时间','合计']
-        const filterVal = ['deptName', 'houseNumber','linkman', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','isVertify','remark','updateTime','createTime','total']
+        const tHeader = ['公司名称', '档口编号','租户名称', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','审核状态','备注','收款时间','修改时间','创建时间','合计']
+        const filterVal = ['deptName', 'houseNumber','linkman', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','isVertify','remark','paymentTime','updateTime','createTime','total']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader,  //表头
@@ -357,8 +367,8 @@ export default {
            this.downloadAllLoading = true
            this.dataALL = res.content
            import('@/utils/export2Excel').then(excel => {
-             const tHeader = ['公司名称', '档口编号','租户名称', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','审核状态','备注','修改时间','创建时间','合计']
-             const filterVal = ['deptName', 'houseNumber','linkman', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','isVertify','remark','updateTime','createTime','total']
+             const tHeader = ['公司名称', '档口编号','租户名称', '房租', '物业费', '水费', '电费', '卫生费', '违约金', '管理费', '停车费', '滞纳金', '地磅费','交易方式','交易类型','审核状态','备注','收款时间','修改时间','创建时间','合计']
+             const filterVal = ['deptName', 'houseNumber','linkman', 'houseRent', 'propertyRent', 'waterRent', 'electricityRent', 'sanitationRent', 'liquidatedRent', 'managementRent', 'parkingRent', 'lateRent','groundPoundRent','paymentTypeName','payTypeName','isVertify','remark','paymentTime','updateTime','createTime','total']
              const data = this.formatJson(filterVal, this.dataALL)
              excel.export_json_to_excel({
                header: tHeader,
@@ -384,7 +394,8 @@ export default {
     // 数据转换
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
-        if (j === 'createTime' || j === 'updateTime') {
+      	debugger
+        if (j === 'createTime' || j === 'updateTime' ) {
           return parseDate(v[j])
         }
         else if(j==='isVertify') {
@@ -462,7 +473,7 @@ export default {
               sums[index] = '合计';
               return;
             }
-           else if (index === 20 ||index === 21 ||index === 19 ||index === 22 ||index === 17 ||index === 1 ||index === 2 ||index === 4 ||index === 3||index === 18||index === 23 ) {
+           else if (index === 20 ||index === 21 ||index === 19 ||index === 22 ||index === 17 ||index === 1 ||index === 2 ||index === 4 ||index === 3||index === 18||index === 23 ||index === 24 ) {
               sums[index] = '';
               return;
             }

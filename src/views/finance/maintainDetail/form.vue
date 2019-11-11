@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '新增' : '编辑'" width="500px" :close-on-click-modal="false">
+  <el-dialog :append-to-body="true" :visible.sync="dialog" :title="isAdd ? '资金调拨' : '编辑'" width="500px" :close-on-click-modal="false">
     <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
     	<el-row>
     		<el-col :span="12">
@@ -80,7 +80,6 @@ export default {
   },
   methods: {
   	isvalidRemaining(str) {
-  		debugger
       const reg = /^(([1-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/
       return reg.test(str)
     },
@@ -88,19 +87,25 @@ export default {
       this.resetForm()
     },
     doAdd() {
-      addDetail(this.form).then(res => {
-        this.resetForm()
-        this.$notify({
-          title: '添加成功',
-          type: 'success',
-          duration: 2500
-        })
-        this.loading = false
-        this.init()
-      }).catch(err => {
-        this.loading = false
-        console.log(err.response.data.message)
-      })
+    	if(this.form.remaining == '' || this.form.originId == '' || this.form.targetId ==''){
+    		this.cancel()
+    		alert("请填写正确的数据")
+    		this.loading = false
+    	}else{
+	      addDetail(this.form).then(res => {
+	        this.resetForm()
+	        this.$notify({
+	          title: '添加成功',
+	          type: 'success',
+	          duration: 2500
+	        })
+	        this.loading = false
+	        this.init()
+	      }).catch(err => {
+	        this.loading = false
+	        console.log(err.response.data.message)
+	      })
+	    }
     },
     resetForm() {
       this.dialog = false

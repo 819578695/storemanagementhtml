@@ -159,6 +159,14 @@
                 </el-select>
               </el-form-item>
             </el-col>
+            <el-form-item label="收款时间" label-width="100px" prop="">
+            	<el-date-picker 
+            		:disabled="form.payType.value=='PEVENUE_UNDER'&&form.isVertify==2" 
+            		v-model="form.paymentTime" 
+            		type="date" 
+            		placeholder="选择日期" 
+            		style="width: 170px;" />
+            </el-form-item>
           </el-row>
           <el-row>
             <el-col :span="24">
@@ -230,6 +238,7 @@ export default {
         waterRent: '',
         startTime:'',
         endTime:'',
+        paymentTime:'',
         electricityRent:'',
         sanitationRent: '',
         liquidatedRent: '',
@@ -457,6 +466,7 @@ export default {
         isVertify:0,
         startTime:'',
         endTime:'',
+        paymentTime:'',
         remark:''
       }
     },
