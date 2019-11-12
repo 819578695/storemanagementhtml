@@ -28,7 +28,7 @@
       <!-- 新增-->
       <div style="display: inline-block;margin: 0px 2px;">
         <el-button
-          v-permission="['ADMIN','ARCHIVESMOUTHSMANAGEMENT_ALL','ARCHIVESMOUTHSMANAGEMENT_ALL_SELECT']"
+          v-permission="['ADMIN','ARCHIVESMOUTHSMANAGEMENT_ALL','ARCHIVESMOUTHSMANAGEMENT_CREATE']"
           class="filter-item"
           size="mini"
           type="primary"
@@ -60,7 +60,7 @@
       <!-- 导入模板下载 -->
       <div style="display: inline-block;">
         <el-button
-          v-permission="['ADMIN']"
+          v-permission="['ADMIN','ARCHIVESMOUTHSMANAGEMENT_ALL','ARCHIVESMOUTHSMANAGEMENT_CREATE']"
           :loading="downloadLoading"
           size="mini"
           class="filter-item"
@@ -71,6 +71,7 @@
       <!-- 导入 -->
       <div style="display: inline-block;">
         <el-upload
+        	v-permission="['ADMIN','ARCHIVESMOUTHSMANAGEMENT_ALL','ARCHIVESMOUTHSMANAGEMENT_CREATE']"
 			    class="upload-demo"
 			    action=""
 			    :on-change="handleChange"
@@ -368,14 +369,19 @@ export default {
         let arr = []
         outdata.map(v => {
              let obj = {}
-             obj.housenumber = v.门牌号
+             obj.housenumber = v.门牌号 
              obj.acreage = v.面积
              obj.earnest = v.定金
              obj.contractmoney = v.合同保障金
 						 obj.contacts = v.档口联系人
              obj.stall = v.租用类型
 						 obj.deptId= _this.deptId
+						 if(obj.length!=7){
+						 	alert("Excel中缺少必要信息请查证后重新上传")
+						 	return
+						 }
              arr.push(obj)
+
         })
         _this.accountList = [...arr];
 				batchUpload( _this.accountList )
@@ -389,7 +395,6 @@ export default {
           reader.readAsBinaryString(f);
      }
 }
-
   }
 }
 

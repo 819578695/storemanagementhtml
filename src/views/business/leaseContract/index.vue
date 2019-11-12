@@ -70,6 +70,7 @@
       <el-table-column prop="deposit" label="保证金"/>
       <el-table-column prop="unpaidExpenses" label="未缴费用"/>
       <el-table-column prop="paymentedExpenses" label="已缴费用"/>
+      <el-table-column prop="acreage" label="档口面积㎡"/>
       <el-table-column prop="contractAmount" label="年租金"/>
       <el-table-column prop="payCycleName" label="应付款周期"/>
       <el-table-column prop="payPrice" label="应付款金额"/>
