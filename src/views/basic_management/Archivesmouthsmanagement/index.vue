@@ -252,8 +252,8 @@ export default {
     template() {
       this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
-        const tHeader = ['门牌号', '面  积', '定  金', '合同保证金', '联系人', '租用类型']
-        const filterVal = ['housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'stalltypeName']
+        const tHeader = ['门牌号', '面  积', '联系人', '租用类型']
+        const filterVal = ['housenumber', 'acreage', 'contacts', 'stalltypeName']
         const data = this.formatJson(filterVal,[{housenumber:'',acreage:'',earnest:'',contractmoney:'',contacts:'',stalltypeName:''}])
         excel.export_json_to_excel({
           header: tHeader, // 表头
@@ -273,7 +273,7 @@ export default {
         excel.export_json_to_excel({
           header: tHeader, // 表头
           data, // 数据
-          filename: '档口信息导入' // 文件名
+          filename: '档口信息导出' // 文件名
         })
         this.downloadLoading = false
       })
@@ -283,12 +283,11 @@ export default {
       const sort = 'id,desc'
       const params = { sort: sort }
       getarchivesmouthsmanagementAll(params).then(res => {
-      	debugger
         this.dataALL = res
         this.downloaddAllLoading = true
            import('@/utils/export2Excel').then(excel => {
-             const tHeader = ['编号', '门牌号', '面积', '定金', '合同保证金', '联系人', '租用类型']
-             const filterVal = ['id', 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'stalltypeName']
+             const tHeader = ['编号' , '部门名称' , '门牌号', '面积', '定金', '合同保证金', '联系人', '租用类型']
+             const filterVal = ['id' , 'name' , 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'stalltypeName']
              const data = this.formatJson(filterVal, this.dataALL)
              excel.export_json_to_excel({
                header: tHeader,
@@ -371,8 +370,6 @@ export default {
              let obj = {}
              obj.housenumber = v.门牌号 
              obj.acreage = v.面积
-             obj.earnest = v.定金
-             obj.contractmoney = v.合同保障金
 						 obj.contacts = v.档口联系人
              obj.stall = v.租用类型
 						 obj.deptId= _this.deptId

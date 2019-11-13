@@ -224,13 +224,13 @@ export default {
     download() {
       this.downloadLoading = true
       import('@/utils/export2Excel').then(excel => {
-        const tHeader = ['编号', '门牌号', '面积', '定金', '合同保证金', '联系人', '租用类型']
-        const filterVal = ['id', 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'leasetype']
+        const tHeader = ['编号', '部门名称', '公司名称', '租用用途', '联系人', '联系电话']
+        const filterVal = ['id', 'deptName', 'companyname', 'logisticsline', 'linkman', 'phone']
         const data = this.formatJson(filterVal, this.data)
         excel.export_json_to_excel({
           header: tHeader, // 表头
           data, // 数据
-          filename: 'table-list' // 文件名
+          filename: '租户信息导出' // 文件名
         })
         this.downloadLoading = false
       })
@@ -243,13 +243,14 @@ export default {
         this.dataALL = res
         this.downloadAllLoading = true
            import('@/utils/export2Excel').then(excel => {
-             const tHeader = ['编号', '门牌号', '面积', '定金', '合同保证金', '联系人', '租用类型']
-             const filterVal = ['id', 'housenumber', 'acreage', 'earnest', 'contractmoney', 'contacts', 'leasetype']
+             const tHeader = ['编号', '部门名称', '公司名称', '租用用途', '联系人', '联系电话']
+             const filterVal = ['id', 'deptName', 'companyname', 'logisticsline', 'linkman', 'phone']
              const data = this.formatJson(filterVal, this.dataALL)
+             debugger
              excel.export_json_to_excel({
                header: tHeader,
                data,
-               filename: 'table-list'
+               filename: '租户信息全部导出'
              })
              this.downloadAllLoading = false
            })
